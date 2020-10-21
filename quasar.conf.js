@@ -34,12 +34,12 @@ module.exports = (ctx) => {
       scopeHoisting: true,
 
       extendWebpack(cfg) {
-        cfg.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /node_modules/,
-        });
+        // cfg.module.rules.push({
+        //   enforce: 'pre',
+        //   test: /\.(js|vue)$/,
+        //   loader: 'eslint-loader',
+        //   exclude: /node_modules/,
+        // });
         
         cfg.resolve.alias = {
           ...cfg.resolve.alias,

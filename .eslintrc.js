@@ -43,5 +43,11 @@ module.exports = {
     'curly': [2, 'all'],
     'no-magic-numbers': ['error', {'ignore': [-1, 0, 1, 2, 10, 420], 'ignoreArrayIndexes': true }],
     'linebreak-style': 0,
+    'indent': ['off', 4],
+    'no-mixed-spaces-and-tabs': ['off', 'smart-tabs'],
+    'no-spaced-func': 0,
+    'func-call-spacing': 0,
+    'space-before-function-paren': 0,
+    'no-multiple-empty-lines': 0
   },
 };

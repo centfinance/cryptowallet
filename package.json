@@ -7,6 +7,7 @@
   "author": "Stephen Horsfall <stephen.horsfall@atlas3t.com>",
   "private": true,
   "scripts": {
+    "build": "npm run lint -- --fix && vue-cli-service build",
     "lint": "eslint --ext .js,.vue src",
     "lint:fix": "eslint --fix --ext .js,.vue src",
     "test:unit": "cross-env NODE_ENV=test TZ=Europe/London jest",
@@ -39,7 +40,9 @@
     "bulma": "^0.7.1",
     "chart.js": "^2.7.3",
     "comlink": "^4.0.2",
+    "compare-func": "^2.0.0",
     "cordova": "^8.1.2",
+    "cordova-plugin-iroot": "^2.1.0",
     "crypto": "^1.0.1",
     "crypto-js": "^3.1.9-1",
     "cryptowallet-js": "git://github.com/atlascity/cryptowallet-js.git#no-catalyst",
