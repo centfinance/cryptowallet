@@ -1,11 +1,15 @@
-import { Model } from '@vuex-orm/core';
+import { storeERC20Coin, storeERC20Wallet, storeTx } from '@/helpers/StorageHelpers';
+
 import CryptoWalletJs from 'cryptowallet-js';
-import axios from 'axios';
 import IconList from '@/statics/cc-icons/icons-list.json';
+import { Model } from '@vuex-orm/core';
+import axios from 'axios';
+import networks from '../../settings/state/supportedNetworks';
+
 // import Wallet from './wallet';
 // import Tx from './tx';
-import networks from '../../settings/state/supportedNetworks';
-import { storeERC20Wallet, storeERC20Coin, storeTx } from '@/helpers/StorageHelpers';
+
+
 
 /**
  * Coin Entity.

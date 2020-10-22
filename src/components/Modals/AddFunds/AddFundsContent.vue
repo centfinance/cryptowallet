@@ -105,9 +105,9 @@ import { mapState } from 'vuex';
 import axios from 'axios';
 import Coin from '@/store/wallet/entities/coin';
 import Wallet from '@/store/wallet/entities/wallet';
-import SelectCountry from './SelectCountry';
 import { Ramp } from '@/helpers/Ramp';
 import { Transak } from '@/helpers/Transak';
+import SelectCountry from './SelectCountry';
 
 export default {
   name: 'AddFunds',

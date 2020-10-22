@@ -158,6 +158,7 @@ export default {
 
   methods: {
     openTransak() {
+      // eslint-disable-next-line no-console
       console.log(this.transak);
       this.transak.on(this.transak.ALL_EVENTS, (data) => {
         if (data.eventName === 'TRANSAK_WIDGET_OPEN') { this.handleWidgetOpen(); }

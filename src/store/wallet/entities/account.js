@@ -1,10 +1,10 @@
-import { Model } from '@vuex-orm/core';
-import { Dark } from 'quasar';
+/* eslint-disable import/order */
+
 import Coin from './coin';
+import { Dark } from 'quasar';
+import { Model } from '@vuex-orm/core';
 import Wallet from './wallet';
-import {
-  refreshWallet,
-} from '@/helpers';
+import { refreshWallet } from '@/helpers';
 
 /**
  * Account Entity.
