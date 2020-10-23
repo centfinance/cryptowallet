@@ -2,9 +2,9 @@
 import { Model } from '@vuex-orm/core';
 import { ethers } from 'ethers';
 import { hdkey } from 'ethereumjs-wallet';
-import Coin from './coin';
 import Transactions from '@/store/transactions';
 import networks from '@/store/settings/state/supportedNetworks';
+import Coin from './coin';
 
 
 /**

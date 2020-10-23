@@ -544,6 +544,7 @@ export default {
         this.fee = rawFee;
         this.rawFee = rawFee * gasLimit;
         this.feeData = fees;
+        // eslint-disable-next-line no-console
         console.log(this.fee);
         const formattedFee = new AmountFormatter({
           amount: fee,
@@ -591,7 +592,9 @@ export default {
         value: this.inCoin,
         type: 'STANDARD',
       });
+      // eslint-disable-next-line no-console
       console.log(transactions[0]);
+      // eslint-disable-next-line no-console
       console.log(await transactions[0].sign());
 
       // try {

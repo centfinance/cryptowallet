@@ -13,7 +13,7 @@ module.exports = {
     'plugin:vue/recommended',
   ],
   plugins: [
-    'vue',
+    'vue','import-order-autofix'
   ],
   globals: {
     cordova: true,
@@ -43,5 +43,6 @@ module.exports = {
     'curly': [2, 'all'],
     'no-magic-numbers': ['error', {'ignore': [-1, 0, 1, 2, 10, 420], 'ignoreArrayIndexes': true }],
     'linebreak-style': 0,
+    'import-order-autofix/order': 2
   },
 };

@@ -1,6 +1,7 @@
 import { Magic, RPCError, RPCErrorCode } from 'magic-sdk';
-import { ethers } from 'ethers';
+
 import bip39 from 'bip39';
+import { ethers } from 'ethers';
 
 const m = new Magic(process.env.MAGIC_TEST); // ✨
 

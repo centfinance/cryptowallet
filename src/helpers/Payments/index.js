@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const paymentOptions = [
   {
     type: 'Debit Card',
@@ -39,7 +40,7 @@ const paymentOptions = [
     caption: 'KYC Required',
     provider: 'transak_bank_transfer',
   },
-],
+];
 
 export function getProviders() {
 

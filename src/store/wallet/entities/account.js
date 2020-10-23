@@ -1,10 +1,10 @@
 import { Model } from '@vuex-orm/core';
 import { Dark } from 'quasar';
-import Coin from './coin';
-import Wallet from './wallet';
 import {
   refreshWallet,
 } from '@/helpers';
+import Coin from './coin';
+import Wallet from './wallet';
 
 /**
  * Account Entity.

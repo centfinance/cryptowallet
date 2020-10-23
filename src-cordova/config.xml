@@ -18,7 +18,7 @@
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:allowBackup="false" />
             <application android:fullBackupContent="false" />
-            <application android:usesCleartextTraffic="false" />
+            <application android:usesCleartextTraffic="true" />
         </edit-config>
         <splash density="port-hdpi" src="res/screen/android/splash-port-hdpi.png" />
         <splash density="port-ldpi" src="res/screen/android/splash-port-ldpi.png" />

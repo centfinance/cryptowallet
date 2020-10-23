@@ -4,8 +4,8 @@ import axios from 'axios';
 import IconList from '@/statics/cc-icons/icons-list.json';
 // import Wallet from './wallet';
 // import Tx from './tx';
-import networks from '../../settings/state/supportedNetworks';
 import { storeERC20Wallet, storeERC20Coin, storeTx } from '@/helpers/StorageHelpers';
+import networks from '../../settings/state/supportedNetworks';
 
 /**
  * Coin Entity.
