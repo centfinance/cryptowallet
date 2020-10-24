@@ -1,7 +1,7 @@
 <div align="center">
-  <img alt="ReDoc logo" src="https://avatars2.githubusercontent.com/u/70975737?s=400&u=a3bc7a3e9d58a845ed3d142ef36cfd77424c7c0d&v=4" width="400px" />
+  <img alt="ReDoc logo" src="https://raw.githubusercontent.com/centfinance/Community/main/media-pack/logo.png" width="400px" />
 
-  ### Cent.Wallet - A mobile crypto wallet with a focus on DeFI.
+  ### Cent.Wallet - A mobile crypto wallet with a focus on DeFI
  
 </div>
 
