@@ -1,7 +1,9 @@
+<div align="center">
+  <img alt="ReDoc logo" src="https://raw.githubusercontent.com/centfinance/Community/main/media-pack/logo.png" width="400px" />
 
-# Cent
-A mobile crypto wallet with a focus on DeFI.
-
+  ### Cent.Wallet - A mobile crypto wallet with a focus on DeFI
+ 
+</div>
 
 ## Prerequisites
 
