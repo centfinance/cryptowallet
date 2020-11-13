@@ -165,10 +165,10 @@ export default {
     if (window.cordova) {
       StatusBar.overlaysWebView(true);
       StatusBar.styleDefault();
-      const rooted = () => { this.$store.dispatch('modals/setRootedNoticeModalOpened', true); };
-      IRoot.isRooted(() => {}, rooted);
-      IRoot.isRootedWithBusyBox(() => {}, rooted);
-      window.plugins.preventscreenshot.enable(() => {}, () => {});
+      // const rooted = () => { this.$store.dispatch('modals/setRootedNoticeModalOpened', true); };
+      // IRoot.isRooted(() => {}, rooted);
+      // IRoot.isRootedWithBusyBox(() => {}, rooted);
+      // window.plugins.preventscreenshot.enable(() => {}, () => {});
     }
     if (!this.settings.authenticatedAccount) { this.$router.push({ path: '/' }); }
   },
