@@ -112,7 +112,6 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2">
         <preference name="StatusBarOverlaysWebView" value="true" />
     </plugin>
-    <plugin name="cordova-plugin-navigationbar-color" spec="0.0.9" />
     <plugin name="cordova-android-support-gradle-release" spec="^3.0.1">
         <variable name="ANDROID_SUPPORT_VERSION" value="27.+" />
     </plugin>

@@ -22,9 +22,7 @@
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-webview": "^5.0.0",
     "cordova-plugin-iroot": "^2.0.2",
-    "cordova-plugin-navigationbar-color": "0.0.9",
     "cordova-plugin-network-information": "^2.0.1",
-    "cordova-plugin-prevent-screenshot": "^1.0.3",
     "cordova-plugin-qrscanner": "^3.0.1",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
@@ -49,7 +47,6 @@
       "cordova-plugin-vibration": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-navigationbar-color": {},
       "cordova-android-support-gradle-release": {
         "ANDROID_SUPPORT_VERSION": "27.+"
       },
@@ -60,7 +57,6 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-tapjackingprotection": {},
       "cordova-plugin-iroot": {},
-      "cordova-plugin-prevent-screenshot": {},
       "cordova-sqlite-storage": {}
     },
     "platforms": [
