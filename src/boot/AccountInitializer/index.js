@@ -21,7 +21,7 @@ const accountInitializer = {
     const accounts = Account.all();
     const password = setup.pinArray.join('');
     const pinHash = bcrypt.hashSync(password, setup.salt);
-    const data = {
+    const accData = {
       uid: uid(),
       name: setup.accountName,
       email: setup.accountEmail || null,
@@ -34,12 +34,24 @@ const accountInitializer = {
       demoMode: setup.demoMode,
     };
 
-    const result = await Account.$insert({
-      data,
-      password,
-    });
-
-    return result[0];
+    try {
+      // const btV = btoa(JSON.stringify({ data }));
+      // eslint-disable-next-line no-console
+      console.log(`Account.$insert BTOA-> ${JSON.stringify(accData)}`);
+      // eslint-disable-next-line object-shorthand
+      const result = await Account.$insert({ data: accData, password });
+      // eslint-disable-next-line no-console
+      // console.log(`Account saved now ATOB: ${JSON.parse(atob(data))}`);
+      // eslint-disable-next-line no-console
+      console.log(result);
+      // eslint-disable-next-line no-console
+      console.log(result[0]);
+      return result[0];
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(`INSERTION ERR ${error}`);
+      throw error;
+    }
   },
 
   async createWallets(setup, id, coins) {

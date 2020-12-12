@@ -3,7 +3,16 @@
     class="main"
     :class="{ shrinked : settings.layout !== 'dark' }"
   >
-    <LoadingScreen :show="settings.loading" />
+    <q-btn
+      color="purple"
+      text-color="black"
+      label="Standard"
+      @click="hydrateData()"
+    />
+    <LoadingScreen
+      v-if="showMe"
+      :show="settings.loading"
+    />
 
     <div
       id="q-app"
@@ -83,6 +92,7 @@ export default {
     return {
       hidden: false,
       qrOrigin: '',
+      showMe: false,
     };
   },
 
@@ -158,22 +168,39 @@ export default {
     },
   },
 
-  async mounted() {
-    window.store = this.$store;
-    window.app = this;
-    await hydrateStore();
-    if (window.cordova) {
-      StatusBar.overlaysWebView(true);
-      StatusBar.styleDefault();
-      const rooted = () => { this.$store.dispatch('modals/setRootedNoticeModalOpened', true); };
-      IRoot.isRooted(() => {}, rooted);
-      IRoot.isRootedWithBusyBox(() => {}, rooted);
-      window.plugins.preventscreenshot.enable(() => {}, () => {});
-    }
-    if (!this.settings.authenticatedAccount) { this.$router.push({ path: '/' }); }
+  mounted() {
+    // this.hydrateData();
+    // window.store = this.$store;
+    // window.app = this;
+    // hydrateStore();
+    // if (window.cordova) {
+    //   StatusBar.overlaysWebView(true);
+    //   StatusBar.styleDefault();
+    //   const rooted = () => { this.$store.dispatch('modals/setRootedNoticeModalOpened', true); };
+    //   IRoot.isRooted(() => {}, rooted);
+    //   IRoot.isRootedWithBusyBox(() => {}, rooted);
+    //   window.plugins.preventscreenshot.enable(() => {}, () => {});
+    // }
+    // if (!this.settings.authenticatedAccount) { this.$router.push({ path: '/' }); }
   },
 
   methods: {
+    hydrateData() {
+      // eslint-disable-next-line no-console
+      console.log('button clicked');
+      window.store = this.$store;
+      window.app = this;
+      hydrateStore();
+      if (window.cordova) {
+        StatusBar.overlaysWebView(true);
+        StatusBar.styleDefault();
+        const rooted = () => { this.$store.dispatch('modals/setRootedNoticeModalOpened', true); };
+        IRoot.isRooted(() => {}, rooted);
+        IRoot.isRootedWithBusyBox(() => {}, rooted);
+        window.plugins.preventscreenshot.enable(() => {}, () => {});
+      }
+      if (!this.settings.authenticatedAccount) { this.$router.push({ path: '/' }); }
+    },
     storeSupportedCoins() {
       this.supportedCoins.forEach((coin) => {
         const isThere = Coin.findToken(coin.name);

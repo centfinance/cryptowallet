@@ -1,5 +1,5 @@
 {
-  "name": "com.atlascity.wallet.mobile",
+  "name": "com.cent.wallet.mobile",
   "displayName": "Cent",
   "version": "1.0.1",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
@@ -13,7 +13,6 @@
     "cordova-android": "^9.0.0",
     "cordova-android-support-gradle-release": "^3.0.1",
     "cordova-clipboard": "^1.2.1",
-    "cordova-ios": "^5.1.1",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-androidx": "^1.0.2",
@@ -64,11 +63,12 @@
       "cordova-sqlite-storage": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   },
   "devDependencies": {
+    "cordova-ios": "^6.1.1",
     "cordova-plugin-disable-ios11-statusbar": "*"
   }
 }

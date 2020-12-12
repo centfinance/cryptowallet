@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 /* eslint-disable no-underscore-dangle */
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -120,19 +122,21 @@ const store = new Vuex.Store({
 });
 
 function hydrationCompletedCallback() {
-  const delay = 1000;
+  const delay = 3000;
   setTimeout(() => {
     store.dispatch('settings/setLoading', false);
   }, delay);
 }
 
-export async function hydrateStore() {
+export function hydrateStore() {
   const promises = [];
   models.forEach((model) => {
     promises.push(model.$fetch());
   });
-  await Promise.all(promises);
-  hydrationCompletedCallback();
+  Promise.all(promises).then(() => {
+    console.log("Calling hydration call back");
+    hydrationCompletedCallback();
+  });
 }
 
 // VuexORM.use(VuexORMLoki, { database, options, hydrationCompletedCallback });
