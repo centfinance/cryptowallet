@@ -3,14 +3,7 @@
     class="main"
     :class="{ shrinked : settings.layout !== 'dark' }"
   >
-    <q-btn
-      color="purple"
-      text-color="black"
-      label="Standard"
-      @click="hydrateData()"
-    />
     <LoadingScreen
-      v-if="showMe"
       :show="settings.loading"
     />
 
@@ -169,6 +162,12 @@ export default {
   },
 
   mounted() {
+    const delay = 3000;
+    setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log('triggered mounted');
+      this.hydrateData();
+    }, delay);
     // this.hydrateData();
     // window.store = this.$store;
     // window.app = this;
@@ -186,19 +185,21 @@ export default {
 
   methods: {
     hydrateData() {
+      // this.$store.dispatch('settings/setLoading', true);
       // eslint-disable-next-line no-console
-      console.log('button clicked');
+      console.log('calling hydrateData 1');
       window.store = this.$store;
       window.app = this;
       hydrateStore();
-      if (window.cordova) {
-        StatusBar.overlaysWebView(true);
-        StatusBar.styleDefault();
-        const rooted = () => { this.$store.dispatch('modals/setRootedNoticeModalOpened', true); };
-        IRoot.isRooted(() => {}, rooted);
-        IRoot.isRootedWithBusyBox(() => {}, rooted);
-        window.plugins.preventscreenshot.enable(() => {}, () => {});
-      }
+      // if (window.cordova) {
+      //   StatusBar.overlaysWebView(true);
+      //   StatusBar.styleDefault();
+      // eslint-disable-next-line max-len
+      //   const rooted = () => { this.$store.dispatch('modals/setRootedNoticeModalOpened', true); };
+      //   IRoot.isRooted(() => {}, rooted);
+      //   IRoot.isRootedWithBusyBox(() => {}, rooted);
+      //   window.plugins.preventscreenshot.enable(() => {}, () => {});
+      // }
       if (!this.settings.authenticatedAccount) { this.$router.push({ path: '/' }); }
     },
     storeSupportedCoins() {
