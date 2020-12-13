@@ -581,38 +581,28 @@ export default {
     },
 
     async sendETH() {
-      // const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
-      // const wallet = this.activeWallets[this.authenticatedAccount][this.wallet.name];
-      // const keypair = coinSDK.generateKeyPair(wallet, 0);
+      const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
+      const wallet = this.activeWallets[this.authenticatedAccount][this.wallet.name];
+      const keypair = coinSDK.generateKeyPair(wallet, 0);
 
-      const { transactions } = await this.wallet.newTx({
-        to: '0x2432adE5D297f37245b71E2b36B31b7672604F88',
-        gasPrice: this.fee,
-        gasLimit: 21000,
-        value: this.inCoin,
-        type: 'STANDARD',
-      });
-      // eslint-disable-next-line no-console
-      console.log(transactions[0]);
-      // eslint-disable-next-line no-console
-      console.log(await transactions[0].sign());
+      try {
+        const {
+          transaction,
+          hexTx,
+        } = await coinSDK.createEthTx(keypair, this.address, this.inCoin, this.fee);
 
-      // try {
-      //   const {
-      //     transaction,
-      //     hexTx,
-      //   } = await coinSDK.createEthTx(keypair, this.address, this.inCoin, this.fee);
+        console.log(transaction);
 
-      //   this.$store.dispatch('modals/setConfirmTransactionData', {
-      //     ens: this.ensName,
-      //     hexTx,
-      //     transaction,
-      //   });
+        this.$store.dispatch('modals/setConfirmTransactionData', {
+          ens: this.ensName,
+          hexTx,
+          transaction,
+        });
 
-      //   this.$store.dispatch('modals/setConfirmSendModalOpened', true);
-      // } catch (err) {
-      //   this.errorHandler(err);
-      // }
+        this.$store.dispatch('modals/setConfirmSendModalOpened', true);
+      } catch (err) {
+        this.errorHandler(err);
+      }
     },
 
     async sendERC20() {
