@@ -168,24 +168,10 @@ export default {
       console.log('triggered mounted');
       this.hydrateData();
     }, delay);
-    // this.hydrateData();
-    // window.store = this.$store;
-    // window.app = this;
-    // hydrateStore();
-    // if (window.cordova) {
-    //   StatusBar.overlaysWebView(true);
-    //   StatusBar.styleDefault();
-    //   const rooted = () => { this.$store.dispatch('modals/setRootedNoticeModalOpened', true); };
-    //   IRoot.isRooted(() => {}, rooted);
-    //   IRoot.isRootedWithBusyBox(() => {}, rooted);
-    //   window.plugins.preventscreenshot.enable(() => {}, () => {});
-    // }
-    // if (!this.settings.authenticatedAccount) { this.$router.push({ path: '/' }); }
   },
 
   methods: {
     hydrateData() {
-      // this.$store.dispatch('settings/setLoading', true);
       // eslint-disable-next-line no-console
       console.log('calling hydrateData 1');
       window.store = this.$store;

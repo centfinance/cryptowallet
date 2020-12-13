@@ -35,17 +35,8 @@ const accountInitializer = {
     };
 
     try {
-      // const btV = btoa(JSON.stringify({ data }));
-      // eslint-disable-next-line no-console
-      console.log(`Account.$insert BTOA-> ${JSON.stringify(accData)}`);
       // eslint-disable-next-line object-shorthand
       const result = await Account.$insert({ data: accData, password });
-      // eslint-disable-next-line no-console
-      // console.log(`Account saved now ATOB: ${JSON.parse(atob(data))}`);
-      // eslint-disable-next-line no-console
-      console.log(result);
-      // eslint-disable-next-line no-console
-      console.log(result[0]);
       return result[0];
     } catch (error) {
       // eslint-disable-next-line no-console
