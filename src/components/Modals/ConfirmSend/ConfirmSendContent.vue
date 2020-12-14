@@ -281,8 +281,8 @@ export default {
         if (this.wallet.sdk === 'ERC20') {
           transaction.fee /= this.weiMultiplier;
         }
-        const tx = (await Tx.$insert({ data: transaction })).tx[0];
-
+        const res = await Tx.$insert({ data: transaction });
+        const tx = new Tx(res[0]);
         this.completeTransaction(tx);
       }
     },

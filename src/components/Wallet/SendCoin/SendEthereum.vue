@@ -590,9 +590,6 @@ export default {
           transaction,
           hexTx,
         } = await coinSDK.createEthTx(keypair, this.address, this.inCoin, this.fee);
-
-        console.log(transaction);
-
         this.$store.dispatch('modals/setConfirmTransactionData', {
           ens: this.ensName,
           hexTx,

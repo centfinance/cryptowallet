@@ -164,8 +164,6 @@ export default {
   mounted() {
     const delay = 3000;
     setTimeout(() => {
-      // eslint-disable-next-line no-console
-      console.log('triggered mounted');
       this.hydrateData();
     }, delay);
   },
@@ -173,7 +171,7 @@ export default {
   methods: {
     hydrateData() {
       // eslint-disable-next-line no-console
-      console.log('calling hydrateData 1');
+      console.log('calling hydrateData');
       window.store = this.$store;
       window.app = this;
       hydrateStore();

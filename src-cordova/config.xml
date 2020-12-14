@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.cent.mobile.wallet" version="1.0.18.56" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.cent.mobile.wallet" version="1.0.20" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Cent</name>
     <description>Cent Wallet - By Cent Finance</description>
-    <author email="stephen.horsfall@atlas3t.com" href="https://atlas3t.com">
-        Atlas 3T
+    <author email="developer@cent.finance" href="https://cent.finance">
+        Cent Finance
     </author>
     <content src="index.html" />
     <allow-intent href="https://*/*" />
