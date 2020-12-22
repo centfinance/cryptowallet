@@ -38,7 +38,7 @@ export class Transak {
       apiKey: testnet ? process.env.TRANSAK_DEV : process.env.TRANSAK_PROD, // Your API Key
       environment: testnet ? 'STAGING' : 'PRODUCTION', // STAGING/PRODUCTION
       cryptoCurrencyCode: wallet.symbol || '',
-      cryptoCurrencyList: tokens || '',
+      // cryptoCurrencyList: tokens || '',
       walletAddress: wallet.externalAddress, // Your customer's wallet address
       disableWalletAddressForm: true,
       themeColor: '#dd3dff', // App theme color
@@ -51,6 +51,7 @@ export class Transak {
       widgetHeight: '100%',
       widgetWidth: '100%',
       hideMenu: true,
+      networks: 'ethereum',
     };
     this.transak = new TransakSDK(this.config);
   }

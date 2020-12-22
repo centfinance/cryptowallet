@@ -158,7 +158,6 @@ export default {
 
   methods: {
     openTransak() {
-      console.log(this.transak);
       this.transak.on(this.transak.ALL_EVENTS, (data) => {
         if (data.eventName === 'TRANSAK_WIDGET_OPEN') { this.handleWidgetOpen(); }
         if (data.eventName === 'TRANSAK_WIDGET_CLOSE') { this.handleWidgetClose(); }
