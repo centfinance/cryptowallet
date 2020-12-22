@@ -1,6 +1,6 @@
 {
   "name": "cent",
-  "version": "1.0.20",
+  "version": "1.0.22",
   "description": "Cent Wallet - By Cent Finance",
   "productName": "Cent",
   "cordovaId": "com.cent.mobile.wallet",
@@ -29,7 +29,7 @@
     "@quasar/extras": "^1.9.3",
     "@ramp-network/ramp-instant-sdk": "^1.8.1",
     "@toruslabs/torus-direct-web-sdk": "^3.0.3",
-    "@transak/transak-sdk": "^1.0.23",
+    "@transak/transak-sdk": "^1.0.28",
     "@vuex-orm/core": "^0.27.0",
     "@zxing/library": "^0.17.1",
     "axios": "^0.18.0",

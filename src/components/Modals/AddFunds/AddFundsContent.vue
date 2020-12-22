@@ -227,8 +227,8 @@ export default {
   },
 
   async mounted() {
-    this.transakTokens = (await axios.get('https://api.transak.com/api/v1/currencies/list')).data.response.cryptocurrencies
-      .filter((token) => { return token.network === 'ethereum'; })
+    this.transakTokens = (await axios.get('https://api.transak.com/api/v2/currencies/crypto-currencies')).data.response
+      .filter((token) => { return token.name === 'Ethereum'; })
       .map((token) => { return token.symbol; }).join();
   },
 
