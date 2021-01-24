@@ -20,4 +20,5 @@ export default {
   updateEmailModalOpened: false,
   exportKeysModalOpened: false,
   rootedNoticeModalOpened: false,
+  walletConnectModalOpened: false,
 };

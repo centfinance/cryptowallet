@@ -511,7 +511,8 @@ export default {
           );
           gasLimit = gasUsed;
           coinSymbol = 'ETH';
-          currentPrice = this.$store.getters['entities/latestPrice/find'](`${this.wallet.identifier}_${this.selectedCurrency.code}`).data.PRICE;
+          const res = this.$store.getters['entities/latestPrice/find'](`${this.wallet.identifier}_${this.selectedCurrency.code}`);
+          if (res) { currentPrice = res.data.PRICE; }
         }
 
         const response = await this.backEndService.getTransactionFee(coinSymbol);

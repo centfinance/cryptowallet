@@ -209,6 +209,21 @@ export default [
     transak: true,
   },
   {
+    displayName: 'Cent',
+    name: 'Cent',
+    sdk: 'ERC20',
+    parentSdk: 'Ethereum',
+    symbol: 'CENT',
+    contractAddress: '0x8ceea13266b6D303237bF50De44c97F59Bb2a469', // KOVAN
+    decimals: 18,
+    parentName: 'Ethereum',
+    network: 'ETHEREUM',
+    denomination: '0.00000000',
+    minConfirmations: 11,
+    api: supportedNetworks.ETHERUM,
+    transak: false,
+  },
+  {
     displayName: 'Ethereum Ropsten',
     name: 'Ethereum Ropsten',
     identifier: 'ethereum',

@@ -69,6 +69,10 @@ export function setSelectCurrencyModalOpened(context, payload) {
   context.commit('SET_SELECTCURRENCY_MODAL_OPENED', payload);
 }
 
+export function setWalletConnectModalOpened(context, payload) {
+  context.commit('SET_WALLETCONNECT_MODAL_OPENED', payload);
+}
+
 export function setSelectLanguageModalOpened(context, payload) {
   context.commit('SET_SELECTLANGUAGE_MODAL_OPENED', payload);
 }

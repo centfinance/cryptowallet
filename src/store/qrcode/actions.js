@@ -27,6 +27,13 @@ export function setScannedAmount(context, payload) {
 }
 
 /*
+ * Action setScannedURI
+ */
+export function setScannedURI(context, payload) {
+  context.commit('SET_SCANNED_URI', payload);
+}
+
+/*
  * Action setQRMode
  */
 export function setQRMode(context, payload) {

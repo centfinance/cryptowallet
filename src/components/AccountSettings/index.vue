@@ -57,6 +57,25 @@
         />
       </div>
     </div>
+    <div
+      v-if="walletConnect"
+      class="settings-row"
+      @click.prevent="openWalletConnectModal"
+    >
+      <div>
+        WalletConnect
+      </div>
+      <div>
+        <q-btn
+          icon="chevron_right"
+          size="lg"
+          color="info"
+          class="settings-chevron"
+          flat
+          @click.prevent="openWalletConnectModal"
+        />
+      </div>
+    </div>
 
     <div
       class="settings-row"
@@ -154,7 +173,7 @@
       :pin-hash="account.pinHash"
     />
     <UpdateEmail v-if="updateEmailEnabled" />
-
+    <WalletConnect v-if="walletConnect" />
     <ExportKeys v-if="exportKeysEnabled" />
   </div>
 </template>
@@ -167,7 +186,7 @@ import Pin from '@/components/AccountSettings/Pin';
 import DeleteAccount from '@/components/AccountSettings/DeleteAccount';
 import ToggleTestnets from '@/components/AccountSettings/ToggleTestnets';
 import ToggleDarkMode from '@/components/AccountSettings/ToggleDarkMode';
-
+import WalletConnect from '@/components/WalletConnect/WalletConnect';
 import UpdateEmail from '@/components/AccountSettings/UpdateEmail';
 import ExportKeys from '@/components/AccountSettings/ExportKeys';
 
@@ -182,6 +201,7 @@ export default {
     ToggleTestnets,
     ToggleDarkMode,
     UpdateEmail,
+    WalletConnect,
     ExportKeys,
   },
   computed: {
@@ -194,6 +214,9 @@ export default {
     email() {
       if (this.account) { return this.account.email; }
       return null;
+    },
+    walletConnect() {
+      return true;
     },
     demoMode() {
       if (this.account) { return this.account.demoMode; }
@@ -224,6 +247,10 @@ export default {
     },
     openExportKeysModal() {
       this.$store.dispatch('modals/setExportKeysModalOpened', true);
+    },
+    openWalletConnectModal() {
+      console.log('opening wallet connect');
+      this.$store.dispatch('modals/setWalletConnectModalOpened', true);
     },
     logout() {
       window.location.reload(true);

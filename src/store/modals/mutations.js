@@ -97,6 +97,11 @@ export function SET_SELECTCURRENCY_MODAL_OPENED(state, payload) {
   state.selectCurrencyModalOpened = payload;
 }
 
+export function SET_WALLETCONNECT_MODAL_OPENED(state, payload) {
+  changeStatusBarColour(payload);
+  state.walletConnectModalOpened = payload;
+}
+
 export function SET_SELECTLANGUAGE_MODAL_OPENED(state, payload) {
   changeStatusBarColour(payload);
   state.selectLanguageModalOpened = payload;
