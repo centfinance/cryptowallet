@@ -1,9 +1,6 @@
 <template>
   <div>
     <div class="send-coin-box">
-      <!-- <span class="error-label error-label-address">
-        {{ addressError }}
-      </span> -->
       <div class="amount">
         <div
           class="amount-div-wrapper"
@@ -105,9 +102,6 @@
 <script>
 import { mapState } from 'vuex';
 
-// import Utxo from '@/store/wallet/entities/utxo';
-// import networks from '@/store/settings/state/supportedNetworks';
-
 export default {
   name: 'SignTransaction',
   props: {
@@ -115,19 +109,10 @@ export default {
       type: Object,
       required: true,
     },
-    wallet: {
-      type: Object,
-      required: true,
-    },
   },
   computed: {
     ...mapState({
       // id: (state) => { return state.route.params.id; },
-      authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
-      delay: (state) => { return state.settings.delay; },
-      scannedAddress: (state) => { return state.qrcode.scannedAddress; },
-      scannedAmount: (state) => { return state.qrcode.scannedAmount; },
-
     }),
   },
   methods: {

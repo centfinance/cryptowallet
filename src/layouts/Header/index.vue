@@ -100,7 +100,7 @@
           />
         </div> -->
 
-        <div
+        <!-- <div
           v-if="displayPriceChart"
         >
           <q-btn
@@ -111,7 +111,7 @@
             flat
             @click.prevent="openChartModal"
           />
-        </div>
+        </div> -->
 
         <div
           v-if="displayAccounts"

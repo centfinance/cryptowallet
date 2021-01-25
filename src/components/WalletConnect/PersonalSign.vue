@@ -1,46 +1,39 @@
 <template>
-  <div>
-    <div class="send-coin-box">
-      <!-- <span class="error-label error-label-address">
-        {{ addressError }}
-      </span> -->
-      <div class="amount">
-        <div
-          class="amount-div-wrapper"
-        >
-          <div class="side-content">
-            Address
-          </div>
-          <q-input
-            v-model="payLoad.address"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-        <div class="amount-div-wrapper">
-          <div class="side-content">
-            Message
-          </div>
-          <q-input
-            v-model="payLoad.message"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-      </div>
-    </div>
+  <div
+    class="q-pa-md"
+    style="max-width: 90%; padding:5px;"
+  >
+    <q-list
+      bordered
+      separator
+      style="padding:5px;"
+    >
+      <q-item
+        v-ripple
+        clickable
+      >
+        <q-item-section>
+          <q-item-label overline>
+            <strong>Address:</strong>
+          </q-item-label>
+          <q-item-label>{{ payLoad.address }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item
+        v-ripple
+        clickable
+      >
+        <q-item-section>
+          <q-item-label overline>
+            Message:
+          </q-item-label>
+          <q-item-label>{{ payLoad.message }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
-// import Utxo from '@/store/wallet/entities/utxo';
-// import networks from '@/store/settings/state/supportedNetworks';
 
 export default {
   name: 'SignTransaction',
@@ -51,10 +44,6 @@ export default {
     },
   },
   computed: {
-    ...mapState({
-      // id: (state) => { return state.route.params.id; },
-      authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
-    }),
   },
   methods: {
   },

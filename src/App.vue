@@ -162,7 +162,7 @@ export default {
   },
 
   mounted() {
-    const delay = 3000;
+    const delay = 2000;
     setTimeout(() => {
       this.hydrateData();
     }, delay);

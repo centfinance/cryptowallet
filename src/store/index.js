@@ -122,7 +122,7 @@ const store = new Vuex.Store({
 });
 
 function hydrationCompletedCallback() {
-  const delay = 3000;
+  const delay = 1000;
   setTimeout(() => {
     store.dispatch('settings/setLoading', false);
   }, delay);

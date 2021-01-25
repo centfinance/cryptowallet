@@ -132,12 +132,18 @@
               />
             </div>
           </div>
-          <div class="center-content-wrapper" v-if="connected && !signTransaction">
+          <div
+            v-if="connected && !signTransaction && !personalSign"
+            class="center-content-wrapper"
+          >
             No incoming requests to approve/reject.
           </div>
 
 
-          <div class="full-width" style="height:auto">
+          <div
+            class="full-width"
+            style="height:auto"
+          >
             <!--Sign ETH -->
             <SignTransaction
               v-if="signTransaction"
@@ -234,7 +240,6 @@ import SignTransaction from '@/components/WalletConnect/SignTransaction';
 import PersonalSign from '@/components/WalletConnect/PersonalSign';
 import WalletConnect from '@walletconnect/client';
 import { convertHexToUtf8, convertHexToNumber } from '@walletconnect/utils';
-// import QRCodeModal from '@walletconnect/qrcode-modal';
 
 export default {
   name: 'WalletConnect',
@@ -248,7 +253,6 @@ export default {
   data() {
     return {
       showPeer: false,
-      alert: false,
       confirm: false,
       payLoad: {
         data: '',
@@ -265,15 +269,13 @@ export default {
         method: '',
         transaction: Object,
       },
-      prompt: false,
       dataToSign: '',
       signTransaction: false,
       personalSign: false,
       connected: false,
-      pendingRequest: '',
       uri: '',
       peerMeta: {
-        description: '', url: '', icons: ['https://balancer.exchange/favicon.ico'], name: 'Balasssncer',
+        description: '', url: '', icons: [''], name: 'Balasssncer',
       },
       connector: WalletConnect,
       token: {
@@ -289,12 +291,6 @@ export default {
       scannedURI: (state) => { return state.qrcode.scannedURI; },
 
     }),
-    // ...mapState({
-    //   authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
-    // }),
-    // currencies() {
-    //   return this.$store.state.settings.supportedCurrencies.map((item) => { return item.code; });
-    // },
     showPeerMeta() {
       return true;
     },
@@ -375,7 +371,6 @@ export default {
       this.peerMeta = this.connector._peerMeta;
       const address = this.connector.accounts[0];
       this.activeIndex = this.connector.accounts.indexOf(address);
-      // this.chainId = this.connector.connector.chainId;
       this.subscribeToEvents();
     }
   },
@@ -405,6 +400,7 @@ export default {
       this.connected = false;
       this.connector = null;
       this.signTransaction = false;
+      this.personalSign = false;
     },
     showModal() {
       this.confirm = true;
@@ -423,7 +419,6 @@ export default {
       return session;
     },
     async openWalletConnect() {
-      // eslint-disable-next-line max-len
       const { uri } = this;
       try {
         this.connector = new WalletConnect({ uri });
@@ -435,8 +430,6 @@ export default {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
-        // this.setState({ loading: false });
-
         throw error;
       }
     },
@@ -450,8 +443,6 @@ export default {
           // eslint-disable-next-line prefer-destructuring
           this.peerMeta = payload.params[0].peerMeta;
           this.showModal();
-
-          // this.setState({ peerMeta });
         });
 
         this.connector.on('session_update', (error) => {
@@ -461,9 +452,6 @@ export default {
         });
 
         this.connector.on('call_request', async (error, payload) => {
-        // tslint:disable-next-line
-          console.log('EVENT', 'call_request', 'method', payload.method);
-          console.log('EVENT', 'call_request', 'params', payload.params);
           switch (payload.method) {
             case 'eth_sendTransaction':
             case 'eth_signTransaction':
@@ -479,8 +467,6 @@ export default {
           if (error) {
             throw error;
           }
-
-          // await getAppConfig().rpcEngine.router(payload, this.state, this.bindedSetState);
         });
 
         this.connector.on('connect', (error, payload) => {
@@ -496,7 +482,6 @@ export default {
         });
 
         this.connector.on('disconnect', (error, payload) => {
-          console.log('EVENT', 'disconnect');
           console.log(payload);
 
           if (error) {
@@ -506,18 +491,8 @@ export default {
         });
 
         if (this.connector.connected) {
-          // const { chainId, accounts } = connector;
-          // const index = 0;
-          // const address = accounts[index];
-          // getAppControllers().wallet.update(index, chainId);
-          // this.setState({
-          //   connected: true,
-          //   address,
-          //   chainId,
-          // });
+          console.log('Wallet connected:');
         }
-
-        // this.setState({ connector });
       }
     },
     renderWalletConnectRequest(payload) {
@@ -530,13 +505,10 @@ export default {
           this.payLoad.to = payload.params[0].to;
           // eslint-disable-next-line no-nested-ternary
           this.payLoad.gasLimit = payload.params[0].gas ? convertHexToNumber(payload.params[0].gas) : payload.params[0].gasLimit ? convertHexToNumber(payload.params[0].gasLimit) : '';
+          // eslint-disable-next-line no-case-declarations
+          const g = 10000000000000;
           // eslint-disable-next-line max-len
-          // eslint-disable-next-line max-len eslint-disable no-magic-numbers
-          this.payLoad.gasPrice = '1000000000';
-          // eslint-disable-next-line max-len
-          // payload.params[0].gasPrice ? convertHexToNumber(payload.params[0].gasPrice) : 10000000000000;
-          // console.log(`Gas Limit: ${payload.gasLimit}`);
-          // console.log(`Gas Price: ${payload.gasPrice}`);
+          this.payLoad.gasPrice = payload.params[0].gasPrice ? convertHexToNumber(payload.params[0].gasPrice) : g;
           this.payLoad.nonce = payload.params[0].nonce ? convertHexToNumber(payload.params[0].nonce) : '';
           this.payLoad.value = payload.params[0].value ? convertHexToNumber(payload.params[0].value) : '';
           this.payLoad.data = payload.params[0].data;
@@ -555,13 +527,6 @@ export default {
           this.personalSign = true;
           break;
         default:
-          // params = [
-          //   ...params,
-          //   {
-          //     label: 'params',
-          //     value: JSON.stringify(payload.params, null, '\t'),
-          //   },
-          // ];
           break;
       }
     },
@@ -587,6 +552,7 @@ export default {
             break;
 
           default:
+            console.log(`Method not supported: ${this.payLoad.method}`);
             break;
         }
         if (result) {
@@ -603,7 +569,6 @@ export default {
     async approveTransaction() {
       if (this.wallet) {
         const { transaction } = this.payLoad;
-        // const addressRequested = transaction.from;
         const { signer } = this.wallet;
         // if (
         //   transaction.from
@@ -639,11 +604,6 @@ export default {
       return null;
     },
     async signMessage() {
-      // const { signer } = this.wallet;
-      // const {
-      //   to, gasPrice, gasLimit, data, valueInWei: value,
-      // } = this;
-
       const signingKey = new ethers.utils.SigningKey(this.wallet.privateKey);
       const sigParams = await signingKey.signDigest(ethers.utils.arrayify(this.dataToSign));
       const result = await ethers.utils.joinSignature(sigParams);
@@ -673,8 +633,7 @@ export default {
      */
     scanNative() {
       this.$store.dispatch('qrcode/scanQRCode');
-      this.$store.dispatch('modals/setSendCoinModalOpened', false);
-      const invalidAddress = this.$t('ethereumAddressInvalid');
+      this.walletConnectModalOpened = false;
       if (typeof QRScanner !== 'undefined') {
         setTimeout(() => {
           const scanQR = () => {
@@ -682,30 +641,11 @@ export default {
               if (err) {
                 this.errorHandler(err);
               } else {
-                let amount;
-                if (text.includes(':')) {
-                  const query = new URL(text);
-                  text = query.pathname;
-                  const queryParams = new URLSearchParams(query.search);
-                  if (queryParams.has('amount')) {
-                    amount = queryParams.get('amount');
-                  }
-                }
-                let coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
-                if (this.wallet.sdk === 'ERC20') { coinSDK = this.coinSDKS[this.wallet.parentSdk](this.wallet.network); }
-                const isValid = coinSDK.validateAddress(text, this.wallet.network);
-                if (isValid) {
-                  this.$store.dispatch('qrcode/setScannedAddress', text);
-                  if (amount) {
-                    this.$store.dispatch('qrcode/setScannedAmount', amount);
-                  }
-                  this.$store.dispatch('qrcode/cancelScanning');
-                  this.$store.dispatch('modals/setSendCoinModalOpened', true);
-                } else {
-                  this.$toast.create(10, invalidAddress, this.delay.normal);
-                  const waitForToast = 5000;
-                  setTimeout(() => { return scanQR(); }, waitForToast);
-                }
+                this.uri = text;
+                this.$store.dispatch('qrcode/setScannedURI', text);
+                this.codeReader.reset();
+                this.$store.dispatch('qrcode/cancelScanning');
+                this.walletConnectModalOpened = true;
               }
             });
           };
@@ -722,14 +662,11 @@ export default {
           this.codeReader
             .decodeOnceFromVideoDevice(undefined, 'video')
             .then((result) => {
-              console.log(`RESULT FOR QRSCAN: ${JSON.stringify(result)}`);
               const { text } = result;
               this.uri = text;
               this.$store.dispatch('qrcode/setScannedURI', text);
-
               this.codeReader.reset();
               this.$store.dispatch('qrcode/cancelScanning');
-              console.log(`Scanning Cancelled, opening modal: ${text}`);
               this.walletConnectModalOpened = true;
             })
             .catch((err) => {
