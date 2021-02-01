@@ -40,3 +40,7 @@ export function setDisablePullToRefresh(context, payload) {
 export function setPaymentLoading(context, payload) {
   context.commit('SET_PAYMENT_LOADING', payload);
 }
+
+export function setWalletConnectRequestStatus(context, payload) {
+  context.commit('SET_WALLET_CONNECT_REQUEST', payload);
+}

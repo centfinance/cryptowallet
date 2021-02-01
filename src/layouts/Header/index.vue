@@ -65,7 +65,7 @@
         </h1>
       </div>
       <div v-else>
-        <div v-if="heading === 'Settings'">
+        <div v-if="heading === 'Settings' || heading=== 'Wallet Connect'">
           <h1 class="header-h1 text-accent">
             {{ heading }}
           </h1>
@@ -195,6 +195,7 @@ export default {
       if (this.$route.name === 'setup') { return ''; }
       if (this.$route.name === 'exchange') { return this.$t('exchange'); }
       if (this.$route.name === 'settings') { return this.$t('settings'); }
+      if (this.$route.name === 'walletconnect') { return this.$t('walletConnect'); }
       return 'Cent';
     },
 

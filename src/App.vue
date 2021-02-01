@@ -139,7 +139,6 @@ export default {
             QRScanner.show(() => {});
           }
         }
-
         if (oldValue === true && newValue === false) {
           if (this.qrMode === 'addERC20') {
             this.$store.dispatch('modals/setAddWalletModalOpened', true);
@@ -147,7 +146,7 @@ export default {
             this.$store.dispatch('qrcode/setQRMode', null);
           } else if (this.qrMode === 'restore') {
             this.$store.dispatch('qrcode/setQRMode', null);
-          } else {
+          } else if (this.$store.state.route.name === 'sendCoinSingle') {
             this.$store.dispatch('modals/setSendCoinModalOpened', true);
           }
           this.codeReader.reset();

@@ -16,6 +16,7 @@ export default {
   loading: true,
   selectedAccount: null,
   layout: 'dark',
+  wcRequestPending: false,
   delay: {
     vshort: 50,
     short: 200,

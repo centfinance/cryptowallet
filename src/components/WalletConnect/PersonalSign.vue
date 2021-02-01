@@ -1,12 +1,12 @@
 <template>
   <div
     class="q-pa-md"
-    style="max-width: 90%; padding:5px;"
+    style="padding:2px;"
   >
     <q-list
       bordered
       separator
-      style="padding:5px;"
+      style="padding:2px;"
     >
       <q-item
         v-ripple

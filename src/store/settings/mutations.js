@@ -40,3 +40,7 @@ export function SET_DISABLE_PULLTOREFRESH(state, payload) {
 export function SET_PAYMENT_LOADING(state, payload) {
   state.paymentLoading = payload;
 }
+// Set Wallet Connect Requests Status
+export function SET_WALLET_CONNECT_REQUEST(state, payload) {
+  state.wcRequestPending = payload;
+}

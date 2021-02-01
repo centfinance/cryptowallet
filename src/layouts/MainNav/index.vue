@@ -14,6 +14,41 @@
     <div class="">
       <router-link
         class="main-nav-link"
+        to="/walletconnect"
+      >
+        <q-btn>
+          <q-avatar size="42px">
+            <img src="~assets/wallet-connect.svg">
+          </q-avatar>
+          <q-badge
+            v-if="wcRequestPending"
+            color="orange"
+            floating
+          />
+        </q-btn>
+        <!-- <img
+          src="~assets/wallet-connect.svg"
+          width="35px"
+          height="35px"
+        > -->
+        <!-- <q-icon
+          name="account_balance_wallet"
+        > -->
+        <div>
+          Wallet Connect
+          <!-- <q-badge
+            color="orange"
+            floating
+          >
+            22
+          </q-badge> -->
+        </div>
+      <!-- </a> -->
+      </router-link>
+    </div>
+    <div class="">
+      <router-link
+        class="main-nav-link"
         to="/settings"
       >
         <q-icon name="settings" />
@@ -26,6 +61,11 @@
 <script>
 export default {
   name: 'MainNav',
+  computed: {
+    wcRequestPending() {
+      return this.$store.state.settings.wcRequestPending;
+    },
+  },
 };
 </script>
 

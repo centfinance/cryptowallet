@@ -273,4 +273,5 @@ export default {
   'N/A': 'N/A',
   exitConfirm: 'Do you really want to exit Cent?',
   lastUpdated: 'Last Updated',
+  walletConnect: 'Wallet Connect',
 };

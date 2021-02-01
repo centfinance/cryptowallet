@@ -40,6 +40,13 @@ export default new VueRouter({
       ],
     },
     {
+      path: '/walletconnect',
+      component: () => { return import('@/layouts/Authed'); },
+      children: [
+        { name: 'walletconnect', path: '', component: () => { return import('@/pages/WalletConnect'); } },
+      ],
+    },
+    {
       path: '/wallet/single/:id',
       component: () => { return import('@/layouts/Authed'); },
       children: [

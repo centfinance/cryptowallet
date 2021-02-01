@@ -1,102 +1,70 @@
 <template>
-  <div>
-    <div class="send-coin-box">
-      <div class="amount">
-        <div
-          class="amount-div-wrapper"
-        >
-          <div class="side-content">
-            From
-          </div>
-          <q-input
-            v-model="payLoad.from"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-        <div class="amount-div-wrapper">
-          <div class="side-content">
-            To
-          </div>
-          <q-input
-            v-model="payLoad.to"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-        <div class="amount-div-wrapper">
-          <div class="side-content">
-            Gas Limit
-          </div>
-          <q-input
-            v-model="payLoad.gasLimit"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-        <div class="amount-div-wrapper">
-          <div class="side-content">
-            Gas Price
-          </div>
-          <q-input
-            v-model="payLoad.gasPrice"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-        <div class="amount-div-wrapper">
-          <div class="side-content">
-            Nonce
-          </div>
-          <q-input
-            v-model="payLoad.nonce"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-        <div class="amount-div-wrapper">
-          <div class="side-content">
-            Value
-          </div>
-          <q-input
-            v-model="payLoad.value"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-        <div class="amount-div-wrapper">
-          <div class="side-content">
-            Data
-          </div>
-          <q-input
-            v-model="payLoad.data"
-            readonly
-            class="sm-input amount-in-currency"
-            outlined
-            dense
-            color="primary"
-          />
-        </div>
-      </div>
-    </div>
+  <div
+    class="q-pa-md"
+    style="padding:2px;"
+  >
+    <q-list
+      bordered
+      separator
+      style="padding:2px;"
+    >
+      <q-item>
+        <q-item-section>
+          <q-item-label overline>
+            From:
+          </q-item-label>
+          <q-item-label>{{ payLoad.from }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline>
+            To:
+          </q-item-label>
+          <q-item-label>{{ payLoad.to }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline>
+            Gas Limit:
+          </q-item-label>
+          <q-item-label>{{ payLoad.gasLimit }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline>
+            Gas Price:
+          </q-item-label>
+          <q-item-label>{{ payLoad.gasPrice }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline>
+            Nonce:
+          </q-item-label>
+          <q-item-label>{{ payLoad.nonce }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline>
+            Value:
+          </q-item-label>
+          <q-item-label>{{ payLoad.value }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline>
+            Data:
+          </q-item-label>
+          <q-item-label>{{ payLoad.data }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
   </div>
 </template>
 <script>

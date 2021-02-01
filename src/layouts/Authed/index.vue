@@ -250,10 +250,12 @@ export default {
              || this.$route.name === 'sendCoinSingle'
              || this.$route.name === 'receiveCoinSingle'
              || this.$route.name === 'addFundsSingle'
+             || this.$route.name === 'walletconnect'
              || this.$route.name === 'coinSinglePrices';
     },
     shortTop() {
       return this.$route.name === 'settings'
+             || this.$route.name === 'walletconnect'
              || this.$route.name === 'exchange';
     },
     showCoinHeader() {

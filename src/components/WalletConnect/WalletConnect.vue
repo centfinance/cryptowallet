@@ -1,209 +1,220 @@
 <template>
-  <div>
-    <q-dialog
-      v-model="walletConnectModalOpened"
-      :maximized="true"
-      transition-show="slide-up"
-      transition-hide="slide-down"
-      content-class="dark-modal"
+  <div style="padding:5px;">
+    <div
+      v-if="connected"
+      class="q-pa-md"
     >
-      <div>
-        <div class="row header-section">
-          <div class="col-2 header-back-button-wrapper">
-            <q-btn
-              icon="arrow_back"
-              size="lg"
-              class="icon-btn back-arrow-btn"
-              flat
-              @click.prevent="closeModal"
-            />
-          </div>
-          <div
-            v-if="!connected"
-            class="header-h1"
+      <div class="row items-center">
+        <div class="col-2">
+          <img
+            height="35px"
+            style="padding-right:10px"
+            :src="peerMeta.icons[0]"
+            :alt="peerMeta.name"
+            class="sc-dIsAE dWzdfH"
           >
-            WALLET CONNECT
-          </div>
-          <div
+        </div>
+        <div class="col-md-auto">
+          {{ peerMeta.name }}
+        </div>
+      </div>
+
+      <div class="row justify-start">
+        <div class="col-1">
+          <q-btn
             v-if="connected"
-            class="q-pa-md"
+            size="xs"
+            class="justify-left"
+            color="primary"
+            text-color="white"
+            label="Disconnect"
+            @click="killSession"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- </div> -->
+    <div
+      class="settings-row full-width row wrap"
+    >
+      <div
+        v-if="!connected"
+        class="full-width"
+      >
+        <div>
+          <q-input
+            v-model="address"
+            label="Account"
+            readonly
+            filled
+          />
+        </div>
+        <div class="col-12">
+          <q-select
+            v-model="token"
+            standout="primary text-white"
+            filled
+            label="Select your wallet"
+            outlined
+            :value="token"
+            :options="supportedNetworks"
+            @change="val => { onValueChange }"
           >
-            <div class="row items-center">
-              <div class="col">
-                <img
-                  height="35px"
-                  style="padding-right:10px"
-                  :src="peerMeta.icons[0]"
-                  :alt="peerMeta.name"
-                  class="sc-dIsAE dWzdfH"
-                >
-              </div>
-              <div class="col-md-auto">
-                {{ peerMeta.name }}
-              </div>
-            </div>
+            <template v-slot:option="scope">
+              <q-item
+                v-bind="scope.itemProps"
+                v-on="scope.itemEvents"
+              >
+                <q-item-section>
+                  <q-item-label>
+                    <span class="q-pl-sm ">
+                      {{ scope.opt.label }}
+                    </span>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-12">
+          <hr>
+        </div>
 
-            <div class="row justify-center">
-              <div class="col">
-                <q-btn
-                  v-if="connected"
-                  size="xs"
-                  class="justify-left"
-                  color="primary"
-                  text-color="white"
-                  label="Disconnect"
-                  @click="killSession"
-                />
-              </div>
-            </div>
+        <div class="to col-8">
+          <q-input
+            v-model="uri"
+            label="URI"
+            class="sm-input full-width address-input"
+            bottom-slots
+            outlined
+            dense
+            color="primary"
+          />
+          <div
+            class="side-content qr-code-wrapper"
+            @click="scan"
+          >
+            <div class="hor-line" />
+            <div class="ver-line" />
+            <img src="~assets/QR.svg">
           </div>
         </div>
+        <div class="col">
+          <q-btn
+            color="secondary"
+            text-color="info"
+            label="Connect"
+            @click="openWalletConnect"
+          />
+        </div>
+      </div>
+      <div class="center-content-wrapper">
+        <q-circular-progress
+          v-if="loading"
+          indeterminate
+          size="40px"
+          :thickness="0.4"
+          font-size="50px"
+          color="primary"
+          track-color="grey-3"
+          center-color="grey-8"
+          class="q-ma-md"
+        />
+      </div>
+      <div
+        v-if="connected && !signTransaction && !personalSign"
+        class="center-content-wrapper"
+      >
+        No incoming requests to approve/reject.
+      </div>
+
+
+      <div
+        class="full-width"
+        style="height:auto; padding:2px"
+      >
+        <!--Sign ETH -->
+        <SignTransaction
+          v-if="signTransaction"
+          :pay-load="payLoad"
+          :chain-id="chainId"
+          :wallet="wallet"
+        />
+        <!--Personal Sign -->
+        <PersonalSign
+          v-if="personalSign"
+          :pay-load="payLoad"
+        />
         <div
-          class="send-coin-box full-width row wrap"
+          v-if="signTransaction || personalSign"
+          class="row"
         >
-          <div
-            v-if="!connected"
-            class="send-coin-box "
+          <q-card-actions
+            align="right"
           >
-            <div>
-              <q-input
-                v-model="address"
-                label="Account"
-                readonly
-                filled
-              />
-            </div>
-            <div class="col-12">
-              <q-select
-                v-model="token"
-                standout="primary text-white"
-                filled
-                label="Select your wallet"
-                outlined
-                :value="token"
-                :options="supportedNetworks"
-                @change="val => { onValueChange }"
-              >
-                <template v-slot:option="scope">
-                  <q-item
-                    v-bind="scope.itemProps"
-                    v-on="scope.itemEvents"
-                  >
-                    <q-item-section>
-                      <q-item-label>
-                        <span class="q-pl-sm ">
-                          {{ scope.opt.label }}
-                        </span>
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-            <div class="col-12">
-              <hr>
-            </div>
-
-            <div class="to col-8">
-              <q-input
-                v-model="uri"
-                label="URI"
-                class="sm-input address-input"
-                bottom-slots
-                outlined
-                dense
-                color="primary"
-              />
-              <div
-                class="side-content qr-code-wrapper"
-                @click="scan"
-              >
-                <div class="hor-line" />
-                <div class="ver-line" />
-                <img src="~assets/QR.svg">
-              </div>
-            </div>
-            <div class="col">
-              <q-btn
-                color="secondary"
-                text-color="info"
-                label="Connect"
-                @click="openWalletConnect"
-              />
-            </div>
-          </div>
-          <div
-            v-if="connected && !signTransaction && !personalSign"
-            class="center-content-wrapper"
-          >
-            No incoming requests to approve/reject.
-          </div>
-
-
-          <div
-            class="full-width"
-            style="height:auto"
-          >
-            <!--Sign ETH -->
-            <SignTransaction
-              v-if="signTransaction"
-              :pay-load="payLoad"
-              :chain-id="chainId"
-              :wallet="wallet"
+            <q-btn
+              size="sm"
+              class="send-btn"
+              color="secondary"
+              text-color="info"
+              label="Approve"
+              @click="signEthereumRequests"
             />
-            <!--Personal Sign -->
-            <PersonalSign
-              v-if="personalSign"
-              :pay-load="payLoad"
+            <q-btn
+              size="sm"
+              class="send-btn"
+              color="primary"
+              text-color="info"
+              label="Reject"
+              @click="reject"
             />
-            <div
-              v-if="signTransaction || personalSign"
-              class="row"
-            >
-              <q-card-actions
-                align="right"
-              >
-                <q-btn
-                  size="sm"
-                  class="send-btn"
-                  color="secondary"
-                  text-color="info"
-                  label="Approve"
-                  @click="signEthereumRequests"
-                />
-                <q-btn
-                  size="sm"
-                  class="send-btn"
-                  color="primary"
-                  text-color="info"
-                  label="Reject"
-                  @click="reject"
-                />
-              </q-card-actions>
-            </div>
-          </div>
+          </q-card-actions>
         </div>
+      </div>
+    </div>
 
-        <!-- <div > -->
+    <!-- <div > -->
 
-        <q-dialog
-          v-model="confirm"
-          persistent
-        >
-          <q-card v-bind="peerMeta">
-            <q-card-section class="row items-center">
-              <div class="sc-bqGHjH sc-ksluoS gIHfsz jnYGUA">
-                <h2>{{ peerMeta.name }}</h2>
-                is trying to connect to your wallet, please ensure the details before approving.
-              </div>
-              <img
-                :src="peerMeta.icons[0]"
-                class="sc-dIsAE dWzdfH"
+    <q-dialog
+      v-model="confirm"
+      persistent
+    >
+      <q-card v-bind="peerMeta">
+        <q-card-section class="row items-center">
+          <q-list
+            padding
+          >
+            <q-item>
+              <q-item-section
+                top
+                avatar
               >
-              <div class="sc-crzoUp cMnhPQ">
-                <div class="sc-bqGHjH gIHfsz" /><div class="sc-bqGHjH gIHfsz">
-                  <strong>{{ peerMeta.url }}</strong>
-                </div>
+                <q-avatar color="primary">
+                  <img
+                    :src="peerMeta.icons[0]"
+                    class="sc-dIsAE dWzdfH"
+                    width="50px"
+                  >
+                </q-avatar>
+              </q-item-section>
+
+              <q-item-section>
+                <q-item-label>{{ peerMeta.name }}</q-item-label>
+                <q-item-label
+                  caption
+                  lines="2"
+                >
+                  <u>{{ peerMeta.url }}</u> is trying to connect to your wallet.
+                </q-item-label>
+              </q-item-section>
+
+              <!-- <q-item-section side top>
+          <q-item-label caption>5 min ago</q-item-label>
+          <q-icon name="star" color="yellow" />
+        </q-item-section> -->
+            </q-item>
+            <q-item>
+              <q-item-section>
                 <q-card-actions align="right">
                   <q-btn
                     v-close-popup
@@ -220,13 +231,14 @@
                     @click="approveSession"
                   />
                 </q-card-actions>
-              </div>
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-      </div>
-      <!-- </div> -->
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-card-section>
+      </q-card>
     </q-dialog>
+    <!-- </div> -->
+    <!-- </q-dialog> -->
   </div>
 </template>
 
@@ -270,6 +282,7 @@ export default {
         transaction: Object,
       },
       dataToSign: '',
+      loading: false,
       signTransaction: false,
       personalSign: false,
       connected: false,
@@ -360,6 +373,7 @@ export default {
   },
   beforeDestroy() {
     // this.refreshPrices();
+    this.loading = false;
   },
   mounted() {
     const session = this.getCachedSession();
@@ -368,10 +382,15 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       this.connected = this.connector._connected;
       // eslint-disable-next-line no-underscore-dangle
-      this.peerMeta = this.connector._peerMeta;
-      const address = this.connector.accounts[0];
-      this.activeIndex = this.connector.accounts.indexOf(address);
-      this.subscribeToEvents();
+      if (!this.connector || this.connector._peerMeta == null) {
+        this.killSession();
+      } else {
+        // eslint-disable-next-line no-underscore-dangle
+        this.peerMeta = this.connector._peerMeta;
+        const address = this.connector.accounts[0];
+        this.activeIndex = this.connector.accounts.indexOf(address);
+        this.subscribeToEvents();
+      }
     }
   },
   methods: {
@@ -387,12 +406,15 @@ export default {
     },
     rejectSession() {
       if (this.connector) {
+        this.loading = false;
+        this.uri = '';
         this.connector.rejectSession();
       }
     },
     killSession() {
       if (this.connector) {
         this.connector.killSession();
+        this.connector = null;
       }
       this.resetApp();
     },
@@ -401,6 +423,7 @@ export default {
       this.connector = null;
       this.signTransaction = false;
       this.personalSign = false;
+      this.$store.dispatch('settings/setWalletConnectRequestStatus', false);
     },
     showModal() {
       this.confirm = true;
@@ -422,7 +445,7 @@ export default {
       const { uri } = this;
       try {
         this.connector = new WalletConnect({ uri });
-
+        this.loading = true;
         if (!this.connector.connected) {
           await this.connector.createSession();
         }
@@ -470,10 +493,12 @@ export default {
         });
 
         this.connector.on('connect', (error, payload) => {
+          this.loading = false;
           console.log(payload);
           if (error) {
             throw error;
           }
+          if (payload.params[0].peerId === '') { this.killSession(); }
           this.personalSign = false;
           this.signTransaction = false;
 
@@ -498,6 +523,7 @@ export default {
     renderWalletConnectRequest(payload) {
       this.payLoad.id = payload.id;
       this.payLoad.method = payload.method;
+      this.$store.dispatch('settings/setWalletConnectRequestStatus', true);
       switch (payload.method) {
         case 'eth_sendTransaction':
         case 'eth_signTransaction':
@@ -557,8 +583,10 @@ export default {
         }
         if (result) {
           this.connector.approveRequest({ id: this.payLoad.id, result });
+          this.$store.dispatch('settings/setWalletConnectRequestStatus', false);
         } else {
           let message = 'JSON RPC method not supported';
+          this.$store.dispatch('settings/setWalletConnectRequestStatus', false);
           if (errorMsg) {
             message = errorMsg;
           }
@@ -570,12 +598,12 @@ export default {
       if (this.wallet) {
         const { transaction } = this.payLoad;
         const { signer } = this.wallet;
-        // if (
-        //   transaction.from
-        // && addressRequested.toLowerCase() !== this.wallet.address.toLowerCase()
-        // ) {
-        //   console.error("Transaction request From doesn't match active account");
-        // }
+        if (
+          transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
+        ) {
+          console.error("Transaction request From doesn't match active account");
+          return null;
+        }
 
         if (transaction.from) {
           delete transaction.from;
@@ -619,6 +647,7 @@ export default {
     reject(message = 'User Rejected') {
       this.signTransaction = false;
       this.personalSign = false;
+      this.$store.dispatch('settings/setWalletConnectRequestStatus', false);
       this.connector.rejectRequest({ id: this.payLoad.id, error: { message } });
       return false;
     },
