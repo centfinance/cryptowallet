@@ -17,7 +17,7 @@
         to="/walletconnect"
       >
         <q-btn>
-          <q-avatar size="42px">
+          <q-avatar size="28px">
             <img src="~assets/wallet-connect.svg">
           </q-avatar>
           <q-badge
