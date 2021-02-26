@@ -32,7 +32,7 @@ export class Ramp {
     this.config = {
       hostAppName: 'Cent',
       hostLogoUrl: 'https://ramp-website.netlify.app/assets/images/Logo.svg',
-      // swapAsset: wallet.symbol,
+      swapAsset: wallet.symbol,
       userAddress: wallet.externalAddress,
       userEmailAddress: account.email || '',
       variant: 'mobile',

@@ -30,22 +30,6 @@
             <div class="row text-h6">
               {{ totalBalanceInEth }} ETH
             </div>
-            <div
-              v-if="!demoMode"
-              class="row q-pt-lg"
-            >
-              <q-btn
-                icon="fas fa-plus-circle"
-                size="md"
-                class="q-pr-xs"
-                color="accent"
-                text-color="info"
-                label="Add Funds"
-                dense
-                rounded
-                @click.stop="addFunds"
-              />
-            </div>
           </div>
         </div>
       </q-pull-to-refresh>

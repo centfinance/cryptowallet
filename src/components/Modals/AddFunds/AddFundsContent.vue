@@ -24,7 +24,6 @@
         <div class="text-center text-weight-bold q-pa-sm">
           <SelectCountry @selectedCountry="(val) => country = val" />
         </div>
-
         <q-list
           v-if="providers.length > 0"
           padding
@@ -191,17 +190,20 @@ export default {
       return false;
     },
     ramp() {
-      return new Ramp(this.$root, this.account, this.wallet, this.isTestnet);
+      if (this.wallet.network === 'XDAI' || this.wallet.network === 'ETHEREUM') {
+        return new Ramp(this.$root, this.account, this.wallet, this.isTestnet);
+      }
+      return new Ramp(this.$root, this.account, this.defaultWallet, this.isTestnet);
     },
 
     transak_bank() {
       return new Transak(this.$root,
-        this.account, this.wallet, this.transakTokens, false, this.isTestnet);
+        this.account, this.defaultWallet, this.transakTokens, false, this.isTestnet);
     },
 
     transak_card() {
       return new Transak(this.$root,
-        this.account, this.wallet, this.transakTokens, true, this.isTestnet);
+        this.account, this.defaultWallet, this.transakTokens, true, this.isTestnet);
     },
     applePayEnabled() {
       return /iPad|iPhone|iPod/.test(navigator.platform)
@@ -211,6 +213,11 @@ export default {
       if (this.account.country && this.transakTokens) {
         return this.paymentOptions.filter((option) => {
           if (option.type === 'Apple Pay' && !this.applePayEnabled) {
+            return false;
+          }
+          if (this.wallet.network === 'XDAI'
+              && (option.type === 'Credit/Debit Card'
+              || option.type === 'Manual Bank Transfer')) {
             return false;
           }
           return this[option.provider].isAvailable();
