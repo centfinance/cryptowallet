@@ -98,7 +98,7 @@ export class Ramp {
           address: this.wallet.externalAddress,
           event: order.type,
           status: order.type,
-          isBuyOrSell: 'BUY',
+          isBuyOrSell: order.status.isBuyOrSell,
           currency: order.payload.fiatCurrency,
           fiatAmount: order.payload.fiatValue,
           cryptoAmount: order.payload.cryptoAmount,

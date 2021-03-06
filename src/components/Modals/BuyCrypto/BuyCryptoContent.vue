@@ -12,7 +12,7 @@
         />
       </div>
       <h1 class="header-h1">
-        {{ $t('addFunds') }}
+        {{ $t('buyCrypto') }}
       </h1>
     </div>
 
@@ -109,7 +109,7 @@ import { Transak } from '@/helpers/Transak';
 import SelectCountry from './SelectCountry';
 
 export default {
-  name: 'AddFunds',
+  name: 'BuyCrypto',
   components: {
     SelectCountry,
   },

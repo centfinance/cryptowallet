@@ -1,5 +1,5 @@
 <template>
-  <div v-if="addFundsModalOpened">
+  <div v-if="sellCryptoModalOpened">
     <div
       v-if="showCloseProvider"
       class="close-provider"
@@ -14,13 +14,13 @@
       />
     </div>
     <q-dialog
-      v-model="addFundsModalOpened"
+      v-model="sellCryptoModalOpened"
       :maximized="true"
       transition-show="slide-up"
       transition-hide="slide-down"
       content-class="light-modal"
     >
-      <AddFundsContent
+      <SellCryptoContent
         @loading="loading"
         @setProvider="setPaymentProvider"
       />
@@ -52,12 +52,12 @@
 
 <script>
 import { mapState } from 'vuex';
-import AddFundsContent from './AddFundsContent';
+import SellCryptoContent from './SellCryptoContent';
 
 export default {
-  name: 'AddFunds',
+  name: 'SellCrypto',
   components: {
-    AddFundsContent,
+    SellCryptoContent,
   },
   data() {
     return {
@@ -71,12 +71,12 @@ export default {
     ...mapState({
       paymentLoading: (state) => { return state.settings.paymentLoading; },
     }),
-    addFundsModalOpened: {
+    sellCryptoModalOpened: {
       get() {
-        return this.$store.state.modals.addFundsModalOpened;
+        return this.$store.state.modals.sellCryptoModalOpened;
       },
       set(value) {
-        this.$store.dispatch('modals/setAddFundsModalOpened', value);
+        this.$store.dispatch('modals/setSellCryptoModalOpened', value);
       },
     },
 
@@ -90,17 +90,17 @@ export default {
   watch: {
     $route: {
       handler(to) {
-        if (to.name === 'addFunds' || to.name === 'addFundsSingle') {
-          this.$store.dispatch('modals/setAddFundsModalOpened', true);
+        if (to.name === 'sellCrypto' || to.name === 'sellCryptoSingle') {
+          this.$store.dispatch('modals/setSellCryptoModalOpened', true);
         } else if ((to.name === 'wallet' || to.name === 'walletSingle')) {
-          this.$store.dispatch('modals/setAddFundsModalOpened', false);
+          this.$store.dispatch('modals/setSellCryptoModalOpened', false);
         }
       },
     },
-    addFundsModalOpened: {
+    sellCryptoModalOpened: {
       handler(newVal, oldVal) {
         if (oldVal === true && newVal === false) {
-          if (this.$store.state.route.name === 'addFunds' || this.$store.state.route.name === 'addFundsSingle') { this.$router.go(-1); }
+          if (this.$store.state.route.name === 'sellCrypto' || this.$store.state.route.name === 'sellCryptoSingle') { this.$router.go(-1); }
         }
       },
     },

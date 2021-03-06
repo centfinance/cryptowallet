@@ -160,6 +160,7 @@ export default {
   setAmount: 'Set Amount',
   fee: 'Fee',
   buy: 'Buy',
+  sell: 'Sell',
   estimatedTransaction: 'Estimated transaction cost:',
   bitcoinAddressInvalidLength: 'The address must be 26-35 characters in length',
   bitcoinAddressInvalid: 'Invalid address',
@@ -215,7 +216,8 @@ export default {
   newTxIntro: 'You received',
   view: 'View',
   selectNetwork: 'Select Network',
-  addFunds: 'Add Funds',
+  buyCrypto: 'Buy Crypto',
+  sellCrypto: 'Sell Crypto',
   betaNotice: '⚠ This is beta software. Use at your own risk.',
   // Setup
   cryptoWallet: 'Cent',

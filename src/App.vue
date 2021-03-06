@@ -28,7 +28,8 @@
         <SendSuccessModal />
         <SendFailureModal />
         <AddErc20Modal />
-        <AddFundsModal />
+        <BuyCryptoModal />
+        <SellCryptoModal />
       </div>
     </div>
     <Scanner v-if="scanning" />
@@ -55,7 +56,8 @@ import SendSuccessModal from '@/components/Modals/SendSuccess';
 import SendFailureModal from '@/components/Modals/SendFailure';
 import AddErc20Modal from '@/components/Modals/AddErc20';
 import OfflineNotice from '@/components/OfflineNotice';
-import AddFundsModal from '@/components/Modals/AddFunds';
+import BuyCryptoModal from '@/components/Modals/BuyCrypto';
+import SellCryptoModal from '@/components/Modals/SellCrypto';
 import RootedNoticeModal from '@/components/Modals/RootedNotice';
 // import TorusSDK from '@/helpers/DirectAuth';
 
@@ -77,7 +79,8 @@ export default {
     SendFailureModal,
     AddErc20Modal,
     OfflineNotice,
-    AddFundsModal,
+    BuyCryptoModal,
+    SellCryptoModal,
     RootedNoticeModal,
   },
 

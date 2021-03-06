@@ -233,7 +233,8 @@ export default {
              || this.$route.name === 'walletSingle'
              || this.$route.name === 'sendCoinSingle'
              || this.$route.name === 'receiveCoinSingle'
-             || this.$route.name === 'addFundsSingle'
+             || this.$route.name === 'buyCryptoSingle'
+             || this.$route.name === 'sellCryptoSingle'
              || this.$route.name === 'walletconnect'
              || this.$route.name === 'coinSinglePrices';
     },
@@ -282,8 +283,12 @@ export default {
       return false;
     },
 
-    addFunds() {
+    buyCrypto() {
       this.$router.push({ path: '/wallet/add-funds/' });
+    },
+
+    sellCrypto() {
+      this.$router.push({ path: '/wallet/sell-funds/' });
     },
 
     updateisPullEnabled() {

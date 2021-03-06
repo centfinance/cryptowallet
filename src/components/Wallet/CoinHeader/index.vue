@@ -48,10 +48,10 @@
             color="accent"
             text-color="info"
             label="Sell Crypto"
-            disable
             dense
+            disable
             rounded
-            @click.stop="addFunds"
+            @click.stop="sellCrypto"
           />
           <q-btn
             icon="fas fa-plus-circle"
@@ -62,7 +62,7 @@
             label="Buy Crypto"
             dense
             rounded
-            @click.stop="addFunds"
+            @click.stop="buyCrypto"
           />
         </div>
       </div>
@@ -185,8 +185,11 @@ export default {
     receive() {
       this.$router.push({ path: `/wallet/single/receive/${this.wallet.id}` });
     },
-    addFunds() {
+    buyCrypto() {
       this.$router.push({ path: `/wallet/single/add-funds/${this.wallet.id}` });
+    },
+    sellCrypto() {
+      this.$router.push({ path: `/wallet/single/sell-funds/${this.wallet.id}` });
     },
     unconfirmedBalance() {
       return getBalance(this.wallet, this.authenticatedAccount).unconfirmed;

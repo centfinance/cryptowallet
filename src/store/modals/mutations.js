@@ -122,10 +122,16 @@ export function SET_NEW_TX_DATA(state, payload) {
   state.newTxData = payload;
 }
 
-export function SET_ADD_FUNDS_MODAL_OPENED(state, payload) {
+export function SET_BUY_CRYPTO_MODAL_OPENED(state, payload) {
   changeStatusBarColour(payload);
-  state.addFundsModalOpened = payload;
+  state.buyCryptoModalOpened = payload;
 }
+
+export function SET_SELL_CRYPTO_MODAL_OPENED(state, payload) {
+  changeStatusBarColour(payload);
+  state.sellCryptoModalOpened = payload;
+}
+
 
 export function SET_UPDATE_EMAIL_MODAL_OPENED(state, payload) {
   changeStatusBarColour(payload);

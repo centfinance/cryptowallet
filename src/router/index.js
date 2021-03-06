@@ -85,14 +85,28 @@ export default new VueRouter({
       path: '/wallet/single/add-funds/:id',
       component: () => { return import('@/layouts/Authed'); },
       children: [
-        { name: 'addFundsSingle', path: '', component: () => { return import('@/pages/WalletSingle'); } },
+        { name: 'buyCryptoSingle', path: '', component: () => { return import('@/pages/WalletSingle'); } },
       ],
     },
     {
       path: '/wallet/add-funds/',
       component: () => { return import('@/layouts/Authed'); },
       children: [
-        { name: 'addFunds', path: '', component: () => { return import('@/pages/Wallet'); } },
+        { name: 'buyCrypto', path: '', component: () => { return import('@/pages/Wallet'); } },
+      ],
+    },
+    {
+      path: '/wallet/single/sell-funds/:id',
+      component: () => { return import('@/layouts/Authed'); },
+      children: [
+        { name: 'sellCryptoSingle', path: '', component: () => { return import('@/pages/WalletSingle'); } },
+      ],
+    },
+    {
+      path: '/wallet/sell-funds/',
+      component: () => { return import('@/layouts/Authed'); },
+      children: [
+        { name: 'sellCrypto', path: '', component: () => { return import('@/pages/Wallet'); } },
       ],
     },
     {

@@ -210,7 +210,7 @@ export default {
     },
 
     walletScreen() {
-      return this.$route.name === 'wallet' || this.$route.name === 'addFunds' || this.$route.name === 'receiveCoin';
+      return this.$route.name === 'wallet' || this.$route.name === 'buyCrypto' || this.$route.name === 'sellCrypto' || this.$route.name === 'receiveCoin';
     },
 
     getClass() {

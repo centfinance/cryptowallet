@@ -89,8 +89,12 @@ export function setNewTxData(context, payload) {
   context.commit('SET_NEW_TX_DATA', payload);
 }
 
-export function setAddFundsModalOpened(context, payload) {
-  context.commit('SET_ADD_FUNDS_MODAL_OPENED', payload);
+export function setBuyCryptoModalOpened(context, payload) {
+  context.commit('SET_BUY_CRYPTO_MODAL_OPENED', payload);
+}
+
+export function setSellCryptoModalOpened(context, payload) {
+  context.commit('SET_SELL_CRYPTO_MODAL_OPENED', payload);
 }
 
 /**
