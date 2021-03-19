@@ -38,16 +38,30 @@
           </q-btn-group>
         </div>
         <div
-          v-if="simple && transakTestnet && !demoMode"
-          class="text-center q-mb-md quick-coin-actions"
+          v-if="simple"
+          class="quick-coin-actions"
         >
           <q-btn
-            icon="add"
+            icon="fas fa-minus-circle"
             size="md"
+            class="q-pr-xs"
             color="accent"
-            label="Add Funds"
-            class="wallet-group-btn"
-            flat
+            text-color="info"
+            label="Sell Crypto"
+            disable
+            dense
+            rounded
+            @click.stop="addFunds"
+          />
+          <q-btn
+            icon="fas fa-plus-circle"
+            size="md"
+            class="q-pr-xs"
+            color="accent"
+            text-color="info"
+            label="Buy Crypto"
+            dense
+            rounded
             @click.stop="addFunds"
           />
         </div>
