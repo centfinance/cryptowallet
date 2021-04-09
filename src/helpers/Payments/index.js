@@ -1,6 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 const paymentOptions = [
   {
+    type: 'Bank Transfer',
+    icon: 'fas fa-university',
+    fee: '0.5%',
+    time: '1 - 3 hours',
+    caption: 'KYC Required',
+    provider: 'altalix_bank',
+  },
+  {
     type: 'Debit Card',
     icon: 'fas fa-credit-card',
     fee: '2.9%',

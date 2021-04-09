@@ -60,7 +60,8 @@
       "cordova-plugin-tapjackingprotection": {},
       "cordova-plugin-iroot": {},
       "cordova-plugin-prevent-screenshot": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
       "android",
@@ -69,6 +70,7 @@
   },
   "devDependencies": {
     "cordova-ios": "^6.1.1",
-    "cordova-plugin-disable-ios11-statusbar": "*"
+    "cordova-plugin-disable-ios11-statusbar": "*",
+    "cordova-plugin-inappbrowser": "^5.0.0"
   }
 }

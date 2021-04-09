@@ -106,6 +106,7 @@ import Coin from '@/store/wallet/entities/coin';
 import Wallet from '@/store/wallet/entities/wallet';
 import { Ramp } from '@/helpers/Ramp';
 import { Transak } from '@/helpers/Transak';
+import { Altalix } from '@/helpers/Altalix';
 import SelectCountry from './SelectCountry';
 
 export default {
@@ -118,6 +119,14 @@ export default {
       country: null,
       transakTokens: null,
       paymentOptions: [
+        {
+          type: 'Bank Transfer (Altalix)',
+          icon: 'fas fa-university',
+          fee: '0.4%',
+          time: '1 - 3 hours',
+          caption: 'KYC Required',
+          provider: 'altalix_bank',
+        },
         {
           type: 'Debit Card',
           icon: 'fas fa-credit-card',
@@ -151,7 +160,7 @@ export default {
           provider: 'ramp',
         },
         {
-          type: 'Manual Bank Transfer',
+          type: 'Manual Bank Transfer (Transak)',
           icon: 'fas fa-university',
           fee: '0.5%',
           time: '1 - 3 hours',
@@ -200,7 +209,9 @@ export default {
       return new Transak(this.$root,
         this.account, this.defaultWallet, this.transakTokens, false, this.isTestnet);
     },
-
+    altalix_bank() {
+      return new Altalix(this.$root, this.account, this.defaultWallet, this.isTestnet);
+    },
     transak_card() {
       return new Transak(this.$root,
         this.account, this.defaultWallet, this.transakTokens, true, this.isTestnet);
