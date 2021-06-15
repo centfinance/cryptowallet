@@ -9,8 +9,6 @@ assignees: ''
 
 ## Prerequisites
 
-Issue tracker is **ONLY** used for reporting bugs. Use [stackoverflow](https://stackoverflow.com) for supporting issues.
-
 * [ ] Have you checked in the latest version of the app?
 * [ ] Have you checked the FAQ's?
 * [ ] Are you reporting to the correct repository?
@@ -50,6 +48,11 @@ We will consider your request but it may be closed if it's something we're not a
 <!--- Was this on iOS, Android, Web or another environment? -->
 
 <!--- Provide a general summary of the issue in the Title above -->
+
+* [ ] iOS
+* [ ] Android
+* [ ] Web
+* [ ] Other
 
 ### Detailed Description
 <!--- Provide a detailed description of the change or addition you are proposing -->
