@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: ''
 labels: bug
-assignees: nshCore
+assignees: ''
 
 ---
 
@@ -11,12 +11,9 @@ assignees: nshCore
 
 Issue tracker is **ONLY** used for reporting bugs. Use [stackoverflow](https://stackoverflow.com) for supporting issues.
 
-* [ ] Can you reproduce the problem in safe mode?
-* [ ] Are you running the latest version?
-* [ ] Did you check the debugging guide?
-* [ ] Did you check the FAQs on Discuss?
+* [ ] Have you checked in the latest version of the app?
+* [ ] Have you checked the FAQ's?
 * [ ] Are you reporting to the correct repository?
-* [ ] Did you perform a cursory search?
 
 For more information, see the [CONTRIBUTING](https://github.com/atlascity/cryptowallet/blob/master/CONTRIBUTING.md) guide....
 
@@ -50,6 +47,7 @@ We will consider your request but it may be closed if it's something we're not a
 ### Context (Environment)
 <!--- How has this issue affected you? What are you trying to accomplish? -->
 <!--- Providing context helps us come up with a solution that is most useful in the real world -->
+<!--- Was this on iOS, Android, Web or another environment? -->
 
 <!--- Provide a general summary of the issue in the Title above -->
 
