@@ -121,6 +121,7 @@ export default {
   computed: {
     ...mapState({
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
     }),
     isEnabled: {
       get() {
@@ -162,9 +163,9 @@ export default {
 
     isWalletEnabled() {
       const result = Wallet.query()
-        .where('account_id', this.authenticatedAccount)
+        .where('account_id', this.selectedAccount.id)
         .where('name', this.wallet.name)
-        .where('contractAddress', this.wallet.contractAddress)
+        .where('contractAddress', this.wallet.contractAddress) // TODO: ??
         .where('enabled', true)
         .get();
 
@@ -182,9 +183,10 @@ export default {
 
     async enableWallet() {
       try {
+        // console.log(`ENABLE WALLET: ${JSON.stringify(this.wallet)}`);
         if (this.wallet.sdk === 'ERC20' && !this.isEthEnabled(this.wallet.parentName)) {
           const wallets = Wallet.query()
-            .where('account_id', this.authenticatedAccount)
+            .where('account_id', this.selectedAccount.id)
             .where('name', this.wallet.parentName)
             .get();
           await Wallet.$update({
@@ -195,7 +197,7 @@ export default {
 
 
         const wallets = Wallet.query()
-          .where('account_id', this.authenticatedAccount)
+          .where('account_id', this.selectedAccount.id)
           .where('name', this.wallet.name)
           .where('contractAddress', this.wallet.contractAddress)
           .get();
@@ -210,7 +212,7 @@ export default {
             name: this.wallet.name,
             displayName: this.wallet.displayName,
             sdk: this.wallet.sdk,
-            account_id: this.authenticatedAccount,
+            account_id: this.selectedAccount.id,
             network: this.wallet.network,
             symbol: this.wallet.symbol,
           };
@@ -230,7 +232,7 @@ export default {
 
             const parentSDK = this.coinSDKS[eth.sdk](this.wallet.network);
             const { parentName } = this.wallet;
-            const parentWallet = this.activeWallets[this.authenticatedAccount][parentName];
+            const parentWallet = this.activeWallets[this.selectedAccount.id][parentName];
             const keyPair = parentSDK.generateKeyPair(parentWallet, 0);
 
             const erc20 = await this.coinSDKS[this.wallet.sdk](this.wallet.network)
@@ -263,7 +265,7 @@ export default {
       const walletIds = [];
       if (this.wallet.sdk === 'Ethereum') {
         const erc20Wallets = Wallet.query()
-          .where('account_id', this.authenticatedAccount)
+          .where('account_id', this.selectedAccount.id)
           .where('sdk', 'ERC20')
           .where('network', this.wallet.network)
           .get();
@@ -274,7 +276,7 @@ export default {
       }
 
       const wallets = Wallet.query()
-        .where('account_id', this.authenticatedAccount)
+        .where('account_id', this.selectedAccount.id)
         .where('name', this.wallet.name)
         .where('contractAddress', this.wallet.contractAddress)
         .get();

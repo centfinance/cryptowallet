@@ -70,7 +70,7 @@ class BackEndService {
     return new Promise(async (resolve) => {
       const attemptLimit = this.maxConnectAttempts;
       const network = window ? window.navigator.onLine : navigator.connection === 'none';
-
+      console.log(`ATTEMPTS: ${attempts} - ${attemptLimit}`);
       if (attempts >= attemptLimit) {
         this.vm.errorHandler(new Error(this.vm.$t('failedToConnect')), false);
         return resolve(false);
@@ -81,7 +81,9 @@ class BackEndService {
       }
 
       try {
+        console.log(`REFRESH TOKEN: ${this.refreshToken}`);
         if (this.refreshToken) {
+          console.log('Refresh Token OK');
           try {
             // access denied, refresh access token
             const code = await this.refreshAuth();
@@ -96,7 +98,9 @@ class BackEndService {
             }
           }
         } else {
+          console.log('Refresh Token NOT OK');
           const code = await this.auth();
+          console.log(`AUTH CODE: ${JSON.stringify(code)}`);
           if (code === this.successCode) {
             return resolve(true);
           }
@@ -104,11 +108,12 @@ class BackEndService {
       } catch (err) {
         this.vm.errorHandler(err, false);
       }
-
-      setTimeout(() => {
-        this.vm.$toast.create(10, this.vm.$t('failedToConnect'), this.delay);
-        resolve(this.connect(attempts += 1));
-      }, this.longDelay);
+      console.log('Setting Time Out');
+      // resolve(this.connect(attempts += 1));
+      // setTimeout(() => {
+      //   this.vm.$toast.create(10, this.vm.$t('failedToConnect'), this.delay);
+      //   resolve(this.connect(attempts += 1));
+      // }, this.longDelay);
 
       return false;
     });
@@ -120,14 +125,16 @@ class BackEndService {
    */
   async auth() {
     // const response = await axios.get(`
-    // ${process.env.BACKEND_SERVICE_URL}/auth/token/${Math.random().toString()}`);
-
+    // ${process.env.BACKEND_SERVICE_URL}/auth/token/${Math.random().toString()}`, {
+    //   headers: { 'Access-Control-Allow-Origin': '*' },
+    // });
+    console.log('AUTH>>>>>');
     const response = await axios({
       method: 'get',
-      timeout: 2000,
+      timeout: 10000,
       url: `${process.env.BACKEND_SERVICE_URL}/auth/token/${Math.random().toString()}`,
     });
-
+    console.log(`RESPONSE: ${JSON.stringify(response)}`);
     if (response.data) {
       this.accessToken = response.data.accessToken;
       this.setRefreshToken(response.data.refreshToken);
@@ -225,6 +232,8 @@ class BackEndService {
    * @return {Object}
    */
   async getPriceFeed(coins, currencies = ['ALL'], attempts = 0) {
+    // eslint-disable-next-line no-console
+    // console.log(`GET PRICE: ${coins}`);
     const result = await this.try(`${process.env.BACKEND_SERVICE_URL}/price-feed/${coins.join(',')}/${currencies.join(',')}`, attempts);
     return result;
   }

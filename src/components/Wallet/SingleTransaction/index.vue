@@ -346,6 +346,7 @@ export default {
         const parent = this.supportedCoins.find((coin) => {
           return coin.name === this.wallet.parentName;
         });
+        if (this.$store.getters['entities/latestPrice/find'](`${parent.identifier}_${this.selectedCurrency.code}`) == null) { return ''; }
         const price = this.$store.getters['entities/latestPrice/find'](`${parent.identifier}_${this.selectedCurrency.code}`).data.PRICE;
 
         const feeInCoin = new AmountFormatter({

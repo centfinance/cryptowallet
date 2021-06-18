@@ -44,3 +44,9 @@ export function setPaymentLoading(context, payload) {
 export function setWalletConnectRequestStatus(context, payload) {
   context.commit('SET_WALLET_CONNECT_REQUEST', payload);
 }
+/**
+ * Action setWalletType
+ */
+export function setWalletType(context, payload) {
+  context.commit('SET_WALLET_TYPE', payload);
+}

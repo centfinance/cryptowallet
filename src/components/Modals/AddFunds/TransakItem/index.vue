@@ -106,6 +106,7 @@ export default {
     ...mapState({
       id: (state) => { return parseInt(state.route.params.id, 10); },
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
       delay: (state) => { return state.settings.delay; },
     }),
     account() {
@@ -113,8 +114,8 @@ export default {
     },
     defaultWallet() {
       return Wallet.query()
-        .where('account_id', this.authenticatedAccount)
-        .where('name', 'Ethereum')
+        .where('account_id', this.selectedAccount.id)
+        // .where('name', 'Ethereum')
         .get()[0];
     },
     wallet() {

@@ -11,7 +11,7 @@
         <div>{{ $t('wallets') }}</div>
       </router-link>
     </div>
-    <div class="">
+    <div v-if="walletType !== 'celo'">
       <router-link
         class="main-nav-link"
         to="/walletconnect"
@@ -59,9 +59,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'MainNav',
   computed: {
+    ...mapState({
+      walletType: (state) => { return state.settings.walletType; },
+    }),
     wcRequestPending() {
       return this.$store.state.settings.wcRequestPending;
     },

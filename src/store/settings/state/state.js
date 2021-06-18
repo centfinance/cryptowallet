@@ -26,4 +26,5 @@ export default {
   },
   disablePullToRefresh: false,
   paymentLoading: { on: false, logo: null },
+  walletType: null,
 };

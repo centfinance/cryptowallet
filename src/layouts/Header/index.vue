@@ -113,7 +113,7 @@
           />
         </div> -->
 
-        <div
+        <!-- <div
           v-if="displayAccounts"
         >
           <q-btn
@@ -124,7 +124,7 @@
             flat
             @click.prevent="setAccountModalOpened(true)"
           />
-        </div>
+        </div> -->
       </div>
     </section>
   </div>
@@ -151,6 +151,7 @@ export default {
       id: (state) => { return state.route.params.id; },
       delay: (state) => { return state.settings.delay; },
       modals: (state) => { return state.modals; },
+      walletType: (state) => { return state.settings.walletType; },
     }),
 
     dark() {
@@ -229,6 +230,9 @@ export default {
     },
 
     coinLogo() {
+      if (this.walletType === 'celo' && this.coin.icon) {
+        return `data:image/png;base64, ${this.coin.icon}`;
+      }
       return this.coin.logo;
     },
     txsLength() {
@@ -241,6 +245,8 @@ export default {
 
   watch: {
     $route() {
+      console.log(`ROUTE ${window.history.length} - ${window.location}`);
+
       if (window.history.length > 0
           && this.$route.path !== '/setup/0'
           && this.$route.path !== '/setup/7'

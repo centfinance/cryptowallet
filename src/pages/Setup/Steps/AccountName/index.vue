@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container fixed-center">
     <div>
       <h1 class="setup">
         {{ $t('setAccountName') }}

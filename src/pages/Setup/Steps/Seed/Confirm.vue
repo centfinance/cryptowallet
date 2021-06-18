@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="fixed-bottom q-ma-lg">
     <h1 class="setup">
       {{ $t('confirmSeed') }}
     </h1>

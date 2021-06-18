@@ -443,14 +443,17 @@ export default {
         const newCoin = await Coin.$insert({
           data,
         });
-        const newCoinId = newCoin.coin[0].id;
+        if (newCoin.coin) {
+          const newCoinId = newCoin.coin[0].id;
 
-        await Coin.$update({
-          where: newCoinId,
-          data: {
-            minConfirmations: coin.minConfirmations,
-          },
-        });
+          await Coin.$update({
+            where: newCoinId,
+            data: {
+              minConfirmations: coin.minConfirmations,
+            },
+          });
+        }
+
 
         const keypair = this.coinSDKS.Ethereum(this.form.tokenNetwork.value)
           .generateKeyPair(wallet[0].hdWallet, 0);

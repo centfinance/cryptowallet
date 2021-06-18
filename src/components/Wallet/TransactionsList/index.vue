@@ -84,7 +84,8 @@ export default {
           return false;
         });
       }
-
+      // eslint-disable-next-line no-console
+      // console.log(`WalletSDK: ${this.wallet.sdk} ${this.wallet.id}`);
       txs.sort((a, b) => {
         if (this.wallet.sdk === 'Ethereum' || this.wallet.sdk === 'ERC20') {
           let b1 = new Date(b.confirmedTime * msTos);
@@ -98,6 +99,8 @@ export default {
 
         return new Date(b.receivedTime * msTos) - new Date(a.receivedTime * msTos);
       });
+      // eslint-disable-next-line no-console
+      // console.log(`TRANSACTIONS: ss ${JSON.stringify(txs)}`);
       return txs;
     },
 

@@ -94,8 +94,9 @@
         />
       </div>
     </div>
-    <ToggleTestnets v-if="!demoMode" />
-    <ToggleDarkMode />
+    <ToggleTestnets v-if="!demoMode && !isCelo" />
+    <SwitchWallet />
+    <ToggleDarkMode v-if="!isCelo" />
     <div
       class="settings-row"
       @click="logout"
@@ -166,6 +167,7 @@ import Pin from '@/components/AccountSettings/Pin';
 import DeleteAccount from '@/components/AccountSettings/DeleteAccount';
 import ToggleTestnets from '@/components/AccountSettings/ToggleTestnets';
 import ToggleDarkMode from '@/components/AccountSettings/ToggleDarkMode';
+import SwitchWallet from '@/components/AccountSettings/SwitchWallet';
 import UpdateEmail from '@/components/AccountSettings/UpdateEmail';
 import ExportKeys from '@/components/AccountSettings/ExportKeys';
 
@@ -179,19 +181,26 @@ export default {
     DeleteAccount,
     ToggleTestnets,
     ToggleDarkMode,
+    SwitchWallet,
     UpdateEmail,
     ExportKeys,
   },
   computed: {
     ...mapState({
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
+      walletType: (state) => { return state.settings.walletType; },
     }),
     account() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount);
     },
     email() {
-      if (this.account) { return this.account.email; }
+      if (this.account && this.account.email) { return this.account.email; }
       return null;
+    },
+    isCelo() {
+      if (this.walletType === 'celo') { return true; }
+      return false;
     },
     demoMode() {
       if (this.account) { return this.account.demoMode; }

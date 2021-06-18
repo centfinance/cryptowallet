@@ -44,3 +44,9 @@ export function SET_PAYMENT_LOADING(state, payload) {
 export function SET_WALLET_CONNECT_REQUEST(state, payload) {
   state.wcRequestPending = payload;
 }
+/**
+ * State mutation for walletType
+ */
+export function SET_WALLET_TYPE(state, payload) {
+  state.walletType = payload;
+}

@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <h1 class="setup">
+  <div class="fixed-bottom q-ma-md">
+    <!-- <h1 class="setup">
       {{ $t('pinSetupTitle') }}
-    </h1>
+    </h1> -->
     <h4 class="setup">
       {{ $t('setupPin') }}
     </h4>

@@ -112,6 +112,7 @@ export default {
     account: {
       handler() {
         if (this.account.darkMode) { this.$q.dark.set(this.account.darkMode); }
+        // if (this.account.walletType) { this.settings.walletType = this.account.walletType; }
       },
     },
 
@@ -169,8 +170,6 @@ export default {
 
   methods: {
     hydrateData() {
-      // eslint-disable-next-line no-console
-      console.log('calling hydrateData');
       window.store = this.$store;
       window.app = this;
       hydrateStore();

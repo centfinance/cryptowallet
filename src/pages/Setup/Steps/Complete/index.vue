@@ -92,23 +92,26 @@ export default {
       setTimeout(async () => {
         try {
           const account = await this.accountInitializer.createAccount(this.setup);
-          this.$store.dispatch('settings/setSelectedAccount', this.setup.accountName);
+          // Creates Wallet
           await this.accountInitializer.createWallets(this.setup, account.id, this.supportedCoins);
 
           this.$store.dispatch('setup/setAccountCreated');
           this.$store.dispatch('settings/setAuthenticatedAccount', account.id);
+          this.$store.dispatch('settings/setSelectedAccount', account);
+          this.$store.dispatch('settings/setWalletType', this.setup.walletType);
 
           Object.getPrototypeOf(this.$root).backEndService = new this.BackEndService(this.$root, this.authenticatedAccount, this.setup.pinArray.join(''));
           // Object.getPrototypeOf(this.$root).$walletWorker = await new WalletWorker();
 
           await this.backEndService.connect();
           await this.backEndService.loadPriceFeed();
-
+          // Check Wallet Type && Demo Mode
           if (this.setup.demoMode) {
             await this.enableWallet('Ethereum Rinkeby');
+          } else if (this.setup.walletType === 'celo') {
+            await this.enableWallet('Celo');
           } else {
             const ethWallet = await this.enableWallet();
-
             await this.accountInitializer.createERC20Wallets(
               this.setup,
               account.id,
@@ -152,8 +155,8 @@ export default {
         txHistory,
         accounts,
         balance,
-      } = await this.discoverWallet(initializedWallet, coinSDK, wallet.network, wallet.sdk);
-
+      } = await this.discoverWallet(initializedWallet, coinSDK, wallet.network,
+        wallet.sdk, false, this.setup.seedString);
       Wallet.$update({
         where: wallet.id,
         data: {
@@ -180,7 +183,7 @@ export default {
         wallet_id: wallet.id,
       };
     },
-
+    // check here for different type of wallet e.g. celo etc
     async enableWallet(name = 'Ethereum') {
       const wallet = Wallet.query()
         .where('account_id', this.authenticatedAccount)
@@ -200,7 +203,6 @@ export default {
         }
 
         this.activeWallets[this.authenticatedAccount][wallet.name] = initializedWallet;
-
         walletAddress = await this.enableEthereum(coinSDK, initializedWallet, wallet);
       } catch (err) {
         success = false;

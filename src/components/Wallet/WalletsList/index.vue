@@ -41,12 +41,13 @@ export default {
   computed: {
     ...mapState({
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
     }),
     showTestnets() {
-      return this.$store.getters['entities/account/find'](this.authenticatedAccount).showTestnets;
+      return this.$store.getters['entities/account/find'](this.selectedAccount.id).showTestnets;
     },
     demoMode() {
-      return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
+      return this.$store.getters['entities/account/find'](this.selectedAccount.id).demoMode;
     },
     wallets() {
       if (!this.showTestnets) {

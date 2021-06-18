@@ -207,6 +207,7 @@ export default {
     ...mapState({
       id: (state) => { return state.route.params.id; },
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
       delay: (state) => { return state.settings.delay; },
       scannedAddress: (state) => { return state.qrcode.scannedAddress; },
       scannedAmount: (state) => { return state.qrcode.scannedAmount; },
@@ -546,7 +547,7 @@ export default {
         this.rawFee = rawFee * gasLimit;
         this.feeData = fees;
         // eslint-disable-next-line no-console
-        console.log(this.fee);
+        // console.log(this.fee);
         const formattedFee = new AmountFormatter({
           amount: fee,
           rate: currentPrice,
@@ -578,13 +579,37 @@ export default {
     },
 
     availableBalance() {
-      return getBalance(this.wallet, this.authenticatedAccount).available;
+      return getBalance(this.wallet, this.selectedAccount.id).available;
     },
 
     async sendETH() {
       const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
-      const wallet = this.activeWallets[this.authenticatedAccount][this.wallet.name];
+      const wallet = this.activeWallets[this.selectedAccount.id][this.wallet.name];
       const keypair = coinSDK.generateKeyPair(wallet, 0);
+
+      try {
+        const {
+          transaction,
+          hexTx,
+        } = await coinSDK.createEthTx(keypair, this.address, this.inCoin, this.fee);
+        this.$store.dispatch('modals/setConfirmTransactionData', {
+          ens: this.ensName,
+          hexTx,
+          transaction,
+        });
+
+        this.$store.dispatch('modals/setConfirmSendModalOpened', true);
+      } catch (err) {
+        this.errorHandler(err);
+      }
+    },
+    async sendCelo() {
+      // console.log(`SENDCELO: >>>> ${JSON.stringify(this.wallet)}`);
+      const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
+      const { wallet } = this; // [this.selectedAccount.id][this.wallet.name];
+      // const wallet = this.activeWallets[this.selectedAccount.id][this.wallet.name];
+      const keypair = coinSDK.generateKeyPair(wallet.hdWallet, 0);
+      // console.log(`KEYPAIR SENDING: ${JSON.stringify(keypair)}`);
 
       try {
         const {
@@ -604,9 +629,10 @@ export default {
     },
 
     async sendERC20() {
+      // console.log(`Sending ERC20 ${this.wallet.sdk} - ${this.wallet.network}`);
       const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
       const wallet = this.wallet.erc20Wallet;
-      const parentWallet = this.activeWallets[this.authenticatedAccount][this.wallet.parentName];
+      const parentWallet = this.activeWallets[this.selectedAccount.id][this.wallet.parentName];
       const keypair = this.coinSDKS[this.wallet.parentSdk](this.wallet.network)
         .generateKeyPair(parentWallet, 0);
       wallet.network = keypair.network;
@@ -632,12 +658,15 @@ export default {
      * Creates and sends a transaction
      */
     async send() {
+      console.log(`SEND: >>>> ${this.wallet.sdk}`);
       const online = window ? window.navigator.onLine : navigator.connection === 'none';
       if (online) {
         if (this.isInvalid()) {
           this.$toast.create(10, this.isInvalid(), this.delay.normal);
         } else if (this.wallet.sdk === 'ERC20') {
           await this.sendERC20();
+        } else if (this.wallet.sdk === 'Celo') {
+          await this.sendCelo();
         } else {
           await this.sendETH();
         }

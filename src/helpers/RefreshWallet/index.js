@@ -5,9 +5,6 @@ import Utxo from '@/store/wallet/entities/utxo';
 import CryptoWalletJs from 'cryptowallet-js';
 import networks from '@/store/settings/state/supportedNetworks';
 
-
-const crypto = new CryptoWalletJs();
-
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
@@ -43,8 +40,9 @@ async function updateBalance(coinSDK, wallet, addresses) {
       Utxo.$delete(utxo[0].id);
     });
   }
-
-  if (wallet.sdk === 'Ethereum') {
+  // eslint-disable-next-line no-console
+  // console.log(`Update Balances ${wallet.sdk}`);
+  if (wallet.sdk === 'Ethereum' || wallet.sdk === 'Celo') {
     newBalance = await coinSDK.getBalance(
       [wallet.externalAddress],
       wallet.network,
@@ -215,7 +213,7 @@ async function refreshERC20(coinSDK, wallet, fullRefresh) {
 
 async function refreshWallet(wallet, fullRefresh = true) {
   const api = networks[wallet.network];
-
+  const crypto = new CryptoWalletJs();
   const coinSDK = crypto.SDKFactory.createSDK(wallet.sdk, api);
 
   if (wallet.sdk === 'Bitcoin') {
@@ -223,6 +221,10 @@ async function refreshWallet(wallet, fullRefresh = true) {
   }
 
   if (wallet.sdk === 'Ethereum') {
+    return refreshEthereum(coinSDK, wallet, fullRefresh);
+  }
+  // console.log(`Refresh WALLET ${JSON.stringify(wallet)}`);
+  if (wallet.sdk === 'Celo') {
     return refreshEthereum(coinSDK, wallet, fullRefresh);
   }
 

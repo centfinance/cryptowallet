@@ -247,6 +247,7 @@ import { mapState } from 'vuex';
 import * as ethers from 'ethers';
 import Coin from '@/store/wallet/entities/coin';
 import Wallet from '@/store/wallet/entities/wallet';
+import networks from '@/store/settings/state/supportedNetworks';
 
 import SignTransaction from '@/components/WalletConnect/SignTransaction';
 import PersonalSign from '@/components/WalletConnect/PersonalSign';
@@ -300,6 +301,8 @@ export default {
   computed: {
     ...mapState({
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      walletType: (state) => { return state.settings.walletType; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
       delay: (state) => { return state.settings.delay; },
       scannedURI: (state) => { return state.qrcode.scannedURI; },
 
@@ -308,11 +311,11 @@ export default {
       return true;
     },
     supportedNetworks() {
-      const networks = Coin.query()
+      const snetworks = Coin.query()
         .where('sdk', 'Ethereum')
         .get();
       if (this.demoMode) {
-        return networks.filter(({ testnet }) => { return testnet; }).map((coin) => {
+        return snetworks.filter(({ testnet }) => { return testnet; }).map((coin) => {
           return {
             label: coin.name,
             value: coin.network,
@@ -320,14 +323,14 @@ export default {
         });
       }
       if (!this.showTestnets) {
-        return networks.filter(({ testnet }) => { return testnet; }).map((coin) => {
+        return snetworks.filter(({ testnet }) => { return testnet; }).map((coin) => {
           return {
             label: coin.name,
             value: coin.network,
           };
         });
       }
-      return networks.map((coin) => {
+      return snetworks.map((coin) => {
         return {
           label: coin.name,
           value: coin.network,
@@ -336,12 +339,14 @@ export default {
     },
     wallet() {
       return Wallet.query()
-        .where('account_id', this.authenticatedAccount)
+        .where('account_id', this.selectedAccount.id)
         .where('name', this.token.label)
         .get()[0];
     },
     address() {
       if (this.wallet) {
+        console.log(`WALLET: ${JSON.stringify(this.wallet.externalAddress)}`);
+        // return this.wallet.externalAddress;
         return this.coinSDKS.Ethereum(this.token.value)
           .generateKeyPair(this.wallet.hdWallet, 0).address;
       }
@@ -349,8 +354,9 @@ export default {
     },
     chainId() {
       if (this.wallet) {
-        return this.coinSDKS.Ethereum(this.token.value)
-          .generateKeyPair(this.wallet.hdWallet, 0).network.chainId;
+        return networks[this.wallet.network].chainId;
+        // return this.coinSDKS.Ethereum(this.token.value)
+        //   .generateKeyPair(this.wallet.hdWallet, 0).network.chainId;
       }
       return null;
     },
@@ -376,6 +382,9 @@ export default {
     this.loading = false;
   },
   mounted() {
+    // console.log(`Wallet>>> ${JSON.stringify(this.wallet)}`);
+    // console.log(`network>>> ${JSON.stringify(this.wallet.network)}`);
+    // console.log(`chainId>>> ${JSON.stringify(this.chainId)}`);
     const session = this.getCachedSession();
     if (session) {
       this.connector = new WalletConnect({ session });
@@ -598,12 +607,12 @@ export default {
       if (this.wallet) {
         const { transaction } = this.payLoad;
         const { signer } = this.wallet;
-        if (
-          transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
-        ) {
-          console.error("Transaction request From doesn't match active account");
-          return null;
-        }
+        // if (
+        //   transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
+        // ) {
+        //   console.error("Transaction request From doesn't match active account");
+        //   return null;
+        // }
 
         if (transaction.from) {
           delete transaction.from;
@@ -615,6 +624,29 @@ export default {
           delete transaction.gas;
         }
 
+        // const tx = {
+        //   from: '0x4ca563f982e2e875b3d7774d58f5130f659e11d0', // Required
+        //   to: '0xfbedc68326cfbdf468e5375bf157266046519bc9',
+        //   // Required (for non contract deployments)
+        //   data: '0x8e1a55fc', // Required
+        //   gasPrice: '0x02540be400', // Optional
+        //   gas: '0x9c40', // Optional
+        //   value: '0x00', // Optional
+        //   nonce: '0x0114', // Optional
+        // };
+        // console.log(`sending: ${tx}`);
+        // this.connector.sendTransaction(transaction)
+        //   .then((result) => {
+        //     // Returns transaction id (hash)
+        //     console.log(JSON.stringify(result));
+        //   })
+        //   .catch((error) => {
+        //     // Error returned when rejected
+        //     console.error(error);
+        //   });
+        // const result = await this.connector.sendTransaction(transaction);
+        // console.log(`RESULT: ${result}`);
+        // console.log('signer.sendTransaction');
         const result = await signer.sendTransaction(transaction);
         return result.hash;
       }

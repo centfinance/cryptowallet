@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 import Notify from 'bnc-notify';
 
-const chainIds = [1, 3, 4, 5, 42, 100];
+const chainIds = [1, 3, 4, 5, 42, 100, 44787, 42220];
 
 export function trackTx(hash, networkId, darkMode = false) {
   if (chainIds.includes(networkId)) {

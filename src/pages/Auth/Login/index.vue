@@ -22,6 +22,8 @@ import encUTF8 from 'crypto-js/enc-utf8';
 import { mapState } from 'vuex';
 import PinPad from '@/components/Auth/PinPad';
 import Wallet from '@/store/wallet/entities/wallet';
+import initialiseWallet from '@/helpers/InitialiseWallet';
+// import { drawDashboard } from '@/helpers/Dashboard';
 // import WalletWorker from '@/workers/RefreshWallet';
 
 export default {
@@ -69,7 +71,7 @@ export default {
   mounted() {
     if (this.account) {
       this.$q.dark.set(this.account.darkMode);
-
+      this.$store.dispatch('settings/setWalletType', this.account.walletType);
       this.$store.dispatch('settings/setSelectedAccount', this.account.name);
     }
   },
@@ -102,15 +104,19 @@ export default {
             });
             this.$i18n.locale = this.account.locale;
             this.$store.dispatch('settings/setCurrency', currency);
-            // await this.decryptData(this.account.id, this.pin.join(''));
-            await this.initializeWallets(this.account.id);
+            await initialiseWallet(this.account.id);
             Object.getPrototypeOf(this.$root).backEndService = new this.BackEndService(this.$root, this.account.id, this.pin.join(''));
             // Object.getPrototypeOf(this.$root).$walletWorker = await new WalletWorker();
+            console.log('Connecting Backend Service...');
 
             const connect = await this.backEndService.connect();
+            console.log(`CONNECT: ${JSON.stringify(connect)}`);
+            console.log('Connected Backend Service... OK');
             if (connect) {
               await this.backEndService.loadPriceFeed();
             }
+            this.$store.dispatch('settings/setWalletType', this.account.walletType);
+            this.$store.dispatch('settings/setSelectedAccount', this.account);
             this.$router.push({ path: '/wallet' });
             this.$store.dispatch('settings/setLayout', 'light');
             await new Promise((r) => { return setTimeout(r, this.delay.long); });

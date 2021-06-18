@@ -8,13 +8,13 @@ import { Notify } from 'quasar';
 
 export default ({ Vue, store }) => {
   Vue.use(Rollbar, {
-    accessToken: 'ff97f7babcfd482a90a281e9025ca524',
+    accessToken: 'ca78eb551a874473816f8a0cca63e226',
     autoInstrument: { dom: false },
     captureUncaught: true,
     captureUnhandledRejections: true,
     enabled: true,
     source_map_enabled: false,
-    environment: 'development',
+    // environment: 'development',
     payload: {
       client: {
         javascript: {
@@ -46,6 +46,7 @@ export default ({ Vue, store }) => {
     }
 
     Vue.rollbar.error(err);
+    Vue.rollbar.info('HELLO WORLD');
 
     if (showToast) {
       const delay = 3000;

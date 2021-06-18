@@ -147,3 +147,10 @@ export function clearSetupData(context) {
 export function setGetStartedModalOpened(context, payload) {
   context.commit('SET_GETSTARTED_MODAL_OPENED', payload);
 }
+
+/**
+ * Action setWalletType
+ */
+export function setWalletType(context, payload) {
+  context.commit('SET_WALLET_TYPE', payload);
+}

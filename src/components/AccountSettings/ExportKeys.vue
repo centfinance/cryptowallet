@@ -82,8 +82,8 @@ export default {
     return {
       isPwd: true,
       token: {
-        label: 'Ethereum',
-        value: 'ETHEREUM',
+        label: 'Please Select',
+        value: '',
       },
     };
   },
@@ -91,6 +91,8 @@ export default {
   computed: {
     ...mapState({
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
+      walletType: (state) => { return state.settings.walletType; },
       delay: (state) => { return state.settings.delay; },
       scannedAddress: (state) => { return state.qrcode.scannedAddress; },
 
@@ -109,10 +111,16 @@ export default {
     demoMode() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
     },
+
     supportedNetworks() {
-      const networks = Coin.query()
-        .where('sdk', 'Ethereum')
+      let networks = Coin.query()
+        // .where('sdk', 'Ethereum')
         .get();
+      if (this.walletType === 'celo') {
+        networks = networks.filter((n) => { return n.sdk === 'Celo'; });
+      } else {
+        networks = networks.filter((n) => { return n.sdk === 'Ethereum'; });
+      }
       if (this.demoMode) {
         return networks.filter(({ testnet }) => { return testnet; }).map((coin) => {
           return {
@@ -138,12 +146,18 @@ export default {
     },
     wallet() {
       return Wallet.query()
-        .where('account_id', this.authenticatedAccount)
+        .where('account_id', this.selectedAccount.id)
         .where('name', this.token.label)
         .get()[0];
     },
     key() {
       if (this.wallet) {
+        if (this.walletType === 'celo') {
+          const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
+          const keypair = coinSDK.generateKeyPair(this.wallet.hdWallet, 0);
+          return keypair.privateKey;
+        }
+
         return this.coinSDKS.Ethereum(this.token.value)
           .generateKeyPair(this.wallet.hdWallet, 0).privateKey;
       }

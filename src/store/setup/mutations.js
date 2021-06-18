@@ -128,6 +128,12 @@ export function SET_DEMO_MODE(state, payload) {
   state.demoMode = payload;
 }
 
+/**
+ * State mutation for walletType
+ */
+export function SET_WALLET_TYPE(state, payload) {
+  state.walletType = payload;
+}
 
 /**
  * Reset pin array

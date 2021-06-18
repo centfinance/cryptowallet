@@ -1,8 +1,10 @@
 <template>
   <div class="container splash">
-    <div class="splash-logo text-center">
+    <div
+      class="splash-logo  text-center"
+    >
       <img
-        v-if="dark"
+        v-if="dark || currentWalletType!==null"
         class="logo-loading"
         src="~/assets/cent-logo-white.svg"
       >
@@ -15,18 +17,103 @@
         {{ $t('splashSlogan') }}
       </p>
     </div>
-
-    <div class="btns-wrapper">
-      <q-btn
-        :label="$t('getStarted')"
-        unelevated
-        color="primary"
-        text-color="white"
-        class="splash-btn get-started-btn"
-        @click="getStarted"
-      />
+    <br>
+    <div
+      class="splash-logo fixed-bottom q-ma-lg text-center"
+    >
+      <p>
+        <br><br><span v-if="currentWalletType!==null">
+          Let's start by selecting the below option</span>
+      </p>
+      <div
+        class="quick-coin-actions"
+      >
+        <div class="q-pa-md float q-gutter-sm">
+          <q-btn
+            v-if="currentWalletType ==='ether'
+              || walletType==='ether'
+              || currentWalletType===null
+              && walletType===''"
+            @click="setWalletType('ether')"
+          >
+            <q-avatar
+              square
+              size="100px"
+            >
+              <img src="~/assets/icons/ethereum.svg">
+            </q-avatar>
+          </q-btn>
+          <q-btn
+            v-if="currentWalletType ==='celo'
+              || walletType==='celo'
+              || currentWalletType===null
+              && walletType===''"
+            @click="setWalletType('celo')"
+          >
+            <q-avatar
+              square
+              size="100px"
+            >
+              <img src="~/assets/icons/celo.svg">
+            </q-avatar>
+          </q-btn>
+          <div
+            v-if="walletType"
+            class="float"
+          >
+            <q-btn
+              v-if="walletType!='celo'"
+              :label="$t('getStarted')"
+              unelevated
+              icon="mail"
+              color="primary"
+              text-color="white"
+              class="q-ma-sm"
+              @click="getStarted"
+            /><p v-if="walletType!=='celo'">
+              Advanced
+            </p>
+            <q-btn
+              :label="$t('seedPhraseCreate')"
+              unelevated
+              color="primary"
+              text-color="white"
+              class="q-ma-sm"
+              @click="seedPhrase"
+            />
+            <q-btn
+              :label="$t('seedPhraseImport')"
+              unelevated
+              color="primary"
+              text-color="white"
+              class="q-ma-sm"
+              @click="importAccount"
+            />
+          </div>
+          <q-btn
+            v-if="walletType"
+            :label="$t('cancel')"
+            unelevated
+            color="secondary"
+            text-color="white"
+            class="q-ma-sm"
+            @click="setWalletType('')"
+          />
+        </div>
+      </div>
     </div>
-    <div class="advanced-dropdown q-mt-sm">
+
+    <br>
+    <q-btn
+      v-if="currentWalletType!==null"
+      icon="arrow_back"
+      size="lg"
+      color="primary"
+      class="icon-btn back-arrow-btn"
+      flat
+      @click.prevent="goBack"
+    />
+    <!-- <div class="advanced-dropdown q-mt-sm">
       <q-expansion-item
         label="Advanced"
         color="info"
@@ -39,7 +126,7 @@
           class="import-account-btn"
           text-color="blue"
           size="13px"
-          @click="seedPhrase()"
+          @click="seedPhraseCreate()"
         />
         <q-btn
           :label="$t('seedPhraseImport')"
@@ -52,7 +139,7 @@
           @click="importAccount()"
         />
       </q-expansion-item>
-    </div>
+    </div> -->
     <!-- <div class="btns-wrapper">
       <q-btn
         :label="$t('importAccount')"
@@ -123,6 +210,7 @@ export default {
     return {
       locale: this.$i18n.locale,
       $i18n: '',
+      walletType: '',
       selectedLang: {
         label: 'English',
         value: 'en-gb',
@@ -134,6 +222,9 @@ export default {
   computed: {
     ...mapState({
       id: (state) => { return parseInt(state.route.params.id, 10); },
+      currentWalletType: (state) => {
+        return state.settings.walletType;
+      },
     }),
 
     emphasised() {
@@ -175,7 +266,13 @@ export default {
       this.$router.push({ path: `/setup/${this.id + 1}` });
       return true;
     },
-
+    goBack() {
+      this.$router.go(-1);
+    },
+    setWalletType(walletType) {
+      this.walletType = walletType;
+      this.$store.dispatch('setup/setWalletType', walletType);
+    },
     getStarted() {
       this.$store.dispatch('setup/setAccountLocale', this.selectedLang.value);
       this.$store.dispatch('setup/setAccountCurrency', this.$t('supportedCurrency'));

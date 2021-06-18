@@ -16,4 +16,5 @@ export default {
   accountCreated: null,
   getStartedModalOpened: false,
   demoMode: false,
+  walletType: null,
 };

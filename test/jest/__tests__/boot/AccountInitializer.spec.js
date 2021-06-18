@@ -31,7 +31,7 @@ Coins.forEach((coin) => {
 
 const mockData = {
   pinArray: [0, 0, 0, 0, 0, 0],
-  accountName: 'Stephen',
+  accountName: 'Sim',
   salt: '$2a$10$KE86k38NXlqTBgOQUC9bF.',
   accountLocale: 'en-gb',
   accountCurrency: 'GBP',
@@ -98,7 +98,7 @@ describe('boot/AccountInitializer', () => {
     Wallet.$insert = jest.fn(({ data, password }) => {
       return { wallet: [{ data, password }] };
     });
-    await wrapperMock.vm.accountInitializer.createWallets(mockData, 1, Coins);
+    await wrapperMock.vm.accountInitializer.createWallets(mockData, 1, Coins);// need to test for Celo
     expect(Wallet.$insert).toHaveBeenCalledTimes(bitcoinSDKs.length + ethereumSDKs.length);
     expect(mockBitcoinSDK.generateHDWallet).toHaveBeenCalledTimes(bitcoinSDKs.length);
     expect(mockEthereumSDK.generateHDWallet).toHaveBeenCalledTimes(ethereumSDKs.length);

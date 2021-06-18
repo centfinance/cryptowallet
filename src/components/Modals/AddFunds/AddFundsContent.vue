@@ -173,14 +173,21 @@ export default {
   computed: {
     ...mapState({
       id: (state) => { return parseInt(state.route.params.id, 10); },
-      authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
+      walletType: (state) => { return state.settings.walletType; },
     }),
     account() {
-      return this.$store.getters['entities/account/find'](this.authenticatedAccount);
+      return this.$store.getters['entities/account/find'](this.selectedAccount.id);
     },
     defaultWallet() {
+      if (this.walletType === 'celo') {
+        return Wallet.query()
+          .where('account_id', this.selectedAccount.id)
+          .where('name', 'Celo')
+          .get()[0];
+      }
       return Wallet.query()
-        .where('account_id', this.authenticatedAccount)
+        .where('account_id', this.selectedAccount.id)
         .where('name', 'Ethereum')
         .get()[0];
     },
@@ -199,7 +206,7 @@ export default {
       return false;
     },
     ramp() {
-      if (this.wallet.network === 'XDAI' || this.wallet.network === 'ETHEREUM') {
+      if (this.wallet.network === 'XDAI' || this.wallet.network === 'ETHEREUM' || this.wallet.name === 'Celo') {
         return new Ramp(this.$root, this.account, this.wallet, this.isTestnet);
       }
       return new Ramp(this.$root, this.account, this.defaultWallet, this.isTestnet);
@@ -231,6 +238,11 @@ export default {
               || option.type === 'Manual Bank Transfer')) {
             return false;
           }
+          if (this.wallet.network === 'CELO'
+              && option.provider !== 'ramp'
+          ) {
+            return false;
+          }
           return this[option.provider].isAvailable();
         });
       }
@@ -246,7 +258,7 @@ export default {
 
   async mounted() {
     const t = (await axios.get('https://api.transak.com/api/v2/currencies/crypto-currencies')).data.response;
-    const e = t.filter((token) => { return token.network.name === 'ethereum'; });
+    const e = t.filter((token) => { return token.network.name === 'ethereum' || token.network.name === 'celo'; });
     const m = e.map((token) => { return token.symbol; }).join();
     this.transakTokens = m;
   },

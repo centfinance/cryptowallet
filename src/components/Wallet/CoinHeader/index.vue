@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ simple: simple }">
+  <div v-if="wallet.symbol !='cGLD'" :class="{ simple: simple }">
     <div class="wrapper">
       <div>
         <div class="wallet-name">

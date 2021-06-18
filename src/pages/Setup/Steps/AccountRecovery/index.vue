@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="fixed-bottom q-ma-lg">
     <div
       class="q-mb-sm"
       style="margin-top: -2.5rem"

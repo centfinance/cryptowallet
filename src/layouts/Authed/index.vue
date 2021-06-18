@@ -8,7 +8,7 @@
     view="lHh Lpr lFf"
   >
     <Header />
-
+    <!-- {{ walletType }} -->
     <div class="q-pull-to-refresh-wrapper">
       <q-pull-to-refresh
         :disable="!isPullEnabled || isPullTempDisabled"
@@ -17,7 +17,7 @@
       >
         <div class="background" />
         <div
-          v-if="wallets.length > 0 && !showCoinHeader"
+          v-if="wallets.length > 0 && !showCoinHeader && walletType !== 'celo'"
           class="total-balance-wrapper"
         >
           <div
@@ -27,8 +27,38 @@
             <div class="row">
               {{ totalBalanceFormatted }}
             </div>
-            <div class="row text-h6">
+            <div
+              v-if="walletType === 'celo' "
+              class="row text-h6"
+            >
+              {{ totalBalanceInEth }} CELO
+            </div>
+            <div
+              v-else
+              class="row text-h6"
+            >
               {{ totalBalanceInEth }} ETH
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="walletType==='celo' && !showCoinHeader"
+          class="total-balance-wrapper"
+        >
+          <div class="container splash">
+            <div class="splash-logo text-center absolute-top">
+              <img
+                class="logo-loading"
+                src="~/assets/cent-logo-white.svg"
+              >
+              <!-- <img
+                v-else
+                class="logo-loading"
+                src="~/assets/cent-logo-black.svg"
+              > -->
+              <p class="splash-slogan">
+                {{ $t('splashSlogan') }}
+              </p>
             </div>
           </div>
         </div>
@@ -113,14 +143,16 @@ export default {
   computed: {
     ...mapState({
       id: (state) => { return state.route.params.id; },
+      walletType: (state) => { return state.settings.walletType; },
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
+      selectedAccount: (state) => { return state.settings.selectedAccount; },
       delay: (state) => { return state.settings.delay; },
       singlePullDisabled: (state) => { return state.settings.disablePullToRefresh; },
     }),
 
     wallets() {
       const wallets = Wallet.query()
-        .where('account_id', this.authenticatedAccount)
+        .where('account_id', this.selectedAccount.id)
         .where('imported', true)
         .get();
 
@@ -132,8 +164,14 @@ export default {
       return wallets;
     },
     account() {
-      return this.$store.getters['entities/account/find'](this.authenticatedAccount);
+      return this.$store.getters['entities/account/find'](this.selectedAccount.id);
     },
+    // walletType() {
+    //   if (this.account) {
+    //     return this.account.walletType;
+    //   }
+    //   return null;
+    // },
     demoMode() {
       if (this.account) {
         return this.account.demoMode;
@@ -172,27 +210,36 @@ export default {
 
     totalBalance() {
       let balance = 0;
-
       this.wallets.forEach((wallet) => {
-        const { unconfirmed } = getBalance(wallet, this.authenticatedAccount);
+        if (wallet.sdk === 'Celo') {
+          const { unconfirmed } = getBalance(wallet, this.selectedAccount.id);
+          // eslint-disable-next-line no-console
+          // console.log(`Total Balance: ${unconfirmed} - ${available}`);
+          // eslint-disable-next-line no-console
+          // console.log(` WALLET: ${wallet.name}`);
+          const price = this.$store.getters['entities/latestPrice/find'](`${wallet.identifier}_${this.selectedCurrency.code}`);
+          if (price) {
+            const formattedAmount = new AmountFormatter({
+              amount: unconfirmed,
+              rate: price.data.PRICE,
+              format: '0.00',
+              coin: wallet.name,
+              prependPlusOrMinus: false,
+              currency: this.selectedCurrency,
+              toCurrency: true,
+              toCoin: false,
+              withCurrencySymbol: false,
+            });
+            if (wallet.name === 'Celo' || wallet.name === 'Eth') {
+              // console.log(`in Celo ${JSON.stringify(formattedAmount)}`);
+              balance += parseFloat(formattedAmount.getFormatted());
+            }
 
-        const price = this.$store.getters['entities/latestPrice/find'](`${wallet.identifier}_${this.selectedCurrency.code}`);
-        if (price) {
-          const formattedAmount = new AmountFormatter({
-            amount: unconfirmed,
-            rate: price.data.PRICE,
-            format: '0.00',
-            coin: wallet.name,
-            prependPlusOrMinus: false,
-            currency: this.selectedCurrency,
-            toCurrency: true,
-            toCoin: false,
-            withCurrencySymbol: false,
-          });
-
-          balance += parseFloat(formattedAmount.getFormatted());
+            // console.log(`balance+= ${balance}`);
+          }
         }
       });
+
       return balance;
     },
 
@@ -319,14 +366,16 @@ export default {
           .filter((wallet) => {
             return !wallet.erc20Wallet;
           });
+        // console.log(`UPDATE BALANCE ${JSON.stringify(coins)}`);
         const coinPromises = coins.map((wallet) => {
           return refreshWallet(wallet, false);
         });
-
         await Promise.all(coinPromises);
+        // console.log('WALLET REFRESHED');
+        // console.log(`wallet ===> ${JSON.stringify(this.wallet)} - ${this.selectedAccount.id}`);
         const tokenPromises = coins.map((wallet) => {
           return Coin.fetchAllTokens(
-            wallet.externalAddress, this.authenticatedAccount, wallet.network,
+            wallet.externalAddress, this.selectedAccount.id, wallet.network,
           );
         });
         await Promise.all(tokenPromises);

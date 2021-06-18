@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { uid } from 'quasar';
 import Account from '@/store/wallet/entities/account';
 import Wallet from '@/store/wallet/entities/wallet';
@@ -5,7 +6,7 @@ import CryptoWalletSDK from 'cryptowallet-js';
 import bcrypt from 'bcryptjs';
 // import AES from 'crypto-js/aes';
 
-const demoSeed = 'give grow opera kid slide wrist final tattoo trust system valve impulse';
+const demoSeed = 'cart auto utility rifle wreck settle keen have clever virus museum buffalo';
 
 // function encrypt(data, password) {
 //   try {
@@ -32,6 +33,7 @@ const accountInitializer = {
       locale: setup.accountLocale || accounts[0].locale,
       node: setup.accountIpNode,
       demoMode: setup.demoMode,
+      walletType: setup.walletType,
     };
 
     try {
@@ -40,11 +42,11 @@ const accountInitializer = {
       return result[0];
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log(`INSERTION ERR ${error}`);
+      // console.log(`INSERTION ERR ${error}`);
       throw error;
     }
   },
-
+  // Check for SDK??
   async createWallets(setup, id, coins) {
     const seedString = setup.demoMode ? demoSeed : setup.seedString;
     const password = setup.pinArray.join('');
@@ -59,13 +61,25 @@ const accountInitializer = {
         sdk: coin.sdk,
         network: coin.network,
       };
+      // eslint-disable-next-line no-console
+      // console.log(`CreateWallet:Coin ${coin.name} - ${coin.sdk} - ${coin.network}`);
       if (coin.sdk !== 'ERC20') {
+        // console.log(`Not ERC20 ${coin.sdk}`);
         promises.push(new Promise(async (resolve) => {
           const coinSDK = SDK.SDKFactory.createSDK(coin.sdk, coin.api);
-          wallet.hdWallet = await coinSDK.generateHDWallet(
-            seedString,
-            coin.network,
-          );
+          // console.log(`SDK CREATED: ${coin.network} ${JSON.stringify(coinSDK)}`);
+          if (coin.sdk === 'Celo') {
+            wallet.hdWallet = await coinSDK.generateHDWalletCelo(
+              seedString,
+              coin.network,
+            );
+          } else {
+            wallet.hdWallet = await coinSDK.generateHDWallet(
+              seedString,
+              coin.network,
+            );
+          }
+
           // wallet.hdWallet = encrypt(hdWallet, password);
           await Wallet.$insert({ data: wallet, password });
           resolve();
@@ -78,7 +92,7 @@ const accountInitializer = {
   async createERC20Wallets(setup, id, coins, ethWallet) {
     const SDK = new CryptoWalletSDK();
     const promises = [];
-
+    // console.log(`Create ERC20 Wallets ${id} ${coins}`);
     const addERC20 = ((coin) => {
       const wallet = {
         account_id: id,

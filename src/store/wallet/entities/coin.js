@@ -55,8 +55,14 @@ export default class Coin extends Model {
 
   static async fetchIcons() {
     function fetchIcon(token, address) {
+      let url = '';
+      if (token.sdk === 'Celo') {
+        url = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/celo/info/logo.png';
+      } else {
+        url = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
+      }
       axios
-        .get(`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`, {
+        .get(url, {
           responseType: 'arraybuffer',
         })
         .then((response) => {
@@ -71,11 +77,10 @@ export default class Coin extends Model {
     }
 
     const tokens = Coin.query()
-      .where('sdk', 'ERC20')
-      .where('parentName', 'Ethereum')
+      .where((coin) => { return coin.sdk === 'ERC20' || coin.sdk === 'Celo'; })
+      .where((coin) => { return coin.parentName === '' || coin.parentName === 'Ethereum'; })
       .where('icon', null)
       .get();
-
     if (tokens.length > 0) {
       const whitelist = (await axios.get('https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/allowlist.json'))
         .data;
@@ -85,6 +90,9 @@ export default class Coin extends Model {
           const index = whitelist.findIndex((item) => {
             return t.contractAddress.toLowerCase() === item.toLowerCase();
           });
+          if (t.sdk === 'Celo') {
+            return fetchIcon(t, whitelist[index]);
+          }
           return index === -1 ? null : fetchIcon(t, whitelist[index]);
         });
 

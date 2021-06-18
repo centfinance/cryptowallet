@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Utxo from '@/store/wallet/entities/utxo';
 import Tx from '@/store/wallet/entities/tx';
 
@@ -100,7 +101,8 @@ const Ethereum = {
 
 
 function getBalance(wallet, accountId) {
-  if (wallet.sdk === 'Ethereum' || wallet.sdk === 'ERC20') {
+  // console.log(`GET BALANCE: ${JSON.stringify(wallet)} - AccountD ${accountId}`);
+  if (wallet.sdk === 'Ethereum' || wallet.sdk === 'ERC20' || wallet.sdk === 'Celo') {
     return {
       confirmed: Ethereum.getConfirmed(wallet),
       unconfirmed: Ethereum.getUnconfirmed(wallet, accountId),

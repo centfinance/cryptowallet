@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div class="fixed-bottom q-ma-lg ">
+    <br>
     <div class="container">
       <div class="restore-header">
-        <h1 class="setup">
+        <!-- <h1 class="setup">
           {{ $t('restoreAccount') }}
-        </h1>
+        </h1> -->
         <p class="setup">
           {{ $t('restoreDescription') }}
         </p>

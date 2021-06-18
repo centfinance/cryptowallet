@@ -78,8 +78,10 @@ export default class Wallet extends Model {
   }
 
   get signer() {
+    console.log(`GET SIGNER ${JSON.stringify(this.privateKey)}`);
     if (!this.privateKey) { return null; }
     const url = networks[this.network].provider;
+    console.log(`GET SIGNER ${JSON.stringify(this.privateKey)}`);
     const provider = new ethers.providers.JsonRpcProvider(url);
     return new ethers.Wallet(this.privateKey, provider);
   }

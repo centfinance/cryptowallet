@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="wallet.symbol !='cGLD'"
     @click="goToWallet"
   >
     <div class="q-mb-lg q-pa-md bg-white cloud-item">
