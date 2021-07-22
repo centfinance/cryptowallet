@@ -55,7 +55,10 @@ export default [
     minConfirmations: 1,
     decimals: 18,
     api: supportedNetworks.XDAI,
-    testnet: true,
+    testnet: false,
+    imported: true,
+    rampNetwork: true,
+    transak: true,
   },
   {
     displayName: 'POA',

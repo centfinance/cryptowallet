@@ -24,7 +24,7 @@
             style="color:grey"
             class="grey justify-between text-h6 text-weight-bold"
           >
-            Select a wallet to send/receive
+            Select Wallet
           </div>
         </div>
 
@@ -40,6 +40,7 @@
               <q-card-section class="text-subitle2">
                 <CoinHeader
                   :quick="true"
+                  :buy="buy"
                   :wallet="wallet"
                 />
               </q-card-section>
@@ -64,6 +65,9 @@ export default {
   props: {
     wallets: {
       type: Array(Wallet),
+    },
+    buy: {
+      type: Boolean,
     },
   },
   computed: {

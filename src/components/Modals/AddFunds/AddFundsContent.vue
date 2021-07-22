@@ -228,6 +228,8 @@ export default {
           }
           if (this.wallet.network === 'XDAI'
               && (option.type === 'Credit/Debit Card'
+              || option.type === 'Bank Transfer (Altalix)'
+              || option.type === 'Manual Bank Transfer (Transak)'
               || option.type === 'Manual Bank Transfer')) {
             return false;
           }

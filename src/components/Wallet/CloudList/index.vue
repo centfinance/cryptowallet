@@ -61,12 +61,6 @@
           </div>
         </q-card-section>
         <q-card-actions class="justify-end">
-          <!-- <q-btn
-            flat
-            icon="share"
-            color="grey"
-          /> -->
-
           <q-btn @click.prevent="connectETH">
             <q-avatar size="28px">
               <img src="~assets/wallet-connect.svg">
@@ -85,6 +79,12 @@
             color="grey"
             flat
             @click="openSelectCoinModal(walletsETH)"
+          />
+          <q-btn
+            flat
+            icon="fas fa-plus-square"
+            color="grey"
+            @click="openSelectCoinModal(walletsETH,true)"
           />
           <q-btn
             flat
@@ -169,6 +169,12 @@
           />
           <q-btn
             flat
+            icon="fas fa-plus-square"
+            color="grey"
+            @click="openSelectCoinModal(walletsXDAI,true)"
+          />
+          <q-btn
+            flat
             color="grey"
             :label="getFormattedBalance(XDAIBalance)"
           />
@@ -203,6 +209,7 @@
     />
     <SelectCoinModal
       :wallets="selectCoinWallet"
+      :buy="buy"
     />
   </div>
 </template>
@@ -244,6 +251,7 @@ export default {
       XDAIBalance: null,
       ETHBalance: null,
       selectCoinWallet: null,
+      buy: false,
     };
   },
 
@@ -406,8 +414,10 @@ export default {
       this.$store.dispatch('modals/setAddWalletModalOpened', true);
     },
 
-    openSelectCoinModal(wallet) {
+    openSelectCoinModal(wallet, buy = false) {
+      console.log(`SelectModal: ${buy}`);
       this.selectCoinWallet = wallet;
+      this.buy = buy;
       this.$store.dispatch('modals/setSelectCoinModalOpened', true);
     },
     touchStart(event) {

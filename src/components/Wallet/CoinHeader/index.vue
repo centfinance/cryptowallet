@@ -15,7 +15,7 @@
           v-if="simple || quick"
           class="quick-coin-actions"
         >
-          <q-btn-group>
+          <q-btn-group v-if="!buy">
             <q-btn
               :disabled="cantSend"
               icon="send"
@@ -38,28 +38,28 @@
           </q-btn-group>
         </div>
         <div
-          v-if="simple"
+          v-if="buy"
           class="quick-coin-actions"
         >
           <q-btn
-            icon="fas fa-minus-circle"
+            icon="fas fa-minus"
             size="md"
             class="q-pr-xs"
             color="accent"
             text-color="info"
-            label="Sell Crypto"
+            label="Sell"
             disable
             dense
             rounded
             @click.stop="addFunds"
           />
           <q-btn
-            icon="fas fa-plus-circle"
+            icon="fas fa-credit-card"
             size="md"
             class="q-pr-xs"
             color="accent"
             text-color="info"
-            label="Buy Crypto"
+            label="Buy"
             dense
             rounded
             @click.stop="addFunds"
@@ -110,6 +110,10 @@ export default {
       default: false,
     },
     quick: {
+      type: Boolean,
+      default: false,
+    },
+    buy: {
       type: Boolean,
       default: false,
     },
