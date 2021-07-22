@@ -72,12 +72,12 @@
         </div>
         <div v-else>
           <img
-            v-if="!walletScreen && dark"
+            v-if="walletScreen"
             class="header-logo q-mt-xs"
             src="~/assets/cent-logo-white.svg"
           >
           <img
-            v-else-if="!walletScreen"
+            v-else
             class="header-logo q-mt-xs"
             src="~/assets/cent-logo-black.svg"
           >
@@ -382,7 +382,7 @@ body.q-ios-padding .main-header {
 }
 
 .header-logo {
-  width: 4rem;
+  width: 7rem;
 }
 
 .header-back-button-wrapper {

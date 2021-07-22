@@ -16,7 +16,7 @@
         @refresh="refresher"
       >
         <div class="background" />
-        <div
+        <!-- <div
           v-if="wallets.length > 0 && !showCoinHeader"
           class="total-balance-wrapper"
         >
@@ -31,7 +31,7 @@
               {{ totalBalanceInEth }} ETH
             </div>
           </div>
-        </div>
+        </div> -->
       </q-pull-to-refresh>
       <q-pull-to-refresh
         :disable="!isSinglePullEnabled || isSinglePullTempDisabled || singlePullDisabled"
@@ -369,7 +369,7 @@ export default {
   position: relative;
   top: 0;
   display: block!important;
-  height: 15rem!important;
+  /* height: 15rem!important; */
   position: absolute;
   width: 100%;
   opacity: 1;

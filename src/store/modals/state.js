@@ -21,4 +21,6 @@ export default {
   exportKeysModalOpened: false,
   rootedNoticeModalOpened: false,
   walletConnectModalOpened: false,
+  signTransactionModalOpened: false,
+  selectCoinModalOpened: false,
 };

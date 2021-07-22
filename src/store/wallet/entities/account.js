@@ -68,7 +68,8 @@ export default class Account extends Model {
       });
       await Promise.all(tokenPromises);
     } catch (err) {
-      this.errorHandler(err);
+      console.log(`UpdateBalances: ${err}`);
+      // this.errorHandler(err);
     }
   }
 }

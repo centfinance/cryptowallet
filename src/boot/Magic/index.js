@@ -2,6 +2,7 @@ import { Magic, RPCError, RPCErrorCode } from 'magic-sdk';
 
 import bip39 from 'bip39';
 import { ethers } from 'ethers';
+import { Web3 } from 'web3';
 
 const m = new Magic(process.env.MAGIC_PROD); // ✨
 
@@ -67,6 +68,11 @@ const magic = {
   async getProvider() {
     const provider = new ethers.providers.Web3Provider(m.rpcProvider);
     return provider.getSigner();
+  },
+
+  async getCeloProvider() {
+    const provider = new Web3(m.rpcProvider);
+    console.log(`CeloProvider: ${provider}`);
   },
 
   async getMnemonic() {

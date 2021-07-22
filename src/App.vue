@@ -29,6 +29,7 @@
         <SendFailureModal />
         <AddErc20Modal />
         <AddFundsModal />
+        <SelectCoinModal />
       </div>
     </div>
     <Scanner v-if="scanning" />
@@ -54,6 +55,7 @@ import ConfirmSendModal from '@/components/Modals/ConfirmSend';
 import SendSuccessModal from '@/components/Modals/SendSuccess';
 import SendFailureModal from '@/components/Modals/SendFailure';
 import AddErc20Modal from '@/components/Modals/AddErc20';
+import SelectCoinModal from '@/components/Modals/SelectCoin';
 import OfflineNotice from '@/components/OfflineNotice';
 import AddFundsModal from '@/components/Modals/AddFunds';
 import RootedNoticeModal from '@/components/Modals/RootedNotice';
@@ -79,6 +81,7 @@ export default {
     OfflineNotice,
     AddFundsModal,
     RootedNoticeModal,
+    SelectCoinModal,
   },
 
   data() {
@@ -170,7 +173,7 @@ export default {
   methods: {
     hydrateData() {
       // eslint-disable-next-line no-console
-      console.log('calling hydrateData');
+      // console.log('calling hydrateData');
       window.store = this.$store;
       window.app = this;
       hydrateStore();
@@ -261,7 +264,7 @@ body.desktop .background {
 .shrinked .background {
   background: rgb(49,255,216);
   background: linear-gradient(332deg, rgba(49,255,216,1) 0%, rgba(221,61,255,1) 100%);  width: 100%;
-  height: calc(17.5rem + 35px);
+  height: calc(12.5rem + 35px);
   }
 
 .new-wallet-btn-wrapper {

@@ -12,15 +12,15 @@
         </div>
 
         <div
-          v-if="simple"
+          v-if="simple || quick"
           class="quick-coin-actions"
         >
           <q-btn-group>
             <q-btn
               :disabled="cantSend"
               icon="send"
-              size="md"
-              color="accent"
+              size="xs"
+              color="primary"
               label="Send"
               class="wallet-group-btn"
               flat
@@ -28,8 +28,8 @@
             />
             <q-btn
               icon="call_received"
-              size="md"
-              color="accent"
+              size="xs"
+              color="primary"
               label="Receive"
               class="wallet-group-btn"
               flat
@@ -78,7 +78,8 @@
           format="0,0[.]00"
         />
         <div class="in-coin">
-          {{ balanceInCoin }} {{ coinSymbol }}
+          {{ balanceInCoin }}
+          <!-- {{ coinSymbol }} -->
         </div>
       </div>
     </div>
@@ -105,6 +106,10 @@ export default {
       required: true,
     },
     simple: {
+      type: Boolean,
+      default: false,
+    },
+    quick: {
       type: Boolean,
       default: false,
     },
@@ -206,6 +211,7 @@ export default {
   align-items: center;
   font-size: 0.9em;
   font-family: 'Inter-Medium';
+  color:rgb(128,128,128);
 }
 
 .simple .wallet-name {
@@ -217,9 +223,9 @@ export default {
 }
 
 .wallet-prices {
-  font-family: 'CooperHewitt-BoldItalic';
-  font-size: 0.8em;
+  font-size: 0.85em;
   display: flex;
+  color:gray;
   justify-content: flex-end;
   flex-direction: column;
   text-align: right;

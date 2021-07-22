@@ -39,6 +39,13 @@ export function setAddErc20ModalOpened(context, payload) {
   context.commit('SET_ADDERC20_MODAL_OPENED', payload);
 }
 /**
+ * Action setSelectCoinModalOpened
+ */
+export function setSelectCoinModalOpened(context, payload) {
+  context.commit('SET_SELECTCOIN_MODAL_OPENED', payload);
+}
+
+/**
  * Action setPriceChartModalOpened
  */
 export function setPriceChartModalOpened(context, payload) {
@@ -71,6 +78,10 @@ export function setSelectCurrencyModalOpened(context, payload) {
 
 export function setWalletConnectModalOpened(context, payload) {
   context.commit('SET_WALLETCONNECT_MODAL_OPENED', payload);
+}
+
+export function setSignTransactionModalOpened(context, payload) {
+  context.commit('SET_SIGNTRANSACTION_MODAL_OPENED', payload);
 }
 
 export function setSelectLanguageModalOpened(context, payload) {

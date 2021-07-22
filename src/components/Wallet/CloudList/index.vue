@@ -1,6 +1,6 @@
 <template>
   <div class="cloud-list">
-    <div v-if="wallets.length === 0">
+    <div v-if="walletsETH.length === 0">
       <q-btn
         icon="add_circle_outline"
         label="add"
@@ -11,18 +11,21 @@
       />
     </div>
     <q-scroll-area
-      v-if="wallets.length > 0"
+      v-if="walletsETH.length > 0"
       ref="scrollArea"
       class="scroll-area extended cloud-scroll q-px-md q-pt-lg"
     >
-      <!-- <div class="scroll-offset" /> -->
-      <div class="row q-mb-sm justify-between text-h6 text-weight-bold">
+      <div
+        style="color:grey"
+        class="row q-mb-sm grey justify-between text-h6 text-weight-bold"
+      >
         <div>
-          {{ $t('assets') }}
-          <span class="text-grey text-weight-thin">({{ wallets.length }})</span>
+          <q-icon name="account_balance_wallet" />
+          My Wallet Balance
         </div>
-        <div class="q-px-xs">
-          <q-btn
+        <div class="q-px-xs grey">
+          {{ totalBalanceFormatted }}
+          <!-- <q-btn
             flat
             round
             size="sm"
@@ -30,44 +33,246 @@
             icon="add"
             class="bg-accent"
             @click.prevent="openWalletsModal"
-          />
+          /> -->
         </div>
       </div>
-      <CloudListItem
-        v-for="wallet in wallets"
-        :key="wallet.displayName"
-        :wallet="wallet"
-        :currency="selectedCurrency"
-      />
+      <q-card
+        class="my-card rounded-border-top"
+        flat
+        round
+        bordered
+      >
+        <q-card-section>
+          <div class="text-overline text-weight-bold text-orange-9">
+            <q-avatar size="28px">
+              <img src="~assets/icons/eth.svg">
+            </q-avatar> Ethereum ({{ walletsETH.length }})
+          </div>
+          <!-- <div class="text-h6 q-mt-sm q-mb-xs">
+            Address
+          </div> -->
+          <div class="text-caption text-grey">
+            {{ address }}
+            <q-icon
+              name="content_copy"
+              class="cursor-pointer"
+              @click="copyToClipboard"
+            />
+          </div>
+        </q-card-section>
+        <q-card-actions class="justify-end">
+          <!-- <q-btn
+            flat
+            icon="share"
+            color="grey"
+          /> -->
+
+          <q-btn @click.prevent="connectETH">
+            <q-avatar size="28px">
+              <img src="~assets/wallet-connect.svg">
+            </q-avatar>
+            <!-- <q-badge
+              color="orange"
+              floating
+              class="xs"
+            /> -->
+          </q-btn>
+
+
+          <q-btn
+            icon="send"
+            size="md"
+            color="grey"
+            flat
+            @click="openSelectCoinModal(walletsETH)"
+          />
+          <q-btn
+            flat
+            color="grey"
+            :label="getFormattedBalance(ETHBalance)"
+          />
+
+          <q-btn
+            color="grey"
+            round
+            flat
+            dense
+            :icon="visible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+            @click="toggleVisibility"
+          />
+        </q-card-actions>
+
+        <q-slide-transition>
+          <div v-show="visible">
+            <hr style="border-top:1px grey">
+            <q-card-section class="text-subitle2">
+              <CloudListItem
+                v-for="wallet in walletsETH"
+                :key="wallet.displayName"
+                :wallet="wallet"
+                :currency="selectedCurrency"
+              />
+            </q-card-section>
+          </div>
+        </q-slide-transition>
+      </q-card>
+      <br>
+      <!-- XDAI -->
+      <q-card
+        class="rounded-border-top"
+        flat
+        bordered
+      >
+        <q-card-section>
+          <div class="text-overline text-weight-bold text-orange-9">
+            <q-avatar size="28px">
+              <img src="~assets/icons/xdai.png">
+            </q-avatar> XDAI ({{ walletsXDAI.length }})
+          </div>
+          <!-- <div class="text-h5 q-mt-sm q-mb-xs">
+            Address
+          </div> -->
+          <div class="text-caption text-grey">
+            {{ address }}
+            <q-icon
+              name="content_copy"
+              class="cursor-pointer"
+              @click="copyToClipboard"
+            />
+          </div>
+        </q-card-section>
+        <q-card-actions class="justify-end">
+          <!-- <q-btn
+            flat
+            icon="share"
+            color="grey"
+          /> -->
+
+          <q-btn @click.prevent="connectXDAI">
+            <q-avatar size="28px">
+              <img src="~assets/wallet-connect.svg">
+            </q-avatar>
+            <!-- <q-badge
+              color="orange"
+              floating
+              class="xs"
+            /> -->
+          </q-btn>
+
+
+          <q-btn
+            icon="send"
+            size="md"
+            color="grey"
+            flat
+            @click="openSelectCoinModal(walletsXDAI)"
+          />
+          <q-btn
+            flat
+            color="grey"
+            :label="getFormattedBalance(XDAIBalance)"
+          />
+
+          <q-btn
+            color="grey"
+            round
+            flat
+            dense
+            :icon="visible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+            @click="togglexDaiVisibility"
+          />
+        </q-card-actions>
+        <q-slide-transition>
+          <div v-show="xDaivisible">
+            <q-separator />
+            <q-card-section class="text-subitle2">
+              <CloudListItem
+                v-for="wallet in walletsXDAI"
+                :key="wallet.displayName"
+                :wallet="wallet"
+                :currency="selectedCurrency"
+              />
+            </q-card-section>
+          </div>
+        </q-slide-transition>
+      </q-card>
     </q-scroll-area>
+    <WalletConnect
+      :chain-id="chainId"
+      :address="address"
+    />
+    <SelectCoinModal
+      :wallets="selectCoinWallet"
+    />
   </div>
 </template>
 
 <script>
 import CloudListItem from '@/components/Wallet/CloudListItem';
+import SelectCoinModal from '@/components/Modals/SelectCoin';
+import WalletConnect from '@/components/WalletConnect/WalletConnect';
 import { mapState } from 'vuex';
+
 import Wallet from '@/store/wallet/entities/wallet';
 import Coin from '@/store/wallet/entities/coin';
+import {
+  AmountFormatter,
+  getBalance,
+  // refreshWallet,
+} from '@/helpers';
 
 export default {
   name: 'CloudList',
   components: {
     CloudListItem,
+    WalletConnect,
+    SelectCoinModal,
+
   },
 
   data() {
     return {
       scrollPosition: 0,
       interval: 15000,
+      visible: false,
+      xDaivisible: false,
+      address: '',
+      totalAssets: 0,
       checkForUpdates: null,
+      connectWalletXDAI: false,
+      chainId: null,
+      XDAIBalance: null,
+      ETHBalance: null,
+      selectCoinWallet: null,
     };
   },
 
   computed: {
     ...mapState({
+      id: (state) => { return state.route.params.id; },
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
       modals: (state) => { return state.modals; },
+      xDaiWallet: null,
     }),
+    wallets() {
+      const wallets = Wallet.query()
+        .where('account_id', this.authenticatedAccount)
+        .where('imported', true)
+        .get();
+
+      if (!this.showTestnets) {
+        return wallets.filter(({ network }) => {
+          return !this.testnets.includes(network);
+        });
+      }
+      return wallets;
+    },
+    wallet() {
+      if (this.id) {
+        return this.$store.getters['entities/wallet/find'](this.id);
+      }
+      return null;
+    },
     account() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount);
     },
@@ -84,19 +289,26 @@ export default {
       return coins.map(({ network }) => { return network; });
     },
 
-    wallets() {
-      const wallets = Wallet.query()
-        .where('account_id', this.authenticatedAccount)
-        .where('imported', true).get();
-      if (!this.showTestnets) {
-        return wallets.filter(({ network }) => {
-          return !this.testnets.includes(network);
-        });
-      }
-      return wallets;
+    walletsETH() {
+      const xwallet = this.fetchWallet('ETHEREUM');
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.ETHBalance = this.getBalance(xwallet);
+      return xwallet;
+    },
+    walletsXDAI() {
+      const xwallet = this.fetchWallet('XDAI');
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.XDAIBalance = this.getBalance(xwallet);
+      return xwallet;
+    },
+    totalBalance() {
+      return this.ETHBalance + this.XDAIBalance;
+    },
+
+    totalBalanceFormatted() {
+      return this.getFormattedBalance(this.totalBalance);
     },
   },
-
   watch: {
     '$q.appVisible': function appVisible(val) {
       if (!val) {
@@ -117,12 +329,87 @@ export default {
   deactivated() {
     clearInterval(this.checkForUpdates);
   },
-
   methods: {
+    getFormattedBalance(bal) {
+      const formattedBalance = new AmountFormatter({
+        amount: bal,
+        format: '0,0[.]00',
+        currency: this.selectedCurrency,
+        toCurrency: false,
+        toCoin: false,
+        withCurrencySymbol: true,
+      });
+
+      return formattedBalance.getFormatted();
+    },
+    connectXDAI() {
+      this.chainId = this.walletsXDAI[0].hdWallet.network.chainId;
+      this.address = this.walletsXDAI[0].externalAddress;
+      this.$store.dispatch('modals/setWalletConnectModalOpened', true);
+    },
+    connectETH() {
+      this.chainId = this.walletsETH[0].hdWallet.network.chainId;
+      this.address = this.walletsETH[0].externalAddress;
+      this.$store.dispatch('modals/setWalletConnectModalOpened', true);
+    },
+    receive() {
+      this.$router.push({ path: `/wallet/single/receive/${this.wallet.id}` });
+    },
+    getBalance(wallets) {
+      let balance = 0;
+      wallets.forEach((wallet) => {
+        const { unconfirmed } = getBalance(wallet, this.authenticatedAccount);
+
+        const price = this.$store.getters['entities/latestPrice/find'](`${wallet.identifier}_${this.selectedCurrency.code}`);
+        if (price) {
+          const formattedAmount = new AmountFormatter({
+            amount: unconfirmed,
+            rate: price.data.PRICE,
+            format: '0.00',
+            coin: wallet.name,
+            prependPlusOrMinus: false,
+            currency: this.selectedCurrency,
+            toCurrency: true,
+            toCoin: false,
+            withCurrencySymbol: false,
+          });
+
+          balance += parseFloat(formattedAmount.getFormatted());
+        }
+      });
+      return balance;
+    },
+    fetchWallet(networkType) {
+      const wallets = Wallet.query()
+        .where('account_id', this.authenticatedAccount)
+        .where('imported', true)
+        .where('network', networkType)
+        .get();
+      if (!this.showTestnets) {
+        return wallets.filter(({ network }) => {
+          return !this.testnets.includes(network);
+        });
+      }
+      if (this.address === '') {
+        this.address = wallets[0].externalAddress;
+      }
+      return wallets;
+    },
+
+    toggleVisibility() {
+      this.visible = !this.visible;
+    },
+    togglexDaiVisibility() {
+      this.xDaivisible = !this.xDaivisible;
+    },
     openWalletsModal() {
       this.$store.dispatch('modals/setAddWalletModalOpened', true);
     },
 
+    openSelectCoinModal(wallet) {
+      this.selectCoinWallet = wallet;
+      this.$store.dispatch('modals/setSelectCoinModalOpened', true);
+    },
     touchStart(event) {
       this.touchStartY = event.touches[0].clientY;
     },
@@ -159,6 +446,24 @@ export default {
         this.$root.$emit('isHomeBalanceVisible', true);
       }
     },
+
+    copyToClipboard() {
+      try {
+        if (window.cordova) {
+          cordova.plugins.clipboard.copy(this.address);
+        } else {
+          this.$clipboard(this.address);
+        }
+        this.$q.notify({
+          message: this.$t('copied'),
+          color: 'positive',
+          timeout: '1500',
+          classes: 'text-center',
+        });
+      } catch (err) {
+        this.errorHandler(err);
+      }
+    },
   },
 };
 </script>
@@ -169,7 +474,7 @@ export default {
   height: calc(100% - 19rem);
   width: 100%;
   left: 0;
-  top: 15rem;
+  top: 10rem;
 }
 
 body.q-ios-padding .cloud-list .scroll-area {

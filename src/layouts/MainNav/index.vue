@@ -11,7 +11,7 @@
         <div>{{ $t('wallets') }}</div>
       </router-link>
     </div>
-    <div class="">
+    <!-- <div class="">
       <router-link
         class="main-nav-link"
         to="/walletconnect"
@@ -25,27 +25,27 @@
             color="orange"
             floating
           />
-        </q-btn>
-        <!-- <img
+        </q-btn> -->
+    <!-- <img
           src="~assets/wallet-connect.svg"
           width="35px"
           height="35px"
         > -->
-        <!-- <q-icon
+    <!-- <q-icon
           name="account_balance_wallet"
         > -->
-        <div>
-          Wallet Connect
-          <!-- <q-badge
+    <!-- <div>
+          Wallet Connect -->
+    <!-- <q-badge
             color="orange"
             floating
           >
             22
           </q-badge> -->
-        </div>
-      <!-- </a> -->
-      </router-link>
-    </div>
+    <!-- </div> -->
+    <!-- </a> -->
+    <!-- </router-link> -->
+    <!-- </div> -->
     <div class="">
       <router-link
         class="main-nav-link"

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <WalletConnect />
+    <WalletConnect :chain-id="chainId" />
   </div>
 </template>
 
@@ -10,6 +10,12 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'Wallet',
+  props: {
+    chainId: {
+      type: String,
+      required: true,
+    },
+  },
   ...mapState({
     wcRequestPending: (state) => { return state.settings.wcRequestPending; },
   }),

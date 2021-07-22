@@ -28,7 +28,7 @@ export default {
     name: 'XDAI',
     coinName: 'XDai',
     segwit: false,
-    bip: 700,
+    bip: 60,
     provider: 'https://dai.poa.network',
     etherscan: 'https://blockscout.com/poa/xdai/api',
     etherscanKey: null,

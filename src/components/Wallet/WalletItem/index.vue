@@ -182,11 +182,13 @@ export default {
 
     async enableWallet() {
       try {
-        if (this.wallet.sdk === 'ERC20' && !this.isEthEnabled(this.wallet.parentName)) {
+        console.log(`Enable Wallet: ${this.wallet.contractAddress} - ${this.wallet.name}`);
+        if (this.wallet.sdk === 'ERC20' && !this.isEthEnabled(this.wallet.name)) {
           const wallets = Wallet.query()
             .where('account_id', this.authenticatedAccount)
             .where('name', this.wallet.parentName)
             .get();
+          console.log(`WALLETS: ${JSON.stringify(wallets)}`);
           await Wallet.$update({
             where: wallets[0].id,
             data: { imported: false, enabled: true },
@@ -199,7 +201,7 @@ export default {
           .where('name', this.wallet.name)
           .where('contractAddress', this.wallet.contractAddress)
           .get();
-
+        console.log(`WALLETS>>: ${JSON.stringify(wallets)}`);
         if (wallets.length > 0) {
           await Wallet.$update({
             where: wallets[0].id,
@@ -216,7 +218,9 @@ export default {
           };
 
           const newWalletResult = await Wallet.$insert({ data });
-          const newWalletId = newWalletResult.wallet[0].id;
+          console.log(`New Wallet Result: ${JSON.stringify(newWalletResult)}`);
+          const newWalletId = newWalletResult[0].id;
+          console.log(`New Wallet newWalletId: ${newWalletId}`);
 
           await Wallet.$update({
             where: newWalletId,

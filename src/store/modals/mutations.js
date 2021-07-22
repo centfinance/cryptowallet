@@ -63,6 +63,13 @@ export function SET_ADDERC20_MODAL_OPENED(state, payload) {
   state.addErc20ModalOpened = payload;
 }
 
+export function SET_SELECTCOIN_MODAL_OPENED(state, payload) {
+  changeStatusBarColour(payload);
+  state.selectCoinModalOpened = payload;
+}
+
+//
+
 export function SET_PRICECHART_MODAL_OPENED(state, payload) {
   changeStatusBarColour(payload);
   state.priceChartModalOpened = payload;
@@ -100,6 +107,11 @@ export function SET_SELECTCURRENCY_MODAL_OPENED(state, payload) {
 export function SET_WALLETCONNECT_MODAL_OPENED(state, payload) {
   changeStatusBarColour(payload);
   state.walletConnectModalOpened = payload;
+}
+
+export function SET_SIGNTRANSACTION_MODAL_OPENED(state, payload) {
+  changeStatusBarColour(payload);
+  state.signTransactionModalOpened = payload;
 }
 
 export function SET_SELECTLANGUAGE_MODAL_OPENED(state, payload) {

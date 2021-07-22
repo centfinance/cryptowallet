@@ -8,7 +8,7 @@ import { Notify } from 'quasar';
 
 export default ({ Vue, store }) => {
   Vue.use(Rollbar, {
-    accessToken: 'ff97f7babcfd482a90a281e9025ca524',
+    accessToken: 'ca78eb551a874473816f8a0cca63e226',
     autoInstrument: { dom: false },
     captureUncaught: true,
     captureUnhandledRejections: true,

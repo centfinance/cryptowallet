@@ -113,11 +113,14 @@ module.exports = (ctx) => {
         'QCircularProgress',
         'QBadge',
         'QChip',
+        'QSpace',
+        'QSlideTransition',
+        'QSeparator'
       ],
       directives: ['Ripple', 'ClosePopup', 'ClosePopup'],
       // Quasar plugins
       plugins: ['Notify', 'Dialog', 'BottomSheet', 'AppVisibility'],
-      // iconSet: 'material-icons'
+      // iconSet: 'material-icons',
       lang: 'en-gb',
     },
     // animations: 'all' --- includes all animations
