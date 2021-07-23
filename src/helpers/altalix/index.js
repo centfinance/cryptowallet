@@ -41,7 +41,7 @@ export class Altalix {
     //   if (data.eventName === 'TRANSAK_ORDER_CREATED') { this.handleOrderCreated(data); }
     //   if (data.eventName === 'TRANSAK_ORDER_SUCCESSFUL') { Transak.handleOrderSuccess(data); }
     // });
-    window.cordova.InAppBrowser.open('https://app.altalix.com/partners/welcome?partner_id=99640323-1782-4939-a26b-eaf4c6d5e6df', '_system', 'location=no,toolbar=yes');
+    // window.cordova.InAppBrowser.open('https://app.altalix.com/partners/welcome?partner_id=99640323-1782-4939-a26b-eaf4c6d5e6df', '_system', 'location=no,toolbar=yes');
   // openURL('https://app.altalix.com/partners/welcome?partner_id=99640323-1782-4939-a26b-eaf4c6d5e6df');
     // , null,
     // {

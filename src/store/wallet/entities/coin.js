@@ -46,7 +46,6 @@ export default class Coin extends Model {
     const coinIcon = IconList.find((icon) => {
       return icon.symbol === this.symbol.toUpperCase();
     });
-    console.log(`COINICON: ${JSON.stringify(coinIcon)}`);
     if (coinIcon) {
       const fileType = coinIcon.png ? '.png' : '.svg';
       return `./statics/cc-icons/color/${this.symbol.toLowerCase()}${fileType}`;
@@ -56,7 +55,6 @@ export default class Coin extends Model {
 
   static async fetchIcons() {
     function fetchIcon(token, address) {
-      console.log(`fetchIcon: ${JSON.stringify(token)}`);
       axios
         .get(`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`, {
           responseType: 'arraybuffer',

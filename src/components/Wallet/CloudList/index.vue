@@ -20,7 +20,10 @@
         class="row q-mb-sm grey justify-between text-h6 text-weight-bold"
       >
         <div>
-          <q-icon name="account_balance_wallet" />
+          <q-icon
+            size="xs"
+            name="account_balance_wallet"
+          />
           My Wallet Balance
         </div>
         <div class="q-px-xs grey">
@@ -44,15 +47,18 @@
       >
         <q-card-section>
           <div class="text-overline text-weight-bold text-orange-9">
-            <q-avatar size="28px">
+            <q-avatar size="20px">
               <img src="~assets/icons/eth.svg">
             </q-avatar> Ethereum ({{ walletsETH.length }})
           </div>
           <!-- <div class="text-h6 q-mt-sm q-mb-xs">
             Address
           </div> -->
-          <div class="text-caption text-grey">
-            {{ address }}
+          <div
+            textMiddleEllipsis="4"
+            class="text-caption text-grey"
+          >
+            {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }}
             <q-icon
               name="content_copy"
               class="cursor-pointer"
@@ -60,9 +66,9 @@
             />
           </div>
         </q-card-section>
-        <q-card-actions class="justify-end">
+        <q-card-actions class="justify-start">
           <q-btn @click.prevent="connectETH">
-            <q-avatar size="28px">
+            <q-avatar size="20px">
               <img src="~assets/wallet-connect.svg">
             </q-avatar>
             <!-- <q-badge
@@ -75,13 +81,14 @@
 
           <q-btn
             icon="send"
-            size="md"
+            size="xs"
             color="grey"
             flat
             @click="openSelectCoinModal(walletsETH)"
           />
           <q-btn
             flat
+            size="xs"
             icon="fas fa-plus-square"
             color="grey"
             @click="openSelectCoinModal(walletsETH,true)"
@@ -95,6 +102,7 @@
           <q-btn
             color="grey"
             round
+            size="xs"
             flat
             dense
             :icon="visible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
@@ -125,7 +133,7 @@
       >
         <q-card-section>
           <div class="text-overline text-weight-bold text-orange-9">
-            <q-avatar size="28px">
+            <q-avatar size="20px">
               <img src="~assets/icons/xdai.png">
             </q-avatar> XDAI ({{ walletsXDAI.length }})
           </div>
@@ -133,7 +141,7 @@
             Address
           </div> -->
           <div class="text-caption text-grey">
-            {{ address }}
+             {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }}
             <q-icon
               name="content_copy"
               class="cursor-pointer"
@@ -141,7 +149,7 @@
             />
           </div>
         </q-card-section>
-        <q-card-actions class="justify-end">
+        <q-card-actions class="justify-left">
           <!-- <q-btn
             flat
             icon="share"
@@ -149,7 +157,7 @@
           /> -->
 
           <q-btn @click.prevent="connectXDAI">
-            <q-avatar size="28px">
+            <q-avatar size="20px">
               <img src="~assets/wallet-connect.svg">
             </q-avatar>
             <!-- <q-badge
@@ -162,13 +170,14 @@
 
           <q-btn
             icon="send"
-            size="md"
+            size="xs"
             color="grey"
             flat
             @click="openSelectCoinModal(walletsXDAI)"
           />
           <q-btn
             flat
+            size="xs"
             icon="fas fa-plus-square"
             color="grey"
             @click="openSelectCoinModal(walletsXDAI,true)"
@@ -182,6 +191,7 @@
           <q-btn
             color="grey"
             round
+            size="xs"
             flat
             dense
             :icon="visible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
@@ -222,6 +232,7 @@ import { mapState } from 'vuex';
 
 import Wallet from '@/store/wallet/entities/wallet';
 import Coin from '@/store/wallet/entities/coin';
+
 import {
   AmountFormatter,
   getBalance,
@@ -415,7 +426,6 @@ export default {
     },
 
     openSelectCoinModal(wallet, buy = false) {
-      console.log(`SelectModal: ${buy}`);
       this.selectCoinWallet = wallet;
       this.buy = buy;
       this.$store.dispatch('modals/setSelectCoinModalOpened', true);

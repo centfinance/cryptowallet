@@ -250,8 +250,6 @@ export default {
         const mnemonicArray = mnemonic.split(' ');
         this.$store.dispatch('setup/setAccountEmail', this.accountEmail);
         this.$store.dispatch('setup/setSeed', mnemonicArray);
-        console.log(`mnemonic ${mnemonicArray}`);
-        console.log(`mnemonic ${JSON.stringify(mnemonic)}`);
         this.$store.dispatch('setup/setSeedString', mnemonic);
         this.$router.push({ path: '/setup/4' });
         this.visible = false;

@@ -4,7 +4,7 @@
       <div>
         <div class="wallet-name">
           <img
-            width="32px"
+            width="24px"
             :src="coinLogo"
             class="token-icon"
           >
@@ -43,7 +43,7 @@
         >
           <q-btn
             icon="fas fa-minus"
-            size="md"
+            size="xs"
             class="q-pr-xs"
             color="accent"
             text-color="info"
@@ -55,7 +55,7 @@
           />
           <q-btn
             icon="fas fa-credit-card"
-            size="md"
+            size="xs"
             class="q-pr-xs"
             color="accent"
             text-color="info"

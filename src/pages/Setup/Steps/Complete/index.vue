@@ -108,8 +108,8 @@ export default {
             await this.enableWallet('Ethereum Rinkeby');
           } else {
             const ethWallet = await this.enableWallet();
+            // eslint-disable-next-line no-unused-vars
             const xdaiWallet = await this.enableWallet('XDai');
-            console.log(`XDIWALLET: ${xdaiWallet}`);
 
             await this.accountInitializer.createERC20Wallets(
               this.setup,
