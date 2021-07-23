@@ -2,8 +2,8 @@
 name: Pull request template
 about: Use this when making a pull request into the codebase
 title: ''
-labels: pull request
-assignees: nshCore
+labels: ''
+assignees: ''
 
 ---
 
