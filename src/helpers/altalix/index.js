@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-// import { openURL } from 'quasar';
+import { openURL } from 'quasar';
 
 export function altalix(vm, account, wallet) {
   // eslint-disable-next-line no-console
@@ -42,7 +42,7 @@ export class Altalix {
     //   if (data.eventName === 'TRANSAK_ORDER_SUCCESSFUL') { Transak.handleOrderSuccess(data); }
     // });
     // window.cordova.InAppBrowser.open('https://app.altalix.com/partners/welcome?partner_id=99640323-1782-4939-a26b-eaf4c6d5e6df', '_system', 'location=no,toolbar=yes');
-  // openURL('https://app.altalix.com/partners/welcome?partner_id=99640323-1782-4939-a26b-eaf4c6d5e6df');
+    openURL('https://app.altalix.com/partners/welcome?partner_id=99640323-1782-4939-a26b-eaf4c6d5e6df');
     // , null,
     // {
     //   noopener: true, // this is set by default for security purposes
