@@ -1,9 +1,9 @@
 {
   "name": "cent",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "Cent Wallet - By Cent Finance",
   "productName": "Cent",
-  "cordovaId": "com.cent.mobile.wallet",
+  "cordovaId": "com.centfinance.mobile.wallet",
   "author": "Cent Finance <developer@cent.finance>",
   "private": true,
   "scripts": {
