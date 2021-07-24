@@ -300,7 +300,7 @@ export default [
   },
   {
     displayName: 'SYMM',
-    name: 'SYMM on Ethereum',
+    name: 'SYMM',
     sdk: 'ERC20',
     parentSdk: 'Ethereum',
     symbol: 'SYMM',
@@ -316,7 +316,7 @@ export default [
   },
   {
     displayName: 'SYMM',
-    name: 'SYMM on xDai',
+    name: 'SYMM',
     sdk: 'ERC20',
     symbol: 'SYMM',
     contractAddress: '0xC45b3C1c24d5F54E7a2cF288ac668c74Dd507a84',

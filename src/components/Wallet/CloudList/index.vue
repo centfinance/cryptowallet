@@ -127,6 +127,7 @@
       <br>
       <!-- XDAI -->
       <q-card
+        v-if="!demoMode"
         class="rounded-border-top"
         flat
         bordered
@@ -141,7 +142,7 @@
             Address
           </div> -->
           <div class="text-caption text-grey">
-             {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }}
+            {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }}
             <q-icon
               name="content_copy"
               class="cursor-pointer"
@@ -301,15 +302,16 @@ export default {
     showTestnets() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).showTestnets;
     },
-
+    demoMode() {
+      return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
+    },
     testnets() {
       const coins = Coin.query()
         .where('testnet', true).get();
       return coins.map(({ network }) => { return network; });
     },
-
     walletsETH() {
-      const xwallet = this.fetchWallet('ETHEREUM');
+      const xwallet = this.fetchWallet(this.demoMode ? 'ETHEREUM_RINKEBY' : 'ETHEREUM');
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.ETHBalance = this.getBalance(xwallet);
       return xwallet;
