@@ -6,7 +6,10 @@
     transition-hide="slide-down"
     content-class="dark-modal"
   >
-    <q-card class="full-width" style="height: 80%; width:100%">
+    <q-card
+      class="full-width"
+      style="height: 80%; width:100%"
+    >
       <div style="padding:5px;">
         <div class="header-section">
           <div class="header-back-button-wrapper">
@@ -45,7 +48,9 @@
               <q-item-label caption>
                 {{ peerMeta.description }}
               </q-item-label>
-              <q-item-label caption>{{ peerMeta.url }}</q-item-label>
+              <q-item-label caption>
+                {{ peerMeta.url }}
+              </q-item-label>
             </q-item-section>
             <q-item-section
               justify-center
@@ -239,6 +244,14 @@
       <!-- </div> -->
       <!-- </q-dialog> -->
       </div>
+      <!-- <q-list
+        v-for="request in requests"
+        :key="request.id"
+      >
+        <q-item>
+          {{ request.method }}
+        </q-item>
+      </q-list> -->
     </q-card>
   </q-dialog>
 </template>
@@ -247,7 +260,7 @@
 import { mapState } from 'vuex';
 import * as ethers from 'ethers';
 // import Coin from '@/store/wallet/entities/coin';
-// import Wallet from '@/store/wallet/entities/wallet';
+import Wallet from '@/store/wallet/entities/wallet';
 
 import SignTransaction from '@/components/WalletConnect/SignTransaction';
 import PersonalSign from '@/components/WalletConnect/PersonalSign';
@@ -297,10 +310,7 @@ export default {
         description: '', url: '', icons: [''], name: 'Balasssncer',
       },
       connector: WalletConnect,
-      // token: {
-      //   label: 'Ethereum',
-      //   value: 'ETHEREUM',
-      // },
+      requests: [],
     };
   },
   computed: {
@@ -313,33 +323,14 @@ export default {
     showPeerMeta() {
       return true;
     },
-    // wallet() {
-    //   return Wallet.query()
-    //     .where('account_id', this.authenticatedAccount)
-    //     .where('name', this.token.label)
-    //     .get()[0];
-    // },
-    // address() {
-    //   if (this.wallet) {
-    //     return this.coinSDKS.Ethereum(this.token.value)
-    //       .generateKeyPair(this.wallet.hdWallet, 0).address;
-    //   }
-    //   return null;
-    // },
-    // chainId() {
-    //   if (this.wallet) {
-    //     return this.coinSDKS.Ethereum(this.token.value)
-    //       .generateKeyPair(this.wallet.hdWallet, 0).network.chainId;
-    //   }
-    //   return null;
-    // },
-    // networkName() {
-    //   if (this.wallet) {
-    //     return this.coinSDKS.Ethereum(this.token.value)
-    //       .generateKeyPair(this.wallet.hdWallet, 0).network.name;
-    //   }
-    //   return null;
-    // },
+    wallet() {
+      return Wallet.query()
+        .where('account_id', this.authenticatedAccount)
+        .where('externalAddress', this.address)
+        .where('enabled', true)
+        .where('chainId', this.chainId)
+        .get()[0];
+    },
     walletConnectModalOpened: {
       get() {
         // this.openWalletConnect();
@@ -367,7 +358,10 @@ export default {
         // eslint-disable-next-line no-underscore-dangle
         this.peerMeta = this.connector._peerMeta;
         const address = this.connector.accounts[0];
+        this.address = address;
+        this.chainId = this.connector.chainId;
         this.activeIndex = this.connector.accounts.indexOf(address);
+        console.log(`Mounted: ${this.chainId} -- ${this.address} - ${JSON.stringify(this.wallet)}`);
         this.subscribeToEvents();
       }
     }
@@ -452,7 +446,12 @@ export default {
         });
 
         this.connector.on('call_request', async (error, payload) => {
-          console.log(`Payload: ${JSON.stringify(payload)}`);
+          // console.log(`chainId: ${this.chainId} --connector:
+          // ${this.connector.chainId} -- ${this.address}`);
+          this.chainId = this.chainId != null
+            ? this.chainId : this.connector.chainId;
+          // console.log(`wallet: ${JSON.stringify(this.wallet)}`);
+          this.requests.push(payload);
           switch (payload.method) {
             case 'eth_sendTransaction':
             case 'eth_signTransaction':
@@ -518,7 +517,6 @@ export default {
           // eslint-disable-next-line prefer-destructuring
           this.payLoad.transaction = payload.params[0];
           this.signTransaction = true;
-          console.log('Sign Transaction incoming');
           this.$store.dispatch('modals/setWalletConnectModalOpened', true);
           break;
 
@@ -575,6 +573,7 @@ export default {
       }
     },
     async approveTransaction() {
+      console.log(`Approve Transaction: ${JSON.stringify(this.wallet)}`);
       if (this.wallet) {
         const { transaction } = this.payLoad;
         const { signer } = this.wallet;

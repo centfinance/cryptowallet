@@ -35,11 +35,9 @@ export async function storeERC20Wallet(wallet, ERC20SDK) {
     });
   };
   const balance = await getBalance();
-
   const findWallet = Wallet.query()
     .where('contractAddress', wallet.contractAddress)
     .where('account_id', wallet.account_id).get();
-
   if (findWallet.length > 0) {
     const found = findWallet[0];
     if (balance !== found.confirmedBalance) {

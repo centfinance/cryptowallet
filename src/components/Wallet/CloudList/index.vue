@@ -287,12 +287,6 @@ export default {
       }
       return wallets;
     },
-    wallet() {
-      if (this.id) {
-        return this.$store.getters['entities/wallet/find'](this.id);
-      }
-      return null;
-    },
     account() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount);
     },
@@ -366,11 +360,13 @@ export default {
     connectXDAI() {
       this.chainId = this.walletsXDAI[0].hdWallet.network.chainId;
       this.address = this.walletsXDAI[0].externalAddress;
+      // eslint-disable-next-line prefer-destructuring
       this.$store.dispatch('modals/setWalletConnectModalOpened', true);
     },
     connectETH() {
       this.chainId = this.walletsETH[0].hdWallet.network.chainId;
       this.address = this.walletsETH[0].externalAddress;
+      // eslint-disable-next-line prefer-destructuring
       this.$store.dispatch('modals/setWalletConnectModalOpened', true);
     },
     receive() {

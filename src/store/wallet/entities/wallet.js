@@ -24,6 +24,7 @@ export default class Wallet extends Model {
       symbol: this.attr(''),
       sdk: this.attr(''),
       network: this.attr(''),
+      chainId: this.attr(''),
       internalChainAddressIndex: this.attr(0),
       externalChainAddressIndex: this.attr(0),
       externalAddress: this.attr(null),

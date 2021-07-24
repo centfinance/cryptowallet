@@ -56,14 +56,15 @@ export default class Account extends Model {
         .filter((wallet) => {
           return !wallet.erc20Wallet;
         });
+
       const coinPromises = coins.map((wallet) => {
         return refreshWallet(wallet, false);
       });
-
       await Promise.all(coinPromises);
+
       const tokenPromises = coins.map((wallet) => {
         return Coin.fetchAllTokens(
-          wallet.externalAddress, this.authenticatedAccount, wallet.network,
+          wallet.externalAddress, this.id, wallet.network,
         );
       });
       await Promise.all(tokenPromises);

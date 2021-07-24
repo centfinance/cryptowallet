@@ -66,6 +66,7 @@ const accountInitializer = {
             seedString,
             coin.network,
           );
+          wallet.chainId = wallet.hdWallet.network.chainId;
           // wallet.hdWallet = encrypt(hdWallet, password);
           await Wallet.$insert({ data: wallet, password });
           resolve();
