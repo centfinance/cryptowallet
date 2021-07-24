@@ -195,7 +195,7 @@
             size="xs"
             flat
             dense
-            :icon="visible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+            :icon="xDaivisible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
             @click="togglexDaiVisibility"
           />
         </q-card-actions>
