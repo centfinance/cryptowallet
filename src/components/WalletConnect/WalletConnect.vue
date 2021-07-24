@@ -361,7 +361,6 @@ export default {
         this.address = address;
         this.chainId = this.connector.chainId;
         this.activeIndex = this.connector.accounts.indexOf(address);
-        console.log(`Mounted: ${this.chainId} -- ${this.address} - ${JSON.stringify(this.wallet)}`);
         this.subscribeToEvents();
       }
     }
