@@ -34,17 +34,13 @@
             :key="wallet.displayName"
             :wallet="wallet"
           >
-            <div
-              @click="goToWallet"
-            >
-              <q-card-section class="text-subitle2">
-                <CoinHeader
-                  :quick="true"
-                  :buy="buy"
-                  :wallet="wallet"
-                />
-              </q-card-section>
-            </div>
+            <q-card-section class="text-subitle2">
+              <CoinHeader
+                :quick="true"
+                :buy="buy"
+                :wallet="wallet"
+              />
+            </q-card-section>
           </q-list>
         </q-card-section>
       </q-card>
@@ -82,6 +78,7 @@ export default {
   },
   methods: {
     goToWallet() {
+      console.log('Here');
       this.$router.push({ path: `/wallet/single/${this.wallet.id}` });
     },
     closeModal() {
