@@ -8,7 +8,7 @@
             :src="coinLogo"
             class="token-icon"
           >
-          {{ wallet.displayName }}
+          {{ wallet.symbol }}
         </div>
 
         <div
@@ -161,7 +161,8 @@ export default {
     },
 
     latestPrice() {
-      const prices = this.$store.getters['entities/latestPrice/find'](`${this.wallet.identifier}_${this.selectedCurrency.code}`);
+      const val = this.wallet.network === 'CELO' ? this.wallet.network.toString().toLowerCase() : this.wallet.identifier;
+      const prices = this.$store.getters['entities/latestPrice/find'](`${val}_${this.selectedCurrency.code}`);
       if (prices) {
         return prices.data.PRICE;
       }

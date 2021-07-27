@@ -103,7 +103,22 @@ async function discoverErc20(wallet, coinSDK) {
   };
 }
 
-async function discoverWallet(wallet, coinSDK, network, sdk, erc20History = false) {
+async function discoverCelo(wallet, coinSDK, network, seedString) {
+  const accounts = await coinSDK.accountDiscovery(wallet, false, seedString);
+  const txHistory = await coinSDK.getTransactionHistory([accounts[0].address], network, 0);
+  let balance = await coinSDK.getBalance([accounts[0].address], network);
+
+  if (!balance) {
+    balance = 0;
+  }
+  return {
+    accounts,
+    txHistory,
+    balance,
+  };
+}
+
+async function discoverWallet(wallet, coinSDK, network, sdk, erc20History = false, seedString = '') {
   if (sdk === 'Bitcoin') {
     return discoverBitcoin(wallet, coinSDK, network);
   }
@@ -114,6 +129,12 @@ async function discoverWallet(wallet, coinSDK, network, sdk, erc20History = fals
 
   if (sdk === 'ERC20') {
     return discoverErc20(wallet, coinSDK);
+  }
+
+  if (sdk === 'Celo') {
+    // eslint-disable-next-line no-console
+    // console.log(`CELO seedString ${seedString}`);
+    return discoverCelo(wallet, coinSDK, network, seedString);
   }
   return false;
 }

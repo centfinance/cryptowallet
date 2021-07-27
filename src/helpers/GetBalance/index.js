@@ -100,7 +100,7 @@ const Ethereum = {
 
 
 function getBalance(wallet, accountId) {
-  if (wallet.sdk === 'Ethereum' || wallet.sdk === 'ERC20') {
+  if (wallet.sdk === 'Ethereum' || wallet.sdk === 'ERC20' || wallet.sdk === 'Celo') {
     return {
       confirmed: Ethereum.getConfirmed(wallet),
       unconfirmed: Ethereum.getUnconfirmed(wallet, accountId),

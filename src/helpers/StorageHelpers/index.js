@@ -64,7 +64,12 @@ export async function storeERC20Wallet(wallet, ERC20SDK) {
   const newWallet = await Wallet.$insert({
     data: wallet,
   });
-
+  if (newWallet.wallet === undefined) {
+    return {
+      id: -1,
+      storeTxs: false,
+    };
+  }
   return {
     id: newWallet.wallet[0].id,
     storeTxs: true,

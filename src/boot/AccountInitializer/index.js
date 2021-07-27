@@ -62,10 +62,17 @@ const accountInitializer = {
       if (coin.sdk !== 'ERC20') {
         promises.push(new Promise(async (resolve) => {
           const coinSDK = SDK.SDKFactory.createSDK(coin.sdk, coin.api);
-          wallet.hdWallet = await coinSDK.generateHDWallet(
-            seedString,
-            coin.network,
-          );
+          if (coin.sdk === 'Celo') {
+            wallet.hdWallet = await coinSDK.generateHDWalletCelo(
+              seedString,
+              coin.network,
+            );
+          } else {
+            wallet.hdWallet = await coinSDK.generateHDWallet(
+              seedString,
+              coin.network,
+            );
+          }
           wallet.chainId = wallet.hdWallet.network.chainId;
           // wallet.hdWallet = encrypt(hdWallet, password);
           await Wallet.$insert({ data: wallet, password });

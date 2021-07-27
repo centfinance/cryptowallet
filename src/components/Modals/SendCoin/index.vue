@@ -36,7 +36,7 @@
             <SendEthereum />
           </div>
 
-          <div v-if="wallet.sdk === 'ERC20'">
+          <div v-if="wallet.sdk === 'ERC20' || wallet.sdk === 'Celo'">
             <SendEthereum />
           </div>
         </div>
