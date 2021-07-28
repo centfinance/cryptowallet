@@ -22,7 +22,7 @@
             />
           </div>
           <h1 class="header-h1">
-            Wallet Connect
+            Wallet Connect {{ requests.length }} {{ chainId }}
           </h1>
         </div>
         <q-card-section
@@ -259,7 +259,11 @@
 <script>
 import { mapState } from 'vuex';
 import * as ethers from 'ethers';
+import * as Web3 from 'web3';
 // import Coin from '@/store/wallet/entities/coin';
+import { newKit } from '@celo/contractkit';
+
+const kit = newKit('https://alfajores-forno.celo-testnet.org');
 import Wallet from '@/store/wallet/entities/wallet';
 
 import SignTransaction from '@/components/WalletConnect/SignTransaction';
@@ -345,7 +349,7 @@ export default {
     // this.refreshPrices();
     this.loading = false;
   },
-  mounted() {
+  async mounted() {
     const session = this.getCachedSession();
     if (session) {
       this.connector = new WalletConnect({ session });
@@ -364,6 +368,17 @@ export default {
         this.subscribeToEvents();
       }
     }
+    const goldtoken = await kit.contracts.getGoldToken();
+    const stabletoken = await kit.contracts.getStableToken();
+    const anAddress = '0x57142fD6068F8751dAc930E6E45a2f61072f732D';
+
+    // 5. Get token balances
+    const celoBalance = await goldtoken.balanceOf(anAddress);
+    const cUSDBalance = await stabletoken.balanceOf(anAddress);
+
+    // Print balances
+    console.log(`${anAddress} CELO balance: ${celoBalance.toString()}`);
+    console.log(`${anAddress} cUSD balance: ${cUSDBalance.toString()}`);
   },
   methods: {
     approveSession() {
@@ -445,7 +460,7 @@ export default {
         });
 
         this.connector.on('call_request', async (error, payload) => {
-          // console.log(`chainId: ${this.chainId} --connector:
+          console.log(`payloaf: ${JSON.stringify(payload)}`);
           // ${this.connector.chainId} -- ${this.address}`);
           this.chainId = this.chainId != null
             ? this.chainId : this.connector.chainId;
@@ -571,30 +586,96 @@ export default {
         }
       }
     },
-    async approveTransaction() {
-      console.log(`Approve Transaction: ${JSON.stringify(this.wallet)}`);
+    async sendTransaction() {
+      const { transaction } = this.payLoad;
       if (this.wallet) {
-        const { transaction } = this.payLoad;
-        const { signer } = this.wallet;
         // if (
-        //   transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
+        //   transaction.from
+        // && transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
         // ) {
         //   console.error("Transaction request From doesn't match active account");
-        //   return null;
         // }
 
-        if (transaction.from) {
-          delete transaction.from;
-        }
+        // if (transaction.from) {
+        //   delete transaction.from;
+        // }
 
         // ethers.js expects gasLimit instead
         if ('gas' in transaction) {
           transaction.gasLimit = transaction.gas;
           delete transaction.gas;
         }
+        console.log(`Provider: ${this.wallet.hdWallet.network.provider}`);
+        const web3 = new Web3('https://alfajores-forno.celo-testnet.org/');
+        web3.eth.sendTransaction({
+          from: transaction.from,
+          to: transaction.to,
+          value: transaction.value,
+          data: transaction.data,
+        }).on('transactionHash', (hash) => {
+          console.log(`TransactionHASH: ${hash}`);
+          return hash;
+        })
+          .on('error', console.error);
+        // const result = await this.wallet.sendTransaction(transaction);
+        // const result = await web3.eth.sendTransaction({
+        //   from: transaction.from,
+        //   to: transaction.to,
+        //   value: transaction.value,
+        //   gasPrice: transaction.gasPrice,
+        //   data: transaction.data,
+        // }, (err, hash) => {
+        //   if (err) { return reject(err); }
+        //   return resolve({
+        //     hash,
+        //   });
+        // });
+        // return result.hash;
+      }
+      console.error('No Active Account');
 
-        const result = await signer.sendTransaction(transaction);
-        return result.hash;
+      return null;
+    },
+    async approveTransaction() {
+      this.loading = true;
+      console.log(`Approve Transaction: ${JSON.stringify(this.wallet)}`);
+      // if (this.payLoad.method === 'eth_sendTransaction') { return this.sendTransaction(); }
+      const { transaction } = this.payLoad;
+      if (this.wallet) {
+        kit.connection.addAccount('c1e09cff2db41ec5c80228fa12f4b2d1d6a58d9b0d636d0427f4f34869b3db11');
+        const anAddress = '0xfbedc68326cfbdf468e5375bf157266046519bc9';
+        const stabletoken = await kit.contracts.getStableToken();
+        const cUSDtx = await stabletoken.transfer(anAddress, transaction.data).send({ from: '0x57142fd6068f8751dac930e6e45a2f61072f732d', feeCurrency: stabletoken.address });
+
+        // 16. Wait for the transactions to be processed
+        const cUSDReceipt = await cUSDtx.waitReceipt();
+        // const { transaction } = this.payLoad;
+        // console.log(`transaction: ${JSON.stringify(transaction)}`);
+        // const { signer } = this.wallet;
+        // console.log(`transaction: ${JSON.stringify(signer)}`);
+        // // if (
+        // //   transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
+        // // ) {
+        // //   console.error("Transaction request From doesn't match active account");
+        // //   return null;
+        // // }
+
+        // if (transaction.from) {
+        //   delete transaction.from;
+        // }
+
+        // // ethers.js expects gasLimit instead
+        // if ('gas' in transaction) {
+        //   transaction.gasLimit = transaction.gas;
+        //   delete transaction.gas;
+        // }
+        // console.log(`Signer: ${JSON.stringify(signer)}`);
+
+        // const result = await signer.sendTransaction(transaction);
+        console.log(`RECPT: ${JSON.stringify(cUSDReceipt)}`);
+        this.loading = false;
+        return cUSDReceipt.transactionHash;
+        // return result.hash;
       }
       return null;
     },

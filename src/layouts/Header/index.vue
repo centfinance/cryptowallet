@@ -229,6 +229,9 @@ export default {
     },
 
     coinLogo() {
+      if (this.walletType === 'celo' && this.coin.icon) {
+        return `data:image/png;base64, ${this.coin.icon}`;
+      }
       return this.coin.logo;
     },
     txsLength() {

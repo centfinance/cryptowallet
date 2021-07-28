@@ -51,7 +51,7 @@
 <script>
 // import AddErc20Content from './AddErc20Content';
 import CoinHeader from '@/components/Wallet/CoinHeader';
-import Wallet from '@/store/wallet/entities/wallet';
+// import Wallet from '@/store/wallet/entities/wallet';
 
 export default {
   name: 'SelectCoinModal',
@@ -60,7 +60,7 @@ export default {
   },
   props: {
     wallets: {
-      type: Array(Wallet),
+      type: Array,
     },
     buy: {
       type: Boolean,
@@ -77,10 +77,6 @@ export default {
     },
   },
   methods: {
-    goToWallet() {
-      console.log('Here');
-      this.$router.push({ path: `/wallet/single/${this.wallet.id}` });
-    },
     closeModal() {
       // this.refreshPrices();
       this.selectCoinModalOpened = false;

@@ -222,7 +222,7 @@ async function refreshWallet(wallet, fullRefresh = true) {
     return refreshBitcoin(coinSDK, wallet, fullRefresh);
   }
 
-  if (wallet.sdk === 'Ethereum') {
+  if (wallet.sdk === 'Ethereum' || wallet.sdk === 'Celo') {
     return refreshEthereum(coinSDK, wallet, fullRefresh);
   }
 

@@ -262,6 +262,8 @@ export default [
     coinType: 60,
     symbol: 'ETH',
     network: 'ETHEREUM_RINKEBY',
+    parentName: 'Ethereum',
+    parentSdk: 'Ethereum',
     denomination: '0.00000000',
     minConfirmations: 1,
     decimals: 18,
