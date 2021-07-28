@@ -48,7 +48,7 @@
     "cordova-plugin-navigationbar-color": "^0.1.0",
     "crypto": "^1.0.1",
     "crypto-js": "^3.1.9-1",
-    "cryptowallet-js": "git://github.com/atlascity/cryptowallet-js.git#no-catalyst",
+    "cryptowallet-js": "../cryptowallet-js",
     "eslint-plugin-import-order-autofix": "^0.8.3",
     "ethereum-ens": "^0.8.0",
     "ethereumjs-wallet": "^1.0.0",
