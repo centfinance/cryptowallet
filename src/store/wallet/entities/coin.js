@@ -137,7 +137,7 @@ export default class Coin extends Model {
   static async fetchAllTokens(address, account, network) {
     const SDK = new CryptoWalletJs();
     const api = networks[network];
-    console.log(`FetchAll Tokens: ${api.coinName} -- ${network} -- ${address}`);
+    // console.log(`FetchAll Tokens: ${api.coinName} -- ${network} -- ${address}`);
     const coinSDK = SDK.SDKFactory.createSDK('Ethereum', api);
     const ERC20SDK = SDK.SDKFactory.createSDK('ERC20', api);
     const txs = await coinSDK.getERC20History(

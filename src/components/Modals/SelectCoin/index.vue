@@ -30,14 +30,14 @@
 
         <q-card-section>
           <q-list
-            v-for="wallet in wallets"
+            v-for="wallet in currentWallet"
             :key="wallet.displayName"
             :wallet="wallet"
           >
             <q-card-section class="text-subitle2">
               <CoinHeader
                 :quick="true"
-                :buy="buy"
+                :buy="buyEnabled"
                 :wallet="wallet"
               />
             </q-card-section>
@@ -67,6 +67,12 @@ export default {
     },
   },
   computed: {
+    buyEnabled() {
+      return this.buy;
+    },
+    currentWallet() {
+      return this.wallets;
+    },
     selectCoinModalOpened: {
       get() {
         return this.$store.state.modals.selectCoinModalOpened;
@@ -79,6 +85,8 @@ export default {
   methods: {
     closeModal() {
       // this.refreshPrices();
+      console.log(`closing: ${this.buy}`);
+      this.wallets = null;
       this.selectCoinModalOpened = false;
     },
   },

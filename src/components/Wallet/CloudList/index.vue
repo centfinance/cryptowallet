@@ -1,6 +1,6 @@
 <template>
   <div class="cloud-list">
-    <div v-if="walletsCELO.length === 0">
+    <div v-if="wallets.length === 0">
       <q-btn
         icon="add_circle_outline"
         label="add"
@@ -11,7 +11,7 @@
       />
     </div>
     <q-scroll-area
-      v-if="walletsCELO.length > 0"
+      v-if="wallets.length > 0"
       ref="scrollArea"
       class="scroll-area extended cloud-scroll q-px-md q-pt-lg"
     >
@@ -39,28 +39,17 @@
           /> -->
         </div>
       </div>
-      <!-- <CloudListCard
-        :wallet="walletsETH"
-        :network="'Ethereum'"
-        :icon-path="'/assets/icons/eth.svg'"
-        :address="address"
-        :currency="selectedCurrency"
-      /><br> -->
-      <CloudListCard
-        :wallet="walletsCELO"
-        :network="'Celo'"
-        :icon-path="'~assets/icons/celo.svg'"
-        :address="celoAddress"
-        :currency="selectedCurrency"
-      /><br>
-      <!-- <CloudListCard
-        :wallet="walletsXDAI"
-        :network="'XDAI'"
-        :icon-path="'/assets/icons/xdai.svg'"
-        :address="address"
-        :currency="selectedCurrency"
-      />
-      <br/> -->
+      <div
+        v-for="w in wallets"
+        :key="w.id"
+      >
+        <CloudListCard
+          :wallet="fetchWallet(w.network)"
+          :network="w.name"
+          :display="w.displayName"
+          :address="w.externalAddress"
+        /><br>
+      </div>
     </q-scroll-area>
     <!-- <WalletConnect
       :chain-id="chainId"
@@ -99,11 +88,6 @@ export default {
     return {
       scrollPosition: 0,
       interval: 15000,
-      visible: false,
-      xDaivisible: false,
-      Celovisible: false,
-      address: '',
-      celoAddress: '',
       totalAssets: 0,
       checkForUpdates: null,
       connectWalletXDAI: false,
@@ -111,7 +95,10 @@ export default {
       XDAIBalance: null,
       ETHBalance: null,
       CELOBalance: null,
-      selectCoinWallet: null,
+      // eslint-disable-next-line no-magic-numbers
+      mainNetIds: [1, 42220, 100],
+      // eslint-disable-next-line no-magic-numbers
+      testNetIds: [44787, 42],
       buy: false,
     };
   },
@@ -126,15 +113,23 @@ export default {
     wallets() {
       const wallets = Wallet.query()
         .where('account_id', this.authenticatedAccount)
-        .where('imported', true)
         .get();
-
-      if (!this.showTestnets) {
-        return wallets.filter(({ network }) => {
-          return !this.testnets.includes(network);
+      if (this.demoMode) {
+        return wallets.filter((w) => {
+          return this.testNetIds.includes(w.chainId);
         });
       }
-      return wallets;
+
+      return wallets.filter((w) => {
+        return this.mainNetIds.includes(w.chainId);
+      });
+
+      // if (!this.showTestnets) {
+      //   return wallets.filter(({ network }) => {
+      //     return !this.testnets.includes(network);
+      //   });
+      // }
+      // return wallets;
     },
     account() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount);
@@ -146,31 +141,13 @@ export default {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).showTestnets;
     },
     demoMode() {
-      return true;
-      // return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
+      // return true;
+      return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
     },
     testnets() {
       const coins = Coin.query()
         .where('testnet', true).get();
       return coins.map(({ network }) => { return network; });
-    },
-    walletsETH() {
-      const xwallet = this.fetchWallet(this.demoMode ? 'ETHEREUM_RINKEBY' : 'ETHEREUM');
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.ETHBalance = this.getBalance(xwallet);
-      return xwallet;
-    },
-    walletsXDAI() {
-      const xwallet = this.fetchWallet('XDAI');
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.XDAIBalance = this.getBalance(xwallet);
-      return xwallet;
-    },
-    walletsCELO() {
-      const xwallet = this.fetchWallet(this.demoMode ? 'CELO_ALFAJORES' : 'CELO').filter((wallet) => { return wallet.parentName !== ''; });
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.CELOBalance = this.getBalance(xwallet);
-      return xwallet;
     },
     totalBalance() {
       return this.ETHBalance + this.XDAIBalance + this.CELOBalance;
@@ -188,6 +165,9 @@ export default {
         this.updateInterval();
       }
     },
+  },
+  mounted: {
+
   },
 
   async activated() {
@@ -213,18 +193,7 @@ export default {
 
       return formattedBalance.getFormatted();
     },
-    connectXDAI() {
-      this.chainId = this.walletsXDAI[0].hdWallet.network.chainId;
-      this.address = this.walletsXDAI[0].externalAddress;
-      // eslint-disable-next-line prefer-destructuring
-      this.$store.dispatch('modals/setWalletConnectModalOpened', true);
-    },
-    connectETH() {
-      this.chainId = this.walletsETH[0].hdWallet.network.chainId;
-      this.address = this.walletsETH[0].externalAddress;
-      // eslint-disable-next-line prefer-destructuring
-      this.$store.dispatch('modals/setWalletConnectModalOpened', true);
-    },
+
     receive() {
       this.$router.push({ path: `/wallet/single/receive/${this.wallet.id}` });
     },
@@ -263,11 +232,16 @@ export default {
           return !this.testnets.includes(network);
         });
       }
+      console.log(`Network: ${networkType}`);
       if (wallets.length < 1) { return []; }
-      if (networkType === 'CELO' || networkType === 'CELO_ALFAJORES') { this.celoAddress = wallets[0].externalAddress; }
-      if (this.address === '') {
-        this.address = wallets[0].externalAddress;
+      if (networkType === 'CELO' || networkType === 'CELO_ALFAJORES') {
+        this.celoAddress = wallets[0].externalAddress;
+        return wallets.filter((wallet) => { return wallet.parentName !== ''; });
       }
+      // if (this.address === '') {
+      //   this.address = wallets[0].externalAddress;
+      // }
+      console.log(JSON.stringify(wallets));
       return wallets;
     },
 

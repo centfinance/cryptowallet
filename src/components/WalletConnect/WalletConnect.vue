@@ -22,7 +22,7 @@
             />
           </div>
           <h1 class="header-h1">
-            Wallet Connect {{ requests.length }} {{ chainId }}
+            Wallet Connect {{ requests.length }} {{ newValue }}
           </h1>
         </div>
         <q-card-section
@@ -315,6 +315,7 @@ export default {
       },
       connector: WalletConnect,
       requests: [],
+      newValue: this.chainId,
     };
   },
   computed: {

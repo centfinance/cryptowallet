@@ -130,6 +130,9 @@ export default {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
     },
     coinLogo() {
+      if (!this.coin) {
+        return '';
+      }
       if (this.coin.icon) {
         return `data:image/png;base64, ${this.coin.icon}`;
       }

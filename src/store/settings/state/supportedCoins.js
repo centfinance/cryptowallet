@@ -86,7 +86,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
   },
   {
@@ -101,7 +101,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
   },
   {
@@ -116,7 +116,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
     rampNetwork: true,
   },
@@ -132,7 +132,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
     rampNetwork: true,
   },
@@ -148,7 +148,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
   },
   {
@@ -163,7 +163,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
   },
   {
@@ -178,7 +178,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
   },
   {
@@ -193,7 +193,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
   },
   {
@@ -208,7 +208,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: true,
   },
   {
@@ -223,7 +223,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: false,
   },
   {
@@ -312,7 +312,7 @@ export default [
     network: 'ETHEREUM',
     denomination: '0.00000000',
     minConfirmations: 11,
-    api: supportedNetworks.ETHERUM,
+    api: supportedNetworks.ETHEREUM,
     transak: false,
     testnet: false,
   },

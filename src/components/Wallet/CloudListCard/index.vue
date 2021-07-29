@@ -1,6 +1,7 @@
 <template>
   <div class="cloud-list">
     <q-card
+      v-if="currentWallet.length>0"
       class="my-card rounded-border-top"
       flat
       round
@@ -9,8 +10,8 @@
       <q-card-section>
         <div class="text-overline text-weight-bold text-orange-9">
           <q-avatar size="20px">
-            <img :src="iconPath">
-          </q-avatar> {{ network }} ({{ wallet.length }}) {{address}}
+            <img :src="logo">
+          </q-avatar> {{ display }} ({{ currentWallet.length }})
         </div>
         <!-- <div class="text-h6 q-mt-sm q-mb-xs">
             Address
@@ -52,7 +53,7 @@
         <q-btn
           flat
           color="grey"
-          :label="getFormattedBalance(wallet)"
+          :label="getFormattedBalance()"
         />
 
         <q-btn
@@ -71,10 +72,10 @@
           <hr style="border-top:1px grey">
           <q-card-section class="text-subitle2">
             <CloudListItem
-              v-for="w in wallet"
+              v-for="w in currentWallet"
               :key="w.displayName"
               :wallet="w"
-              :currency="currency"
+              :currency="selectedCurrency"
             />
           </q-card-section>
         </div>
@@ -98,6 +99,7 @@ import SelectCoinModal from '@/components/Modals/SelectCoin';
 import WalletConnect from '@/components/WalletConnect/WalletConnect';
 import {
   AmountFormatter,
+  getBalance,
   // refreshWallet,
 } from '@/helpers';
 
@@ -115,14 +117,11 @@ export default {
     network: {
       type: String,
     },
-    iconPath: {
-      type: String,
-    },
     address: {
       type: String,
     },
-    currency: {
-      type: Object,
+    display: {
+      type: String,
     },
   },
   data() {
@@ -142,13 +141,55 @@ export default {
         this.$store.dispatch('modals/setSelectCoinModalOpened', value);
       },
     },
+    currentChain() {
+      return this.chainId;
+    },
+    currentWallet() {
+      return this.wallet;
+    },
+    logo() {
+      if (this.network.includes('Ethereum')) { // Ethereum Kovan
+        return 'statics/icons/Ethereum.svg';
+      }
+      if (this.network.includes('XDai')) {
+        return 'statics/icons/XDai.png';
+      }
+      return `statics/icons/${this.network}.svg`;
+    },
+    selectedCurrency() {
+      return this.$store.state.settings.selectedCurrency;
+    },
   },
   methods: {
-    getFormattedBalance(bal) {
+    getBalance() {
+      let balance = 0;
+      this.wallet.forEach((wallet) => {
+        const { unconfirmed } = getBalance(wallet, this.authenticatedAccount);
+        const price = this.$store.getters['entities/latestPrice/find'](`${this.network === 'Celo' ? 'celo' : wallet.identifier}_${this.selectedCurrency.code}`);
+        if (price) {
+          const formattedAmount = new AmountFormatter({
+            amount: unconfirmed,
+            rate: price.data.PRICE,
+            format: '0.00',
+            coin: wallet.name,
+            prependPlusOrMinus: false,
+            currency: this.selectedCurrency,
+            toCurrency: true,
+            toCoin: false,
+            withCurrencySymbol: false,
+          });
+
+          balance += parseFloat(formattedAmount.getFormatted());
+        }
+      });
+      return balance;
+    },
+    getFormattedBalance() {
+      const bal = this.getBalance();
       const formattedBalance = new AmountFormatter({
         amount: bal,
         format: '0,0[.]00',
-        currency: this.currency,
+        currency: this.selectedCurrency,
         toCurrency: false,
         toCoin: false,
         withCurrencySymbol: true,
@@ -166,11 +207,27 @@ export default {
       this.$store.dispatch('modals/setSelectCoinModalOpened', true);
     },
     connect() {
-      console.log(`Connect with: ${JSON.stringify(this.wallet)}`);
-      this.chainId = this.wallet[0].hdWallet.network.chainId; // 44787;
+      // console.log(`Connect with: ${JSON.stringify(this.wallet)}`);
+      console.log(`Connecting...${this.chainId}`);
+      this.chainId = null;
+
+      // eslint-disable-next-line no-magic-numbers
+      this.chainId = this.getChainId(this.display); // 44787;
       this.address = this.wallet[0].externalAddress;
       // eslint-disable-next-line prefer-destructuring
       this.$store.dispatch('modals/setWalletConnectModalOpened', true);
+    },
+    getChainId(val) {
+      switch (val) {
+        case 'Celo ALFAJORE':
+          // eslint-disable-next-line no-magic-numbers
+          return 44787;
+        case 'Celo':
+          // eslint-disable-next-line no-magic-numbers
+          return 42220;
+        default:
+          return this.wallet[0].hdWallet.network.chainId;
+      }
     },
     closeModal() {
       // this.refreshPrices();

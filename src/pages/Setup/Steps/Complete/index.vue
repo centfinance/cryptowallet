@@ -112,6 +112,8 @@ export default {
             const xdaiWallet = await this.enableWallet('XDai');
             // eslint-disable-next-line no-unused-vars
             const celoWallet = await this.enableWallet('Celo');
+            // eslint-disable-next-line no-unused-vars
+            const kovanWallet = await this.enableWallet('Ethereum Kovan');
 
             await this.accountInitializer.createERC20Wallets(
               this.setup,
