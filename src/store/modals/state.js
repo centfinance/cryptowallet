@@ -20,7 +20,7 @@ export default {
   updateEmailModalOpened: false,
   exportKeysModalOpened: false,
   rootedNoticeModalOpened: false,
-  walletConnectModalOpened: false,
+  walletConnectModalOpened: null,
   signTransactionModalOpened: false,
-  selectCoinModalOpened: false,
+  selectCoinModalOpened: null,
 };

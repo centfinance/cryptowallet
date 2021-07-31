@@ -1,17 +1,17 @@
 <template>
   <div class="cloud-list">
     <q-card
-      v-if="currentWallet.length>0"
-      class="my-card rounded-border-top"
+      v-if="wallet.length>0"
+      class="my-card q-mb-sm rounded-border-top"
       flat
       round
       bordered
     >
-      <q-card-section>
+      <q-card-section class="q-pa-sm">
         <div class="text-overline text-weight-bold text-orange-9">
           <q-avatar size="20px">
             <img :src="logo">
-          </q-avatar> {{ display }} ({{ currentWallet.length }})
+          </q-avatar> {{ display }} ({{ wallet.length }})
         </div>
         <!-- <div class="text-h6 q-mt-sm q-mb-xs">
             Address
@@ -28,7 +28,7 @@
           />
         </div>
       </q-card-section>
-      <q-card-actions class="justify-start">
+      <q-card-actions class="justify-start q-pa-xs">
         <q-btn @click.prevent="connect">
           <q-avatar size="20px">
             <img src="~assets/wallet-connect.svg">
@@ -41,7 +41,7 @@
           size="xs"
           color="grey"
           flat
-          @click="openSelectCoinModal()"
+          @click="openSelectCoinModal(false)"
         />
         <q-btn
           flat
@@ -72,8 +72,8 @@
           <hr style="border-top:1px grey">
           <q-card-section class="text-subitle2">
             <CloudListItem
-              v-for="w in currentWallet"
-              :key="w.displayName"
+              v-for="w in wallet"
+              :key="w.id"
               :wallet="w"
               :currency="selectedCurrency"
             />
@@ -82,10 +82,12 @@
       </q-slide-transition>
     </q-card>
     <SelectCoinModal
-      :wallets="selectCoinWallet"
+      :key-id="display"
+      :select-coin-wallets="wallet"
       :buy="buy"
     />
     <WalletConnect
+      :key="wallet.id"
       :chain-id="chainId"
       :address="address"
     />
@@ -127,25 +129,21 @@ export default {
   data() {
     return {
       visible: false,
-      selectCoinWallet: null,
       buy: false,
       chainId: null,
     };
   },
   computed: {
-    selectCoinModalOpened: {
-      get() {
-        return this.$store.state.modals.selectCoinModalOpened;
-      },
-      set(value) {
-        this.$store.dispatch('modals/setSelectCoinModalOpened', value);
-      },
-    },
+    // selectCoinModalOpened: {
+    //   get() {
+    //     return this.$store.state.modals.selectCoinModalOpened;
+    //   },
+    //   set(value) {
+    //     this.$store.dispatch('modals/setSelectCoinModalOpened', value);
+    //   },
+    // },
     currentChain() {
       return this.chainId;
-    },
-    currentWallet() {
-      return this.wallet;
     },
     logo() {
       if (this.network.includes('Ethereum')) { // Ethereum Kovan
@@ -182,10 +180,12 @@ export default {
           balance += parseFloat(formattedAmount.getFormatted());
         }
       });
+      this.$emit('cardBalanace', { network: this.display, balance });
       return balance;
     },
     getFormattedBalance() {
       const bal = this.getBalance();
+
       const formattedBalance = new AmountFormatter({
         amount: bal,
         format: '0,0[.]00',
@@ -194,28 +194,23 @@ export default {
         toCoin: false,
         withCurrencySymbol: true,
       });
-
       return formattedBalance.getFormatted();
     },
     toggleVisibility() {
       this.visible = !this.visible;
     },
     openSelectCoinModal(buy = false) {
-      console.log(`Opening: ${JSON.stringify(this.wallet)}`);
-      this.selectCoinWallet = this.wallet;
       this.buy = buy;
-      this.$store.dispatch('modals/setSelectCoinModalOpened', true);
+      this.selectCoinWallet = this.wallet;
+      this.$store.dispatch('modals/setSelectCoinModalOpened', { open: true, selectedKey: this.display });
     },
     connect() {
-      // console.log(`Connect with: ${JSON.stringify(this.wallet)}`);
-      console.log(`Connecting...${this.chainId}`);
       this.chainId = null;
-
       // eslint-disable-next-line no-magic-numbers
-      this.chainId = this.getChainId(this.display); // 44787;
+      this.chainId = this.getChainId(this.display);
       this.address = this.wallet[0].externalAddress;
       // eslint-disable-next-line prefer-destructuring
-      this.$store.dispatch('modals/setWalletConnectModalOpened', true);
+      this.$store.dispatch('modals/setWalletConnectModalOpened', { open: true, selectedChainId: this.chainId });
     },
     getChainId(val) {
       switch (val) {

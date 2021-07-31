@@ -30,7 +30,7 @@
 
         <q-card-section>
           <q-list
-            v-for="wallet in currentWallet"
+            v-for="wallet in selectCoinWallets"
             :key="wallet.displayName"
             :wallet="wallet"
           >
@@ -59,23 +59,28 @@ export default {
     CoinHeader,
   },
   props: {
-    wallets: {
+    selectCoinWallets: {
       type: Array,
     },
     buy: {
       type: Boolean,
+    },
+    keyId: {
+      type: String,
     },
   },
   computed: {
     buyEnabled() {
       return this.buy;
     },
-    currentWallet() {
-      return this.wallets;
-    },
     selectCoinModalOpened: {
       get() {
-        return this.$store.state.modals.selectCoinModalOpened;
+        const payLoad = this.$store.state.modals.selectCoinModalOpened;
+        if (!payLoad) { return false; }
+        if (this.keyId === payLoad.selectedKey) {
+          return true;
+        }
+        return false;
       },
       set(value) {
         this.$store.dispatch('modals/setSelectCoinModalOpened', value);
@@ -84,9 +89,6 @@ export default {
   },
   methods: {
     closeModal() {
-      // this.refreshPrices();
-      console.log(`closing: ${this.buy}`);
-      this.wallets = null;
       this.selectCoinModalOpened = false;
     },
   },

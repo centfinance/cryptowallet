@@ -13,7 +13,7 @@
     <q-scroll-area
       v-if="wallets.length > 0"
       ref="scrollArea"
-      class="scroll-area extended cloud-scroll q-px-md q-pt-lg"
+      class="scroll-area extended cloud-scroll q-pt-lg"
     >
       <div
         style="color:grey"
@@ -39,17 +39,18 @@
           /> -->
         </div>
       </div>
-      <div
+      <template
         v-for="w in wallets"
-        :key="w.id"
       >
         <CloudListCard
+          :key="w.id"
           :wallet="fetchWallet(w.network)"
           :network="w.name"
           :display="w.displayName"
           :address="w.externalAddress"
-        /><br>
-      </div>
+          @cardBalanace="cardBalanaceRecd"
+        />
+      </template>
     </q-scroll-area>
     <!-- <WalletConnect
       :chain-id="chainId"
@@ -92,9 +93,8 @@ export default {
       checkForUpdates: null,
       connectWalletXDAI: false,
       chainId: null,
-      XDAIBalance: null,
-      ETHBalance: null,
-      CELOBalance: null,
+      totalBalance: 0,
+      networkBalance: [],
       // eslint-disable-next-line no-magic-numbers
       mainNetIds: [1, 42220, 100],
       // eslint-disable-next-line no-magic-numbers
@@ -149,12 +149,12 @@ export default {
         .where('testnet', true).get();
       return coins.map(({ network }) => { return network; });
     },
-    totalBalance() {
-      return this.ETHBalance + this.XDAIBalance + this.CELOBalance;
-    },
-
     totalBalanceFormatted() {
-      return this.getFormattedBalance(this.totalBalance);
+      let b = 0;
+      this.networkBalance.forEach((item) => {
+        b += item.balance;
+      });
+      return this.getFormattedBalance(b);
     },
   },
   watch: {
@@ -165,9 +165,6 @@ export default {
         this.updateInterval();
       }
     },
-  },
-  mounted: {
-
   },
 
   async activated() {
@@ -181,6 +178,16 @@ export default {
     clearInterval(this.checkForUpdates);
   },
   methods: {
+    cardBalanaceRecd(val) {
+      const obj = this.networkBalance.filter((item) => {
+        return item.network === val.network;
+      });
+      if (obj.length > 0) {
+        obj.balance = val.balance;
+      } else {
+        this.networkBalance.push(val);
+      }
+    },
     getFormattedBalance(bal) {
       const formattedBalance = new AmountFormatter({
         amount: bal,
@@ -241,7 +248,7 @@ export default {
       // if (this.address === '') {
       //   this.address = wallets[0].externalAddress;
       // }
-      console.log(JSON.stringify(wallets));
+      // console.log(JSON.stringify(wallets));
       return wallets;
     },
 

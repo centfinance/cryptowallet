@@ -22,7 +22,7 @@
             />
           </div>
           <h1 class="header-h1">
-            Wallet Connect {{ requests.length }} {{ newValue }}
+            Wallet Connect
           </h1>
         </div>
         <q-card-section
@@ -270,6 +270,7 @@ import SignTransaction from '@/components/WalletConnect/SignTransaction';
 import PersonalSign from '@/components/WalletConnect/PersonalSign';
 import WalletConnect from '@walletconnect/client';
 import { convertHexToUtf8 } from '@walletconnect/utils';
+import { Wallet as eWallet } from 'ethers';
 
 export default {
   name: 'WalletConnect',
@@ -315,7 +316,6 @@ export default {
       },
       connector: WalletConnect,
       requests: [],
-      newValue: this.chainId,
     };
   },
   computed: {
@@ -338,8 +338,11 @@ export default {
     },
     walletConnectModalOpened: {
       get() {
-        // this.openWalletConnect();
-        return this.$store.state.modals.walletConnectModalOpened;
+        const payLoad = this.$store.state.modals.walletConnectModalOpened;
+        if (payLoad && this.chainId === payLoad.selectedChainId) {
+          return true;
+        }
+        return false;
       },
       set(value) {
         this.$store.dispatch('modals/setWalletConnectModalOpened', value);
@@ -463,13 +466,14 @@ export default {
         this.connector.on('call_request', async (error, payload) => {
           console.log(`payloaf: ${JSON.stringify(payload)}`);
           // ${this.connector.chainId} -- ${this.address}`);
-          this.chainId = this.chainId != null
-            ? this.chainId : this.connector.chainId;
+          // this.chainId = this.chainId != null
+          //   ? this.chainId : this.connector.chainId;
           // console.log(`wallet: ${JSON.stringify(this.wallet)}`);
           this.requests.push(payload);
           switch (payload.method) {
             case 'eth_sendTransaction':
             case 'eth_signTransaction':
+              console.log('Sending payload');
               this.renderWalletConnectRequest(payload);
               break;
             case 'personal_sign':
@@ -514,7 +518,7 @@ export default {
     renderWalletConnectRequest(payload) {
       this.payLoad.id = payload.id;
       this.payLoad.method = payload.method;
-      this.$store.dispatch('settings/setWalletConnectRequestStatus', true);
+      // this.$store.dispatch('settings/setWalletConnectRequestStatus', true);
       switch (payload.method) {
         case 'eth_sendTransaction':
         case 'eth_signTransaction':
@@ -532,7 +536,7 @@ export default {
           // eslint-disable-next-line prefer-destructuring
           this.payLoad.transaction = payload.params[0];
           this.signTransaction = true;
-          this.$store.dispatch('modals/setWalletConnectModalOpened', true);
+          this.$store.dispatch('modals/setWalletConnectModalOpened', { open: true, selectedChainId: this.chainId });
           break;
 
         case 'personal_sign':
@@ -643,13 +647,57 @@ export default {
       // if (this.payLoad.method === 'eth_sendTransaction') { return this.sendTransaction(); }
       const { transaction } = this.payLoad;
       if (this.wallet) {
-        kit.connection.addAccount('c1e09cff2db41ec5c80228fa12f4b2d1d6a58d9b0d636d0427f4f34869b3db11');
-        const anAddress = '0xfbedc68326cfbdf468e5375bf157266046519bc9';
-        const stabletoken = await kit.contracts.getStableToken();
-        const cUSDtx = await stabletoken.transfer(anAddress, transaction.data).send({ from: '0x57142fd6068f8751dac930e6e45a2f61072f732d', feeCurrency: stabletoken.address });
+        const CELO_DERIVATION_PATH_BASE = "m/44'/52752'/0'";
+        const mnemonic = 'protect solar giant gate hero output slide unfold isolate kingdom alley vague giraffe wheat task disagree sentence hawk trade gentle pigeon marble truly option';
+        const derivationPath = `${CELO_DERIVATION_PATH_BASE}/0/0`;
+        // ethers.provider('https://alfajores-forno.celo-testnet.org');// .getDefaultProvider();
+        const w = eWallet.fromMnemonic(mnemonic, derivationPath);
+        // const wNew = eWallet.wallet(w.privateKey, 'https://alfajores-forno.celo-testnet.org');
+        const customHttpProvider = new ethers.providers.JsonRpcProvider('https://alfajores-forno.celo-testnet.org');
+
+        // const n = w.connect(ethers.getDefaultProvider('kovan'));
+        // const pk = w.privateKey;
+        const nw = new ethers.Wallet(w.privateKey, customHttpProvider);
+        console.log(`eWALLET: ${JSON.stringify(w)}`);
+        console.log(`eWALLET: ${JSON.stringify(nw)}`);
+        if (transaction.from) {
+          delete transaction.from;
+        }
+
+        // ethers.js expects gasLimit instead
+        if ('gas' in transaction) {
+          transaction.gasLimit = transaction.gas;
+          delete transaction.gas;
+        }
+
+
+        const hash = await nw.sendTransaction(transaction);
+        console.log(`eWALLET: ${JSON.stringify(hash)}`);
+        console.log(`eWALLET: ${JSON.stringify(w.privateKey)}`);
+
+
+        // kit.connection.
+        // addAccount('c1e09cff2db41ec5c80228fa12f4b2d1d6a58d9b0d636d0427f4f34869b3db11');
+        // const anAddress = '0xfbedc68326cfbdf468e5375bf157266046519bc9';
+        // // const stabletoken = await kit.contracts.getStableToken();
+        // // eslint-disable-next-line no-underscore-dangle
+
+        // const tx = await kit.sendTransaction(
+        //   { from: this.wallet.address, to: anAddress },
+        // );
+        // // console.log(JSON.stringify(tx));
+        // const hash = await tx.getHash();
+        // console.log(hash);
+        return hash.hash;
+        // const receipt = await tx.waitReceipt();
+        // const cUSDtx = await stabletoken.transfer(anAddress, transaction.data)
+        //   .send({ from: '0x57142fd6068f8751dac930e6e45a2f61072f732d' });
+        // const cUSDtx = await stabletoken.transfer(anAddress, transaction.data)
+        // eslint-disable-next-line max-len
+        // .send({ from: '0x57142fd6068f8751dac930e6e45a2f61072f732d', feeCurrency: stabletoken.address });
 
         // 16. Wait for the transactions to be processed
-        const cUSDReceipt = await cUSDtx.waitReceipt();
+        // const cUSDReceipt = await cUSDtx.waitReceipt();
         // const { transaction } = this.payLoad;
         // console.log(`transaction: ${JSON.stringify(transaction)}`);
         // const { signer } = this.wallet;
@@ -673,10 +721,11 @@ export default {
         // console.log(`Signer: ${JSON.stringify(signer)}`);
 
         // const result = await signer.sendTransaction(transaction);
-        console.log(`RECPT: ${JSON.stringify(cUSDReceipt)}`);
-        this.loading = false;
-        return cUSDReceipt.transactionHash;
-        // return result.hash;
+        // console.log(`RECPT: ${JSON.stringify(receipt)}`);
+        // this.loading = false;
+        // return tx;
+        // return cUSDReceipt.transactionHash;
+        // return hash;
       }
       return null;
     },
