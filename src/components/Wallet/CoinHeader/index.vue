@@ -10,6 +10,12 @@
           >
           {{ wallet.symbol }}
         </div>
+        <div
+          textMiddleEllipsis="4"
+          class="text-caption text-grey"
+        >
+          {{ wallet.name }}
+        </div>
 
         <div
           v-if="simple || quick"

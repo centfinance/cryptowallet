@@ -73,7 +73,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import Coin from '@/store/wallet/entities/coin';
 import Wallet from '@/store/wallet/entities/wallet';
 
 export default {
@@ -93,6 +92,8 @@ export default {
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
       delay: (state) => { return state.settings.delay; },
       scannedAddress: (state) => { return state.qrcode.scannedAddress; },
+      mainNetIds: (state) => { return state.settings.mainNetIds; },
+      testNetIds: (state) => { return state.settings.testNetIds; },
 
     }),
     exportKeysModalOpened: {
@@ -110,29 +111,21 @@ export default {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
     },
     supportedNetworks() {
-      const networks = Coin.query()
-        .where('sdk', 'Ethereum')
+      const networks = Wallet.query()
+        .where('account_id', this.authenticatedAccount)
         .get();
       if (this.demoMode) {
-        return networks.filter(({ testnet }) => { return testnet; }).map((coin) => {
-          return {
-            label: coin.name,
-            value: coin.network,
-          };
+        return networks.filter((w) => {
+          return this.testNetIds.includes(w.chainId);
         });
       }
-      if (!this.showTestnets) {
-        return networks.filter(({ testnet }) => { return !testnet; }).map((coin) => {
-          return {
-            label: coin.name,
-            value: coin.network,
-          };
-        });
-      }
-      return networks.map((coin) => {
+
+      return networks.filter((w) => {
+        return this.mainNetIds.includes(w.chainId);
+      }).map((c) => {
         return {
-          label: coin.name,
-          value: coin.network,
+          label: c.name,
+          value: c.network,
         };
       });
     },
@@ -144,6 +137,11 @@ export default {
     },
     key() {
       if (this.wallet) {
+        if (this.token.value === 'CELO') {
+          const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
+          const keypair = coinSDK.generateKeyPair(this.wallet.hdWallet, 0);
+          return keypair.privateKey;
+        }
         return this.coinSDKS.Ethereum(this.token.value)
           .generateKeyPair(this.wallet.hdWallet, 0).privateKey;
       }

@@ -52,26 +52,17 @@
         />
       </template>
     </q-scroll-area>
-    <!-- <WalletConnect
-      :chain-id="chainId"
-      :address="address"
-    /> -->
-    <!-- <SelectCoinModal
-      :wallets="selectCoinWallet"
-      :buy="buy"
-    /> -->
+    <WalletConnect />
   </div>
 </template>
 
 <script>
-// import CloudListItem from '@/components/Wallet/CloudListItem';
 import CloudListCard from '@/components/Wallet/CloudListCard';
-// import SelectCoinModal from '@/components/Modals/SelectCoin';
-// import WalletConnect from '@/components/WalletConnect/WalletConnect';
 import { mapState } from 'vuex';
 
 import Wallet from '@/store/wallet/entities/wallet';
 import Coin from '@/store/wallet/entities/coin';
+import WalletConnect from '@/components/WalletConnect/WalletConnect';
 
 import {
   AmountFormatter,
@@ -83,6 +74,7 @@ export default {
   name: 'CloudList',
   components: {
     CloudListCard,
+    WalletConnect,
   },
 
   data() {
@@ -93,6 +85,7 @@ export default {
       checkForUpdates: null,
       connectWalletXDAI: false,
       chainId: null,
+      address: null,
       totalBalance: 0,
       networkBalance: [],
       // eslint-disable-next-line no-magic-numbers
@@ -239,16 +232,11 @@ export default {
           return !this.testnets.includes(network);
         });
       }
-      console.log(`Network: ${networkType}`);
       if (wallets.length < 1) { return []; }
       if (networkType === 'CELO' || networkType === 'CELO_ALFAJORES') {
         this.celoAddress = wallets[0].externalAddress;
         return wallets.filter((wallet) => { return wallet.parentName !== ''; });
       }
-      // if (this.address === '') {
-      //   this.address = wallets[0].externalAddress;
-      // }
-      // console.log(JSON.stringify(wallets));
       return wallets;
     },
 

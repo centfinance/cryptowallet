@@ -1655,5 +1655,24 @@
     {
         "symbol": "ZRX",
         "name": "0x"
+    },
+    {
+        "symbol": "CUSD",
+        "name": "Celo Dollar",
+        "png": true
+    },
+    {
+        "symbol": "CELO",
+        "name": "Celo native asset"
+    },
+    {
+        "symbol": "CEUR",
+        "name": "Celo Euro",
+        "png": true
+    },
+    {
+        "symbol": "CGBP",
+        "name": "Celo GBP",
+        "png": true
     }
 ]

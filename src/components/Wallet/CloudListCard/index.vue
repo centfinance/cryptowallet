@@ -86,23 +86,16 @@
       :select-coin-wallets="wallet"
       :buy="buy"
     />
-    <WalletConnect
-      :key="wallet.id"
-      :chain-id="chainId"
-      :address="address"
-    />
   </div>
 </template>
 
 <script>
-// import Wallet from '@/store/wallet/entities/wallet';
 import CloudListItem from '@/components/Wallet/CloudListItem';
 import SelectCoinModal from '@/components/Modals/SelectCoin';
-import WalletConnect from '@/components/WalletConnect/WalletConnect';
+
 import {
   AmountFormatter,
   getBalance,
-  // refreshWallet,
 } from '@/helpers';
 
 export default {
@@ -110,7 +103,6 @@ export default {
   components: {
     CloudListItem,
     SelectCoinModal,
-    WalletConnect,
   },
   props: {
     wallet: {
@@ -131,17 +123,10 @@ export default {
       visible: false,
       buy: false,
       chainId: null,
+      walletConnectedId: null,
     };
   },
   computed: {
-    // selectCoinModalOpened: {
-    //   get() {
-    //     return this.$store.state.modals.selectCoinModalOpened;
-    //   },
-    //   set(value) {
-    //     this.$store.dispatch('modals/setSelectCoinModalOpened', value);
-    //   },
-    // },
     currentChain() {
       return this.chainId;
     },
@@ -157,6 +142,11 @@ export default {
     selectedCurrency() {
       return this.$store.state.settings.selectedCurrency;
     },
+  },
+  mounted() {
+    this.$root.$on('walletConnected', (args) => {
+      this.walletConnectedId = args.walletConnectedId;
+    });
   },
   methods: {
     getBalance() {
@@ -210,7 +200,7 @@ export default {
       this.chainId = this.getChainId(this.display);
       this.address = this.wallet[0].externalAddress;
       // eslint-disable-next-line prefer-destructuring
-      this.$store.dispatch('modals/setWalletConnectModalOpened', { open: true, selectedChainId: this.chainId });
+      this.$store.dispatch('modals/setWalletConnectModalOpened', { open: true, chainId: this.chainId, address: this.address });
     },
     getChainId(val) {
       switch (val) {
