@@ -73,6 +73,10 @@
         </div>
       </div>
       <div class="wallet-prices">
+        <div class="in-coin">
+          {{ balanceInCoin }}
+          <!-- {{ coinSymbol }} -->
+        </div>
         <Amount
           v-if="latestPrice"
           :amount="unconfirmedBalance()"
@@ -83,10 +87,6 @@
           :coin="wallet.name"
           format="0,0[.]00"
         />
-        <div class="in-coin">
-          {{ balanceInCoin }}
-          <!-- {{ coinSymbol }} -->
-        </div>
       </div>
     </div>
   </div>
@@ -170,7 +170,7 @@ export default {
     },
 
     latestPrice() {
-      const val = this.wallet.network === 'CELO' ? this.wallet.network.toString().toLowerCase() : this.wallet.identifier;
+      const val = this.wallet.symbol === 'CELO' ? this.wallet.network.toString().toLowerCase() : this.wallet.identifier;
       const prices = this.$store.getters['entities/latestPrice/find'](`${val}_${this.selectedCurrency.code}`);
       if (prices) {
         return prices.data.PRICE;

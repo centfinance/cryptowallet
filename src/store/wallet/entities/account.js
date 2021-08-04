@@ -31,6 +31,7 @@ export default class Account extends Model {
       showTestnets: this.attr(true),
       darkMode: this.boolean(false),
       demoMode: this.boolean(false),
+      testMode: this.boolean(false),
     };
   }
 

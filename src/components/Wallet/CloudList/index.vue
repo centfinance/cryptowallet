@@ -25,6 +25,12 @@
             name="account_balance_wallet"
           />
           My Balance
+          <div
+            v-if="testMode"
+            class="text-caption text-red"
+          >
+            Connected to Test network
+          </div>
         </div>
         <div class="q-px-xs grey">
           {{ totalBalanceFormatted }}
@@ -107,7 +113,7 @@ export default {
       const wallets = Wallet.query()
         .where('account_id', this.authenticatedAccount)
         .get();
-      if (this.demoMode) {
+      if (this.testMode) {
         return wallets.filter((w) => {
           return this.testNetIds.includes(w.chainId);
         });
@@ -133,6 +139,9 @@ export default {
     showTestnets() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).showTestnets;
     },
+    testMode() {
+      return this.$store.getters['entities/account/find'](this.authenticatedAccount).testMode;
+    },
     demoMode() {
       // return true;
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
@@ -157,6 +166,9 @@ export default {
       } else {
         this.updateInterval();
       }
+    },
+    testMode() {
+      this.networkBalance = [];
     },
   },
 

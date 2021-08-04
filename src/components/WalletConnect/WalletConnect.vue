@@ -260,17 +260,13 @@
 import { mapState } from 'vuex';
 import * as ethers from 'ethers';
 import * as Web3 from 'web3';
-// import Coin from '@/store/wallet/entities/coin';
-import { newKit } from '@celo/contractkit';
-
-const kit = newKit('https://alfajores-forno.celo-testnet.org');
 import Wallet from '@/store/wallet/entities/wallet';
 
 import SignTransaction from '@/components/WalletConnect/SignTransaction';
 import PersonalSign from '@/components/WalletConnect/PersonalSign';
 import WalletConnect from '@walletconnect/client';
 import { convertHexToUtf8 } from '@walletconnect/utils';
-import { Wallet as eWallet } from 'ethers';
+
 
 export default {
   name: 'WalletConnect',
@@ -278,18 +274,12 @@ export default {
     SignTransaction,
     PersonalSign,
   },
-  props: {
-    chainId: {
-      type: Number,
-    },
-    address: {
-      type: String,
-    },
-  },
   data() {
     return {
       showPeer: false,
       confirm: false,
+      address: null,
+      chainId: null,
       payLoad: {
         data: '',
         from: '',
@@ -300,7 +290,6 @@ export default {
         value: '',
         id: '',
         raw: '',
-        address: this.address,
         message: '',
         method: '',
         transaction: Object,
@@ -339,10 +328,14 @@ export default {
     walletConnectModalOpened: {
       get() {
         const payLoad = this.$store.state.modals.walletConnectModalOpened;
-        if (payLoad && this.chainId === payLoad.selectedChainId) {
-          return true;
+        if (!payLoad) { return false; }
+        if (!this.connector) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          this.chainId = payLoad.chainId;
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          this.address = payLoad.address;
         }
-        return false;
+        return true;
       },
       set(value) {
         this.$store.dispatch('modals/setWalletConnectModalOpened', value);
@@ -363,28 +356,22 @@ export default {
       if (!this.connector || this.connector._peerMeta == null) {
         this.killSession();
       } else {
-        // eslint-disable-next-line no-underscore-dangle
-        this.peerMeta = this.connector._peerMeta;
-        const address = this.connector.accounts[0];
-        this.address = address;
-        this.chainId = this.connector.chainId;
-        this.activeIndex = this.connector.accounts.indexOf(address);
+        this.setUp();
         this.subscribeToEvents();
       }
     }
-    const goldtoken = await kit.contracts.getGoldToken();
-    const stabletoken = await kit.contracts.getStableToken();
-    const anAddress = '0x57142fD6068F8751dAc930E6E45a2f61072f732D';
-
-    // 5. Get token balances
-    const celoBalance = await goldtoken.balanceOf(anAddress);
-    const cUSDBalance = await stabletoken.balanceOf(anAddress);
-
-    // Print balances
-    console.log(`${anAddress} CELO balance: ${celoBalance.toString()}`);
-    console.log(`${anAddress} cUSD balance: ${cUSDBalance.toString()}`);
   },
   methods: {
+    setUp() {
+      if (this.connector) {
+        // eslint-disable-next-line no-underscore-dangle
+        this.peerMeta = this.connector._peerMeta;
+        const a = this.connector.accounts[0];
+        this.address = a;
+        this.chainId = this.connector.chainId;
+        this.$root.$emit('walletConnected', { chainId: this.chainId });
+      }
+    },
     approveSession() {
       const cId = this.chainId;
       const accounts = [this.address];
@@ -464,16 +451,12 @@ export default {
         });
 
         this.connector.on('call_request', async (error, payload) => {
-          console.log(`payloaf: ${JSON.stringify(payload)}`);
-          // ${this.connector.chainId} -- ${this.address}`);
-          // this.chainId = this.chainId != null
-          //   ? this.chainId : this.connector.chainId;
-          // console.log(`wallet: ${JSON.stringify(this.wallet)}`);
+          this.setUp();
           this.requests.push(payload);
           switch (payload.method) {
             case 'eth_sendTransaction':
             case 'eth_signTransaction':
-              console.log('Sending payload');
+
               this.renderWalletConnectRequest(payload);
               break;
             case 'personal_sign':
@@ -499,6 +482,7 @@ export default {
 
           this.connected = true;
           this.uri = '';
+          this.setUp();
         });
 
         this.connector.on('disconnect', (error, payload) => {
@@ -536,7 +520,7 @@ export default {
           // eslint-disable-next-line prefer-destructuring
           this.payLoad.transaction = payload.params[0];
           this.signTransaction = true;
-          this.$store.dispatch('modals/setWalletConnectModalOpened', { open: true, selectedChainId: this.chainId });
+          this.$store.dispatch('modals/setWalletConnectModalOpened', { open: true, chainId: this.chainId, address: this.address });
           break;
 
         case 'personal_sign':
@@ -554,6 +538,7 @@ export default {
     },
     closeModal() {
       // this.refreshPrices();
+      this.loading = false;
       this.walletConnectModalOpened = false;
     },
     async signEthereumRequests() {
@@ -566,6 +551,7 @@ export default {
           case 'eth_signTransaction':
             result = await this.approveTransaction();
             this.signTransaction = false;
+            this.loading = false;
             break;
           case 'personal_sign':
             result = await this.signPersonalMessage();
@@ -591,143 +577,52 @@ export default {
         }
       }
     },
-    async sendTransaction() {
-      const { transaction } = this.payLoad;
-      if (this.wallet) {
-        // if (
-        //   transaction.from
-        // && transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
-        // ) {
-        //   console.error("Transaction request From doesn't match active account");
-        // }
-
-        // if (transaction.from) {
-        //   delete transaction.from;
-        // }
-
-        // ethers.js expects gasLimit instead
-        if ('gas' in transaction) {
-          transaction.gasLimit = transaction.gas;
-          delete transaction.gas;
-        }
-        console.log(`Provider: ${this.wallet.hdWallet.network.provider}`);
-        const web3 = new Web3('https://alfajores-forno.celo-testnet.org/');
-        web3.eth.sendTransaction({
-          from: transaction.from,
-          to: transaction.to,
-          value: transaction.value,
-          data: transaction.data,
-        }).on('transactionHash', (hash) => {
-          console.log(`TransactionHASH: ${hash}`);
-          return hash;
-        })
-          .on('error', console.error);
-        // const result = await this.wallet.sendTransaction(transaction);
-        // const result = await web3.eth.sendTransaction({
-        //   from: transaction.from,
-        //   to: transaction.to,
-        //   value: transaction.value,
-        //   gasPrice: transaction.gasPrice,
-        //   data: transaction.data,
-        // }, (err, hash) => {
-        //   if (err) { return reject(err); }
-        //   return resolve({
-        //     hash,
-        //   });
-        // });
-        // return result.hash;
-      }
-      console.error('No Active Account');
-
-      return null;
-    },
     async approveTransaction() {
       this.loading = true;
-      console.log(`Approve Transaction: ${JSON.stringify(this.wallet)}`);
-      // if (this.payLoad.method === 'eth_sendTransaction') { return this.sendTransaction(); }
-      const { transaction } = this.payLoad;
-      if (this.wallet) {
-        const CELO_DERIVATION_PATH_BASE = "m/44'/52752'/0'";
-        const mnemonic = 'protect solar giant gate hero output slide unfold isolate kingdom alley vague giraffe wheat task disagree sentence hawk trade gentle pigeon marble truly option';
-        const derivationPath = `${CELO_DERIVATION_PATH_BASE}/0/0`;
-        // ethers.provider('https://alfajores-forno.celo-testnet.org');// .getDefaultProvider();
-        const w = eWallet.fromMnemonic(mnemonic, derivationPath);
-        // const wNew = eWallet.wallet(w.privateKey, 'https://alfajores-forno.celo-testnet.org');
-        const customHttpProvider = new ethers.providers.JsonRpcProvider('https://alfajores-forno.celo-testnet.org');
 
-        // const n = w.connect(ethers.getDefaultProvider('kovan'));
-        // const pk = w.privateKey;
-        const nw = new ethers.Wallet(w.privateKey, customHttpProvider);
-        console.log(`eWALLET: ${JSON.stringify(w)}`);
-        console.log(`eWALLET: ${JSON.stringify(nw)}`);
-        if (transaction.from) {
-          delete transaction.from;
-        }
+      const { transaction } = this.payLoad;
+      if (this.getWallet()) {
+        // NEW CHANGE
+        const pKey = this.getKeyFromHDWallet();
+
+        // if (transaction.from) {
+        //   delete transaction.from;
+        // }
+        // hardcode value in case of celo?
+        // transaction.value = '00000000001';
 
         // ethers.js expects gasLimit instead
         if ('gas' in transaction) {
           transaction.gasLimit = transaction.gas;
           delete transaction.gas;
         }
+        const web3 = new Web3(this.getWallet().hdWallet.network.provider);
+        const newWallet = await web3.eth.accounts.privateKeyToAccount(pKey);
+        web3.eth.accounts.wallet.add(pKey);
+        web3.eth.defaultAccount = newWallet.address;
 
-
-        const hash = await nw.sendTransaction(transaction);
-        console.log(`eWALLET: ${JSON.stringify(hash)}`);
-        console.log(`eWALLET: ${JSON.stringify(w.privateKey)}`);
-
-
-        // kit.connection.
-        // addAccount('c1e09cff2db41ec5c80228fa12f4b2d1d6a58d9b0d636d0427f4f34869b3db11');
-        // const anAddress = '0xfbedc68326cfbdf468e5375bf157266046519bc9';
-        // // const stabletoken = await kit.contracts.getStableToken();
-        // // eslint-disable-next-line no-underscore-dangle
-
-        // const tx = await kit.sendTransaction(
-        //   { from: this.wallet.address, to: anAddress },
-        // );
-        // // console.log(JSON.stringify(tx));
-        // const hash = await tx.getHash();
-        // console.log(hash);
-        return hash.hash;
-        // const receipt = await tx.waitReceipt();
-        // const cUSDtx = await stabletoken.transfer(anAddress, transaction.data)
-        //   .send({ from: '0x57142fd6068f8751dac930e6e45a2f61072f732d' });
-        // const cUSDtx = await stabletoken.transfer(anAddress, transaction.data)
-        // eslint-disable-next-line max-len
-        // .send({ from: '0x57142fd6068f8751dac930e6e45a2f61072f732d', feeCurrency: stabletoken.address });
-
-        // 16. Wait for the transactions to be processed
-        // const cUSDReceipt = await cUSDtx.waitReceipt();
-        // const { transaction } = this.payLoad;
-        // console.log(`transaction: ${JSON.stringify(transaction)}`);
-        // const { signer } = this.wallet;
-        // console.log(`transaction: ${JSON.stringify(signer)}`);
-        // // if (
-        // //   transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
-        // // ) {
-        // //   console.error("Transaction request From doesn't match active account");
-        // //   return null;
-        // // }
-
-        // if (transaction.from) {
-        //   delete transaction.from;
-        // }
-
-        // // ethers.js expects gasLimit instead
-        // if ('gas' in transaction) {
-        //   transaction.gasLimit = transaction.gas;
-        //   delete transaction.gas;
-        // }
-        // console.log(`Signer: ${JSON.stringify(signer)}`);
-
-        // const result = await signer.sendTransaction(transaction);
-        // console.log(`RECPT: ${JSON.stringify(receipt)}`);
-        // this.loading = false;
-        // return tx;
-        // return cUSDReceipt.transactionHash;
-        // return hash;
+        const result = await web3.eth.sendTransaction(transaction);
+        // console.log(`RESULT: ${JSON.stringify(result)}`);
+        return result.transactionHash;
       }
       return null;
+    },
+    getWallet() {
+      return Wallet.query()
+        .where('account_id', this.authenticatedAccount)
+        .where('externalAddress', this.address)
+        .where('enabled', true)
+        .where('chainId', this.chainId)
+        .get()[0];
+    },
+    getKeyFromHDWallet() {
+      if (this.wallet.network === 'CELO' || this.wallet.network === 'CELO_ALFAJORES') {
+        const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
+        const keypair = coinSDK.generateKeyPair(this.wallet.hdWallet, 0);
+        return keypair.privateKey;
+      }
+      return this.coinSDKS.Ethereum(this.wallet.network)
+        .generateKeyPair(this.wallet.hdWallet, 0).privateKey;
     },
     async signPersonalMessage() {
       if (this.wallet) {

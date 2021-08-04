@@ -153,7 +153,7 @@ export default {
       let balance = 0;
       this.wallet.forEach((wallet) => {
         const { unconfirmed } = getBalance(wallet, this.authenticatedAccount);
-        const price = this.$store.getters['entities/latestPrice/find'](`${this.network === 'Celo' ? 'celo' : wallet.identifier}_${this.selectedCurrency.code}`);
+        const price = this.$store.getters['entities/latestPrice/find'](`${wallet.symbol === 'CELO' ? 'celo' : wallet.identifier}_${this.selectedCurrency.code}`);
         if (price) {
           const formattedAmount = new AmountFormatter({
             amount: unconfirmed,

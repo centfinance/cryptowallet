@@ -104,9 +104,6 @@ export default {
         this.$store.dispatch('modals/setExportKeysModalOpened', value);
       },
     },
-    showTestnets() {
-      return this.$store.getters['entities/account/find'](this.authenticatedAccount).showTestnets;
-    },
     demoMode() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
     },
