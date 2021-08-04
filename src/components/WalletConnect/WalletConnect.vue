@@ -25,6 +25,7 @@
             Wallet Connect
           </h1>
         </div>
+
         <q-card-section
           v-if="connected"
           class="row items-center no-wrap"
@@ -49,26 +50,18 @@
                 {{ peerMeta.description }}
               </q-item-label>
               <q-item-label caption>
-                {{ peerMeta.url }}
+                {{ peerMeta.url }} - <q-btn
+                  v-if="connected"
+                  size="xs"
+                  rounded
+                  icon="fas fa-times"
+                  color="red"
+                  text-color="white"
+                  @click="killSession"
+                />
               </q-item-label>
             </q-item-section>
-            <q-item-section
-              justify-center
-              side
-            >
-              <q-btn
-                v-if="connected"
-                size="xs"
-                rounded
-                color="blue"
-                text-color="white"
-                label="Disconnect"
-                @click="killSession"
-              />
-            </q-item-section>
           </q-item>
-
-
           <!-- <div>
             <div class="text-weight-bold">
               {{ peerMeta.name }}
@@ -97,6 +90,8 @@
             @click="killSession"
           /> -->
         </q-card-section>
+        <!-- <q-card-section class="row full-width items-center">
+        </q-card-section> -->
         <q-card-section
           v-if="connected"
           class="row items-center no-wrap"
@@ -117,6 +112,7 @@
             label="Approve"
             color="primary"
             flat
+            :loading="loading"
             @click="signEthereumRequests"
           />
           <q-btn
@@ -155,25 +151,13 @@
             </div>
             <div class="col">
               <q-btn
-                color="secondary"
-                text-color="info"
-                label="Connect"
+                :loading="loading"
+                color="primary"
+                text-color="white"
+                label="Go"
                 @click="openWalletConnect"
               />
             </div>
-          </div>
-          <div class="center-content-wrapper">
-            <q-circular-progress
-              v-if="loading"
-              indeterminate
-              size="40px"
-              :thickness="0.4"
-              font-size="50px"
-              color="primary"
-              track-color="grey-3"
-              center-color="grey-8"
-              class="q-ma-md"
-            />
           </div>
         </div>
 

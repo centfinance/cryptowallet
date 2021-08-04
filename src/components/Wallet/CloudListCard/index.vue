@@ -132,12 +132,12 @@ export default {
     },
     logo() {
       if (this.network.includes('Ethereum')) { // Ethereum Kovan
-        return 'statics/icons/Ethereum.svg';
+        return './statics/icons/ethereum.svg';
       }
       if (this.network.includes('XDai')) {
-        return 'statics/icons/XDai.png';
+        return './statics/icons/xdai.png';
       }
-      return `statics/icons/${this.network}.svg`;
+      return './statics/icons/celo.svg';
     },
     selectedCurrency() {
       return this.$store.state.settings.selectedCurrency;
