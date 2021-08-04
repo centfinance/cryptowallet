@@ -259,7 +259,7 @@
 <script>
 import { mapState } from 'vuex';
 import * as ethers from 'ethers';
-// import Coin from '@/store/wallet/entities/coin';
+import * as Web3 from 'web3';
 import Wallet from '@/store/wallet/entities/wallet';
 
 import SignTransaction from '@/components/WalletConnect/SignTransaction';
@@ -267,24 +267,19 @@ import PersonalSign from '@/components/WalletConnect/PersonalSign';
 import WalletConnect from '@walletconnect/client';
 import { convertHexToUtf8 } from '@walletconnect/utils';
 
+
 export default {
   name: 'WalletConnect',
   components: {
     SignTransaction,
     PersonalSign,
   },
-  props: {
-    chainId: {
-      type: Number,
-    },
-    address: {
-      type: String,
-    },
-  },
   data() {
     return {
       showPeer: false,
       confirm: false,
+      address: null,
+      chainId: null,
       payLoad: {
         data: '',
         from: '',
@@ -295,7 +290,6 @@ export default {
         value: '',
         id: '',
         raw: '',
-        address: this.address,
         message: '',
         method: '',
         transaction: Object,
@@ -333,8 +327,15 @@ export default {
     },
     walletConnectModalOpened: {
       get() {
-        // this.openWalletConnect();
-        return this.$store.state.modals.walletConnectModalOpened;
+        const payLoad = this.$store.state.modals.walletConnectModalOpened;
+        if (!payLoad) { return false; }
+        if (!this.connector) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          this.chainId = payLoad.chainId;
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          this.address = payLoad.address;
+        }
+        return true;
       },
       set(value) {
         this.$store.dispatch('modals/setWalletConnectModalOpened', value);
@@ -345,7 +346,7 @@ export default {
     // this.refreshPrices();
     this.loading = false;
   },
-  mounted() {
+  async mounted() {
     const session = this.getCachedSession();
     if (session) {
       this.connector = new WalletConnect({ session });
@@ -355,17 +356,22 @@ export default {
       if (!this.connector || this.connector._peerMeta == null) {
         this.killSession();
       } else {
-        // eslint-disable-next-line no-underscore-dangle
-        this.peerMeta = this.connector._peerMeta;
-        const address = this.connector.accounts[0];
-        this.address = address;
-        this.chainId = this.connector.chainId;
-        this.activeIndex = this.connector.accounts.indexOf(address);
+        this.setUp();
         this.subscribeToEvents();
       }
     }
   },
   methods: {
+    setUp() {
+      if (this.connector) {
+        // eslint-disable-next-line no-underscore-dangle
+        this.peerMeta = this.connector._peerMeta;
+        const a = this.connector.accounts[0];
+        this.address = a;
+        this.chainId = this.connector.chainId;
+        this.$root.$emit('walletConnected', { chainId: this.chainId });
+      }
+    },
     approveSession() {
       const cId = this.chainId;
       const accounts = [this.address];
@@ -445,15 +451,12 @@ export default {
         });
 
         this.connector.on('call_request', async (error, payload) => {
-          // console.log(`chainId: ${this.chainId} --connector:
-          // ${this.connector.chainId} -- ${this.address}`);
-          this.chainId = this.chainId != null
-            ? this.chainId : this.connector.chainId;
-          // console.log(`wallet: ${JSON.stringify(this.wallet)}`);
+          this.setUp();
           this.requests.push(payload);
           switch (payload.method) {
             case 'eth_sendTransaction':
             case 'eth_signTransaction':
+
               this.renderWalletConnectRequest(payload);
               break;
             case 'personal_sign':
@@ -479,6 +482,7 @@ export default {
 
           this.connected = true;
           this.uri = '';
+          this.setUp();
         });
 
         this.connector.on('disconnect', (error, payload) => {
@@ -498,7 +502,7 @@ export default {
     renderWalletConnectRequest(payload) {
       this.payLoad.id = payload.id;
       this.payLoad.method = payload.method;
-      this.$store.dispatch('settings/setWalletConnectRequestStatus', true);
+      // this.$store.dispatch('settings/setWalletConnectRequestStatus', true);
       switch (payload.method) {
         case 'eth_sendTransaction':
         case 'eth_signTransaction':
@@ -516,7 +520,7 @@ export default {
           // eslint-disable-next-line prefer-destructuring
           this.payLoad.transaction = payload.params[0];
           this.signTransaction = true;
-          this.$store.dispatch('modals/setWalletConnectModalOpened', true);
+          this.$store.dispatch('modals/setWalletConnectModalOpened', { open: true, chainId: this.chainId, address: this.address });
           break;
 
         case 'personal_sign':
@@ -534,6 +538,7 @@ export default {
     },
     closeModal() {
       // this.refreshPrices();
+      this.loading = false;
       this.walletConnectModalOpened = false;
     },
     async signEthereumRequests() {
@@ -546,6 +551,7 @@ export default {
           case 'eth_signTransaction':
             result = await this.approveTransaction();
             this.signTransaction = false;
+            this.loading = false;
             break;
           case 'personal_sign':
             result = await this.signPersonalMessage();
@@ -572,31 +578,51 @@ export default {
       }
     },
     async approveTransaction() {
-      console.log(`Approve Transaction: ${JSON.stringify(this.wallet)}`);
-      if (this.wallet) {
-        const { transaction } = this.payLoad;
-        const { signer } = this.wallet;
-        // if (
-        //   transaction.from.toLowerCase() !== this.wallet.address.toLowerCase()
-        // ) {
-        //   console.error("Transaction request From doesn't match active account");
-        //   return null;
-        // }
+      this.loading = true;
 
-        if (transaction.from) {
-          delete transaction.from;
-        }
+      const { transaction } = this.payLoad;
+      if (this.getWallet()) {
+        // NEW CHANGE
+        const pKey = this.getKeyFromHDWallet();
+
+        // if (transaction.from) {
+        //   delete transaction.from;
+        // }
+        // hardcode value in case of celo?
+        // transaction.value = '00000000001';
 
         // ethers.js expects gasLimit instead
         if ('gas' in transaction) {
           transaction.gasLimit = transaction.gas;
           delete transaction.gas;
         }
+        const web3 = new Web3(this.getWallet().hdWallet.network.provider);
+        const newWallet = await web3.eth.accounts.privateKeyToAccount(pKey);
+        web3.eth.accounts.wallet.add(pKey);
+        web3.eth.defaultAccount = newWallet.address;
 
-        const result = await signer.sendTransaction(transaction);
-        return result.hash;
+        const result = await web3.eth.sendTransaction(transaction);
+        // console.log(`RESULT: ${JSON.stringify(result)}`);
+        return result.transactionHash;
       }
       return null;
+    },
+    getWallet() {
+      return Wallet.query()
+        .where('account_id', this.authenticatedAccount)
+        .where('externalAddress', this.address)
+        .where('enabled', true)
+        .where('chainId', this.chainId)
+        .get()[0];
+    },
+    getKeyFromHDWallet() {
+      if (this.wallet.network === 'CELO' || this.wallet.network === 'CELO_ALFAJORES') {
+        const coinSDK = this.coinSDKS[this.wallet.sdk](this.wallet.network);
+        const keypair = coinSDK.generateKeyPair(this.wallet.hdWallet, 0);
+        return keypair.privateKey;
+      }
+      return this.coinSDKS.Ethereum(this.wallet.network)
+        .generateKeyPair(this.wallet.hdWallet, 0).privateKey;
     },
     async signPersonalMessage() {
       if (this.wallet) {

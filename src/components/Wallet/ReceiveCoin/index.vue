@@ -177,7 +177,9 @@ export default {
       return this.wallet.name.replace(/\s/g, '').toLowerCase();
     },
     address() {
-      if (!this.wallet.externalAddress) { return null; }
+      if (!this.wallet.externalAddress) {
+        return this.wallet.erc20Wallet.address ? this.wallet.erc20Wallet.address : null;
+      }
       return this.wallet.externalAddress;
     },
     decimals() {

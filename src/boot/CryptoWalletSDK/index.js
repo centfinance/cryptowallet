@@ -12,5 +12,8 @@ export default ({ Vue }) => {
     ERC20: (network = 'ETHEREUM') => {
       return SDK.SDKFactory.createSDK('ERC20', networks[network]);
     },
+    Celo: (network = 'CELO') => {
+      return SDK.SDKFactory.createSDK('Celo', networks[network]);
+    },
   };
 };

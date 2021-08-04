@@ -49,12 +49,14 @@ export default class Wallet extends Model {
       .where('contractAddress', this.contractAddress)
       .get()[0];
 
+    if (coin) {
+      if (coin.sdk === 'ERC20') {
+        return this.contractAddress;
+      }
 
-    if (coin.sdk === 'ERC20') {
-      return this.contractAddress;
+      return coin.identifier;
     }
-
-    return coin.identifier;
+    return '';
   }
 
   get parentWallet() {

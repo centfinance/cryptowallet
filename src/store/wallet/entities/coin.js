@@ -55,8 +55,14 @@ export default class Coin extends Model {
 
   static async fetchIcons() {
     function fetchIcon(token, address) {
+      let url = '';
+      if (token.symbol === 'Celo') {
+        url = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/celo/info/logo.png';
+      } else {
+        url = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
+      }
       axios
-        .get(`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`, {
+        .get(url, {
           responseType: 'arraybuffer',
         })
         .then((response) => {
@@ -71,7 +77,8 @@ export default class Coin extends Model {
     }
 
     const tokens = Coin.query()
-      .where('sdk', 'ERC20')
+      // .where('sdk', 'ERC20')
+      .where((coin) => { return coin.sdk === 'ERC20' || coin.sdk === 'Celo'; })
       .where('parentName', 'Ethereum')
       .where('icon', null)
       .get();
@@ -85,6 +92,9 @@ export default class Coin extends Model {
           const index = whitelist.findIndex((item) => {
             return t.contractAddress.toLowerCase() === item.toLowerCase();
           });
+          if (t.symbol === 'Celo') {
+            return fetchIcon(t, whitelist[index]);
+          }
           return index === -1 ? null : fetchIcon(t, whitelist[index]);
         });
 
@@ -127,6 +137,7 @@ export default class Coin extends Model {
   static async fetchAllTokens(address, account, network) {
     const SDK = new CryptoWalletJs();
     const api = networks[network];
+    // console.log(`FetchAll Tokens: ${api.coinName} -- ${network} -- ${address}`);
     const coinSDK = SDK.SDKFactory.createSDK('Ethereum', api);
     const ERC20SDK = SDK.SDKFactory.createSDK('ERC20', api);
     const txs = await coinSDK.getERC20History(
@@ -158,7 +169,7 @@ export default class Coin extends Model {
           symbol: tokenSymbol,
           network,
           denomination: '0.00000000',
-          parentSdk: 'Ethereum',
+          parentSdk: api.coinName === 'Celo' ? api.coinName : 'Ethereum',
           parentName: api.coinName,
           contractAddress: contract,
           decimals: tokenDecimal,
@@ -172,7 +183,7 @@ export default class Coin extends Model {
         data.account_id = account;
         data.imported = false;
         data.enabled = false;
-        data.parentName = 'Ethereum';
+        data.parentName = api.coinName === 'Celo' ? api.coinName : 'Ethereum';
         data.externalAddress = address;
         data.erc20Wallet = {
           decimals: tokenDecimal,

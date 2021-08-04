@@ -8,7 +8,13 @@
             :src="coinLogo"
             class="token-icon"
           >
-          {{ wallet.displayName }}
+          {{ wallet.symbol }}
+        </div>
+        <div
+          textMiddleEllipsis="4"
+          class="text-caption text-grey"
+        >
+          {{ wallet.name }}
         </div>
 
         <div
@@ -67,6 +73,10 @@
         </div>
       </div>
       <div class="wallet-prices">
+        <div class="in-coin">
+          {{ balanceInCoin }}
+          <!-- {{ coinSymbol }} -->
+        </div>
         <Amount
           v-if="latestPrice"
           :amount="unconfirmedBalance()"
@@ -77,10 +87,6 @@
           :coin="wallet.name"
           format="0,0[.]00"
         />
-        <div class="in-coin">
-          {{ balanceInCoin }}
-          <!-- {{ coinSymbol }} -->
-        </div>
       </div>
     </div>
   </div>
@@ -130,6 +136,9 @@ export default {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
     },
     coinLogo() {
+      if (!this.coin) {
+        return '';
+      }
       if (this.coin.icon) {
         return `data:image/png;base64, ${this.coin.icon}`;
       }
@@ -161,7 +170,8 @@ export default {
     },
 
     latestPrice() {
-      const prices = this.$store.getters['entities/latestPrice/find'](`${this.wallet.identifier}_${this.selectedCurrency.code}`);
+      const val = this.wallet.symbol === 'CELO' ? this.wallet.network.toString().toLowerCase() : this.wallet.identifier;
+      const prices = this.$store.getters['entities/latestPrice/find'](`${val}_${this.selectedCurrency.code}`);
       if (prices) {
         return prices.data.PRICE;
       }

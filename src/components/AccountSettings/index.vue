@@ -94,7 +94,8 @@
         />
       </div>
     </div>
-    <ToggleTestnets v-if="!demoMode" />
+    <!-- <ToggleTestnets v-if="!demoMode" /> -->
+    <ToggleTestMode v-if="!demoMode" />
     <ToggleDarkMode />
     <div
       class="settings-row"
@@ -164,7 +165,7 @@ import { mapState } from 'vuex';
 import SelectCurrency from '@/components/AccountSettings/SelectCurrency';
 import Pin from '@/components/AccountSettings/Pin';
 import DeleteAccount from '@/components/AccountSettings/DeleteAccount';
-import ToggleTestnets from '@/components/AccountSettings/ToggleTestnets';
+import ToggleTestMode from '@/components/AccountSettings/ToggleTestMode';
 import ToggleDarkMode from '@/components/AccountSettings/ToggleDarkMode';
 import UpdateEmail from '@/components/AccountSettings/UpdateEmail';
 import ExportKeys from '@/components/AccountSettings/ExportKeys';
@@ -177,7 +178,7 @@ export default {
     SelectCurrency,
     Pin,
     DeleteAccount,
-    ToggleTestnets,
+    ToggleTestMode,
     ToggleDarkMode,
     UpdateEmail,
     ExportKeys,

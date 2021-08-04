@@ -1,6 +1,6 @@
 <template>
   <div class="cloud-list">
-    <div v-if="walletsETH.length === 0">
+    <div v-if="wallets.length === 0">
       <q-btn
         icon="add_circle_outline"
         label="add"
@@ -11,9 +11,9 @@
       />
     </div>
     <q-scroll-area
-      v-if="walletsETH.length > 0"
+      v-if="wallets.length > 0"
       ref="scrollArea"
-      class="scroll-area extended cloud-scroll q-px-md q-pt-lg"
+      class="scroll-area extended cloud-scroll q-pt-lg"
     >
       <div
         style="color:grey"
@@ -24,7 +24,13 @@
             size="xs"
             name="account_balance_wallet"
           />
-          My Wallet Balance
+          My Balance
+          <div
+            v-if="testMode"
+            class="text-caption text-red"
+          >
+            Connected to Test network
+          </div>
         </div>
         <div class="q-px-xs grey">
           {{ totalBalanceFormatted }}
@@ -39,200 +45,30 @@
           /> -->
         </div>
       </div>
-      <q-card
-        class="my-card rounded-border-top"
-        flat
-        round
-        bordered
+      <template
+        v-for="w in wallets"
       >
-        <q-card-section>
-          <div class="text-overline text-weight-bold text-orange-9">
-            <q-avatar size="20px">
-              <img src="~assets/icons/eth.svg">
-            </q-avatar> Ethereum ({{ walletsETH.length }})
-          </div>
-          <!-- <div class="text-h6 q-mt-sm q-mb-xs">
-            Address
-          </div> -->
-          <div
-            textMiddleEllipsis="4"
-            class="text-caption text-grey"
-          >
-            {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }}
-            <q-icon
-              name="content_copy"
-              class="cursor-pointer"
-              @click="copyToClipboard"
-            />
-          </div>
-        </q-card-section>
-        <q-card-actions class="justify-start">
-          <q-btn @click.prevent="connectETH">
-            <q-avatar size="20px">
-              <img src="~assets/wallet-connect.svg">
-            </q-avatar>
-            <!-- <q-badge
-              color="orange"
-              floating
-              class="xs"
-            /> -->
-          </q-btn>
-
-
-          <q-btn
-            icon="send"
-            size="xs"
-            color="grey"
-            flat
-            @click="openSelectCoinModal(walletsETH)"
-          />
-          <q-btn
-            flat
-            size="xs"
-            icon="fas fa-plus-square"
-            color="grey"
-            @click="openSelectCoinModal(walletsETH,true)"
-          />
-          <q-btn
-            flat
-            color="grey"
-            :label="getFormattedBalance(ETHBalance)"
-          />
-
-          <q-btn
-            color="grey"
-            round
-            size="xs"
-            flat
-            dense
-            :icon="visible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-            @click="toggleVisibility"
-          />
-        </q-card-actions>
-
-        <q-slide-transition>
-          <div v-show="visible">
-            <hr style="border-top:1px grey">
-            <q-card-section class="text-subitle2">
-              <CloudListItem
-                v-for="wallet in walletsETH"
-                :key="wallet.displayName"
-                :wallet="wallet"
-                :currency="selectedCurrency"
-              />
-            </q-card-section>
-          </div>
-        </q-slide-transition>
-      </q-card>
-      <br>
-      <!-- XDAI -->
-      <q-card
-        v-if="!demoMode"
-        class="rounded-border-top"
-        flat
-        bordered
-      >
-        <q-card-section>
-          <div class="text-overline text-weight-bold text-orange-9">
-            <q-avatar size="20px">
-              <img src="~assets/icons/xdai.png">
-            </q-avatar> XDAI ({{ walletsXDAI.length }})
-          </div>
-          <!-- <div class="text-h5 q-mt-sm q-mb-xs">
-            Address
-          </div> -->
-          <div class="text-caption text-grey">
-            {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }}
-            <q-icon
-              name="content_copy"
-              class="cursor-pointer"
-              @click="copyToClipboard"
-            />
-          </div>
-        </q-card-section>
-        <q-card-actions class="justify-left">
-          <!-- <q-btn
-            flat
-            icon="share"
-            color="grey"
-          /> -->
-
-          <q-btn @click.prevent="connectXDAI">
-            <q-avatar size="20px">
-              <img src="~assets/wallet-connect.svg">
-            </q-avatar>
-            <!-- <q-badge
-              color="orange"
-              floating
-              class="xs"
-            /> -->
-          </q-btn>
-
-
-          <q-btn
-            icon="send"
-            size="xs"
-            color="grey"
-            flat
-            @click="openSelectCoinModal(walletsXDAI)"
-          />
-          <q-btn
-            flat
-            size="xs"
-            icon="fas fa-plus-square"
-            color="grey"
-            @click="openSelectCoinModal(walletsXDAI,true)"
-          />
-          <q-btn
-            flat
-            color="grey"
-            :label="getFormattedBalance(XDAIBalance)"
-          />
-
-          <q-btn
-            color="grey"
-            round
-            size="xs"
-            flat
-            dense
-            :icon="xDaivisible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-            @click="togglexDaiVisibility"
-          />
-        </q-card-actions>
-        <q-slide-transition>
-          <div v-show="xDaivisible">
-            <q-separator />
-            <q-card-section class="text-subitle2">
-              <CloudListItem
-                v-for="wallet in walletsXDAI"
-                :key="wallet.displayName"
-                :wallet="wallet"
-                :currency="selectedCurrency"
-              />
-            </q-card-section>
-          </div>
-        </q-slide-transition>
-      </q-card>
+        <CloudListCard
+          :key="w.id"
+          :wallet="fetchWallet(w.network)"
+          :network="w.name"
+          :display="w.displayName"
+          :address="w.externalAddress"
+          @cardBalanace="cardBalanaceRecd"
+        />
+      </template>
     </q-scroll-area>
-    <WalletConnect
-      :chain-id="chainId"
-      :address="address"
-    />
-    <SelectCoinModal
-      :wallets="selectCoinWallet"
-      :buy="buy"
-    />
+    <WalletConnect />
   </div>
 </template>
 
 <script>
-import CloudListItem from '@/components/Wallet/CloudListItem';
-import SelectCoinModal from '@/components/Modals/SelectCoin';
-import WalletConnect from '@/components/WalletConnect/WalletConnect';
+import CloudListCard from '@/components/Wallet/CloudListCard';
 import { mapState } from 'vuex';
 
 import Wallet from '@/store/wallet/entities/wallet';
 import Coin from '@/store/wallet/entities/coin';
+import WalletConnect from '@/components/WalletConnect/WalletConnect';
 
 import {
   AmountFormatter,
@@ -243,26 +79,25 @@ import {
 export default {
   name: 'CloudList',
   components: {
-    CloudListItem,
+    CloudListCard,
     WalletConnect,
-    SelectCoinModal,
-
   },
 
   data() {
     return {
       scrollPosition: 0,
       interval: 15000,
-      visible: false,
-      xDaivisible: false,
-      address: '',
       totalAssets: 0,
       checkForUpdates: null,
       connectWalletXDAI: false,
       chainId: null,
-      XDAIBalance: null,
-      ETHBalance: null,
-      selectCoinWallet: null,
+      address: null,
+      totalBalance: 0,
+      networkBalance: [],
+      // eslint-disable-next-line no-magic-numbers
+      mainNetIds: [1, 42220, 100],
+      // eslint-disable-next-line no-magic-numbers
+      testNetIds: [44787, 42],
       buy: false,
     };
   },
@@ -277,15 +112,23 @@ export default {
     wallets() {
       const wallets = Wallet.query()
         .where('account_id', this.authenticatedAccount)
-        .where('imported', true)
         .get();
-
-      if (!this.showTestnets) {
-        return wallets.filter(({ network }) => {
-          return !this.testnets.includes(network);
+      if (this.testMode) {
+        return wallets.filter((w) => {
+          return this.testNetIds.includes(w.chainId);
         });
       }
-      return wallets;
+
+      return wallets.filter((w) => {
+        return this.mainNetIds.includes(w.chainId);
+      });
+
+      // if (!this.showTestnets) {
+      //   return wallets.filter(({ network }) => {
+      //     return !this.testnets.includes(network);
+      //   });
+      // }
+      // return wallets;
     },
     account() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount);
@@ -296,7 +139,11 @@ export default {
     showTestnets() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).showTestnets;
     },
+    testMode() {
+      return this.$store.getters['entities/account/find'](this.authenticatedAccount).testMode;
+    },
     demoMode() {
+      // return true;
       return this.$store.getters['entities/account/find'](this.authenticatedAccount).demoMode;
     },
     testnets() {
@@ -304,24 +151,12 @@ export default {
         .where('testnet', true).get();
       return coins.map(({ network }) => { return network; });
     },
-    walletsETH() {
-      const xwallet = this.fetchWallet(this.demoMode ? 'ETHEREUM_RINKEBY' : 'ETHEREUM');
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.ETHBalance = this.getBalance(xwallet);
-      return xwallet;
-    },
-    walletsXDAI() {
-      const xwallet = this.fetchWallet('XDAI');
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.XDAIBalance = this.getBalance(xwallet);
-      return xwallet;
-    },
-    totalBalance() {
-      return this.ETHBalance + this.XDAIBalance;
-    },
-
     totalBalanceFormatted() {
-      return this.getFormattedBalance(this.totalBalance);
+      let b = 0;
+      this.networkBalance.forEach((item) => {
+        b += item.balance;
+      });
+      return this.getFormattedBalance(b);
     },
   },
   watch: {
@@ -331,6 +166,9 @@ export default {
       } else {
         this.updateInterval();
       }
+    },
+    testMode() {
+      this.networkBalance = [];
     },
   },
 
@@ -345,6 +183,16 @@ export default {
     clearInterval(this.checkForUpdates);
   },
   methods: {
+    cardBalanaceRecd(val) {
+      const obj = this.networkBalance.filter((item) => {
+        return item.network === val.network;
+      });
+      if (obj.length > 0) {
+        obj.balance = val.balance;
+      } else {
+        this.networkBalance.push(val);
+      }
+    },
     getFormattedBalance(bal) {
       const formattedBalance = new AmountFormatter({
         amount: bal,
@@ -357,18 +205,7 @@ export default {
 
       return formattedBalance.getFormatted();
     },
-    connectXDAI() {
-      this.chainId = this.walletsXDAI[0].hdWallet.network.chainId;
-      this.address = this.walletsXDAI[0].externalAddress;
-      // eslint-disable-next-line prefer-destructuring
-      this.$store.dispatch('modals/setWalletConnectModalOpened', true);
-    },
-    connectETH() {
-      this.chainId = this.walletsETH[0].hdWallet.network.chainId;
-      this.address = this.walletsETH[0].externalAddress;
-      // eslint-disable-next-line prefer-destructuring
-      this.$store.dispatch('modals/setWalletConnectModalOpened', true);
-    },
+
     receive() {
       this.$router.push({ path: `/wallet/single/receive/${this.wallet.id}` });
     },
@@ -407,8 +244,10 @@ export default {
           return !this.testnets.includes(network);
         });
       }
-      if (this.address === '') {
-        this.address = wallets[0].externalAddress;
+      if (wallets.length < 1) { return []; }
+      if (networkType === 'CELO' || networkType === 'CELO_ALFAJORES') {
+        this.celoAddress = wallets[0].externalAddress;
+        return wallets.filter((wallet) => { return wallet.parentName !== ''; });
       }
       return wallets;
     },
@@ -419,15 +258,18 @@ export default {
     togglexDaiVisibility() {
       this.xDaivisible = !this.xDaivisible;
     },
+    toggleCeloVisibility() {
+      this.Celovisible = !this.Celovisible;
+    },
     openWalletsModal() {
       this.$store.dispatch('modals/setAddWalletModalOpened', true);
     },
 
-    openSelectCoinModal(wallet, buy = false) {
-      this.selectCoinWallet = wallet;
-      this.buy = buy;
-      this.$store.dispatch('modals/setSelectCoinModalOpened', true);
-    },
+    // openSelectCoinModal(wallet, buy = false) {
+    //   this.selectCoinWallet = wallet;
+    //   this.buy = buy;
+    //   this.$store.dispatch('modals/setSelectCoinModalOpened', true);
+    // },
     touchStart(event) {
       this.touchStartY = event.touches[0].clientY;
     },
@@ -465,23 +307,6 @@ export default {
       }
     },
 
-    copyToClipboard() {
-      try {
-        if (window.cordova) {
-          cordova.plugins.clipboard.copy(this.address);
-        } else {
-          this.$clipboard(this.address);
-        }
-        this.$q.notify({
-          message: this.$t('copied'),
-          color: 'positive',
-          timeout: '1500',
-          classes: 'text-center',
-        });
-      } catch (err) {
-        this.errorHandler(err);
-      }
-    },
   },
 };
 </script>

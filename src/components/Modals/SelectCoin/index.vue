@@ -30,21 +30,17 @@
 
         <q-card-section>
           <q-list
-            v-for="wallet in wallets"
+            v-for="wallet in selectCoinWallets"
             :key="wallet.displayName"
             :wallet="wallet"
           >
-            <div
-              @click="goToWallet"
-            >
-              <q-card-section class="text-subitle2">
-                <CoinHeader
-                  :quick="true"
-                  :buy="buy"
-                  :wallet="wallet"
-                />
-              </q-card-section>
-            </div>
+            <q-card-section class="text-subitle2">
+              <CoinHeader
+                :quick="true"
+                :buy="buyEnabled"
+                :wallet="wallet"
+              />
+            </q-card-section>
           </q-list>
         </q-card-section>
       </q-card>
@@ -55,7 +51,7 @@
 <script>
 // import AddErc20Content from './AddErc20Content';
 import CoinHeader from '@/components/Wallet/CoinHeader';
-import Wallet from '@/store/wallet/entities/wallet';
+// import Wallet from '@/store/wallet/entities/wallet';
 
 export default {
   name: 'SelectCoinModal',
@@ -63,17 +59,28 @@ export default {
     CoinHeader,
   },
   props: {
-    wallets: {
-      type: Array(Wallet),
+    selectCoinWallets: {
+      type: Array,
     },
     buy: {
       type: Boolean,
     },
+    keyId: {
+      type: String,
+    },
   },
   computed: {
+    buyEnabled() {
+      return this.buy;
+    },
     selectCoinModalOpened: {
       get() {
-        return this.$store.state.modals.selectCoinModalOpened;
+        const payLoad = this.$store.state.modals.selectCoinModalOpened;
+        if (!payLoad) { return false; }
+        if (this.keyId === payLoad.selectedKey) {
+          return true;
+        }
+        return false;
       },
       set(value) {
         this.$store.dispatch('modals/setSelectCoinModalOpened', value);
@@ -81,11 +88,7 @@ export default {
     },
   },
   methods: {
-    goToWallet() {
-      this.$router.push({ path: `/wallet/single/${this.wallet.id}` });
-    },
     closeModal() {
-      // this.refreshPrices();
       this.selectCoinModalOpened = false;
     },
   },

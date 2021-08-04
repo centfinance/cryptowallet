@@ -110,6 +110,10 @@ export default {
             const ethWallet = await this.enableWallet();
             // eslint-disable-next-line no-unused-vars
             const xdaiWallet = await this.enableWallet('XDai');
+            // eslint-disable-next-line no-unused-vars
+            const celoWallet = await this.enableWallet('Celo');
+            // eslint-disable-next-line no-unused-vars
+            const kovanWallet = await this.enableWallet('Ethereum Kovan');
 
             await this.accountInitializer.createERC20Wallets(
               this.setup,
@@ -154,7 +158,11 @@ export default {
         txHistory,
         accounts,
         balance,
-      } = await this.discoverWallet(initializedWallet, coinSDK, wallet.network, wallet.sdk);
+      } = await this.discoverWallet(
+        initializedWallet, coinSDK, wallet.network, wallet.sdk, false, this.setup.seedString,
+      );
+      // await this.discoverWallet(initializedWallet, coinSDK, wallet.network,
+      //    wallet.sdk, false, this.setup.seedString);
 
       Wallet.$update({
         where: wallet.id,
@@ -184,34 +192,36 @@ export default {
     },
 
     async enableWallet(name = 'Ethereum') {
-      const wallet = Wallet.query()
+      const wallets = Wallet.query()
         .where('account_id', this.authenticatedAccount)
         .where('name', name)
-        .get()[0];
-
-      let success = true;
-      const coinSDK = this.coinSDKS[wallet.sdk](wallet.network);
+        .get();
       let walletAddress = {};
-      try {
-        await this.backEndService.loadCoinPriceData(wallet.identifier);
+      wallets.forEach(async (wallet) => {
+        let success = true;
+        const coinSDK = this.coinSDKS[wallet.sdk](wallet.network);
 
-        const initializedWallet = wallet.hdWallet;
+        try {
+          await this.backEndService.loadCoinPriceData(wallet.identifier);
 
-        if (!this.activeWallets[this.authenticatedAccount]) {
-          this.activeWallets[this.authenticatedAccount] = {};
+          const initializedWallet = wallet.hdWallet;
+
+          if (!this.activeWallets[this.authenticatedAccount]) {
+            this.activeWallets[this.authenticatedAccount] = {};
+          }
+
+          this.activeWallets[this.authenticatedAccount][wallet.name] = initializedWallet;
+
+          walletAddress = await this.enableEthereum(coinSDK, initializedWallet, wallet);
+        } catch (err) {
+          success = false;
+          this.errorHandler(err);
         }
 
-        this.activeWallets[this.authenticatedAccount][wallet.name] = initializedWallet;
-
-        walletAddress = await this.enableEthereum(coinSDK, initializedWallet, wallet);
-      } catch (err) {
-        success = false;
-        this.errorHandler(err);
-      }
-
-      Wallet.$update({
-        where: wallet.id,
-        data: { imported: success, enabled: success },
+        Wallet.$update({
+          where: wallet.id,
+          data: { imported: success, enabled: success },
+        });
       });
       return walletAddress;
     },

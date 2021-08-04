@@ -268,7 +268,7 @@ export default {
         this.completeTransaction();
       }
 
-      if (this.wallet.sdk === 'Ethereum' || this.wallet.sdk === 'ERC20') {
+      if (this.wallet.sdk === 'Ethereum' || this.wallet.sdk === 'ERC20' || this.wallet.sdk === 'Celo') {
         const result = await coinSDK.broadcastTx(hexTx, this.wallet.network);
         if (!result) {
           throw new Error(this.$t('transactionBroadcastFail'));
@@ -278,6 +278,7 @@ export default {
         transaction.wallet_id = this.wallet.id;
         transaction.isChange = false;
         transaction.sent = true;
+        // For CELO need to calculate FEE here?  TODO:
         if (this.wallet.sdk === 'ERC20') {
           transaction.fee /= this.weiMultiplier;
         }

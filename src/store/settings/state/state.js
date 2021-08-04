@@ -26,4 +26,8 @@ export default {
   },
   disablePullToRefresh: false,
   paymentLoading: { on: false, logo: null },
+  // eslint-disable-next-line no-magic-numbers
+  mainNetIds: [1, 42220, 100],
+  // eslint-disable-next-line no-magic-numbers
+  testNetIds: [44787, 42],
 };

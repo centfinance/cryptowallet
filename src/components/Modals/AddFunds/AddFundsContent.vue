@@ -199,8 +199,9 @@ export default {
       return false;
     },
     ramp() {
-      if (this.wallet.network === 'XDAI' || this.wallet.network === 'ETHEREUM') {
-        return new Ramp(this.$root, this.account, this.wallet, this.isTestnet);
+      if (this.wallet.network === 'XDAI' || this.wallet.network === 'ETHEREUM' || this.wallet.network === 'CELO') {
+        const res = new Ramp(this.$root, this.account, this.wallet, this.isTestnet);
+        return res;
       }
       return new Ramp(this.$root, this.account, this.defaultWallet, this.isTestnet);
     },
