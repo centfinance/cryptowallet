@@ -10,7 +10,18 @@
       <q-card-section class="q-pa-sm">
         <div class="text-overline text-weight-bold text-orange-9">
           <q-avatar size="20px">
-            <img :src="logo">
+            <img
+              v-if="network.includes('Ethereum')"
+              src="~/assets/ethereum.svg"
+            >
+            <img
+              v-if="network.includes('XDai')"
+              src="~/assets/xdai.png"
+            >
+            <img
+              v-if="network.includes('Celo')"
+              src="~/assets/celo.svg"
+            >
           </q-avatar> {{ display }} ({{ wallet.length }})
         </div>
         <!-- <div class="text-h6 q-mt-sm q-mb-xs">
@@ -132,12 +143,12 @@ export default {
     },
     logo() {
       if (this.network.includes('Ethereum')) { // Ethereum Kovan
-        return './statics/icons/ethereum.svg';
+        return '~/assets/ethereum.svg';
       }
       if (this.network.includes('XDai')) {
-        return './statics/icons/xdai.png';
+        return '~/assets/xdai.png';
       }
-      return './statics/icons/celo.svg';
+      return '~assets/celo.svg';
     },
     selectedCurrency() {
       return this.$store.state.settings.selectedCurrency;
