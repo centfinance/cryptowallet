@@ -246,8 +246,9 @@ export default {
       }
       if (wallets.length < 1) { return []; }
       if (networkType === 'CELO' || networkType === 'CELO_ALFAJORES') {
-        this.celoAddress = wallets[0].externalAddress;
-        return wallets.filter((wallet) => { return wallet.parentName !== ''; });
+        if (wallets.length > 1) {
+          return wallets.filter((wallet) => { return wallet.parentName !== ''; });
+        }
       }
       return wallets;
     },
