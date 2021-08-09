@@ -49,14 +49,14 @@
 
         <q-btn
           icon="send"
-          size="xs"
+          size="sm"
           color="grey"
           flat
           @click="openSelectCoinModal(false)"
         />
         <q-btn
           flat
-          size="xs"
+          size="sm"
           icon="fas fa-plus-square"
           color="grey"
           @click="openSelectCoinModal(true)"
@@ -70,7 +70,7 @@
         <q-btn
           color="grey"
           round
-          size="xs"
+          size="sm"
           flat
           dense
           :icon="visible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
