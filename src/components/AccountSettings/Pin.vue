@@ -45,11 +45,11 @@
 
 <script>
 import { mapState } from 'vuex';
+import AES from 'crypto-js/aes';
+import encUTF8 from 'crypto-js/enc-utf8';
 import Account from '@/store/wallet/entities/account';
 import Wallet from '@/store/wallet/entities/wallet';
 import PinPad from '@/components/Auth/PinPad';
-import AES from 'crypto-js/aes';
-import encUTF8 from 'crypto-js/enc-utf8';
 
 export default {
   name: 'Pin',

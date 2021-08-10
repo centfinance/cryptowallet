@@ -244,13 +244,12 @@
 import { mapState } from 'vuex';
 import * as ethers from 'ethers';
 import * as Web3 from 'web3';
+import WalletConnect from '@walletconnect/client';
+import { convertHexToUtf8 } from '@walletconnect/utils';
 import Wallet from '@/store/wallet/entities/wallet';
 
 import SignTransaction from '@/components/WalletConnect/SignTransaction';
 import PersonalSign from '@/components/WalletConnect/PersonalSign';
-import WalletConnect from '@walletconnect/client';
-import { convertHexToUtf8 } from '@walletconnect/utils';
-
 
 export default {
   name: 'WalletConnect',

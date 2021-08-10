@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import WalletConnect from '@/components/WalletConnect/WalletConnect';
 import { mapState } from 'vuex';
+import WalletConnect from '@/components/WalletConnect/WalletConnect';
 
 export default {
   name: 'Wallet',

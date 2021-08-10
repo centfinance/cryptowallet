@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import PinPad from '@/components/Auth/PinPad';
 import { mapState } from 'vuex';
+import PinPad from '@/components/Auth/PinPad';
 
 export default {
   name: 'PinConfirm',

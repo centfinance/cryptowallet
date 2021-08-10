@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Splash from '@/pages/Setup/Steps/Splash/index.vue';
 import AccountName from '@/pages/Setup/Steps/AccountName/index.vue';
 import Pin from '@/pages/Setup/Steps/Pin';
@@ -15,7 +16,6 @@ import SeedConfirm from '@/pages/Setup/Steps/Seed/Confirm';
 import Node from '@/pages/Setup/Steps/Node';
 import Complete from '@/pages/Setup/Steps/Complete';
 import AccountRecovery from '@/pages/Setup/Steps/AccountRecovery/index.vue';
-import { mapState } from 'vuex';
 
 export default {
   components: {

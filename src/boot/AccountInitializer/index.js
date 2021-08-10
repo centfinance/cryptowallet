@@ -1,8 +1,8 @@
 import { uid } from 'quasar';
-import Account from '@/store/wallet/entities/account';
-import Wallet from '@/store/wallet/entities/wallet';
 import CryptoWalletSDK from 'cryptowallet-js';
 import bcrypt from 'bcryptjs';
+import Account from '@/store/wallet/entities/account';
+import Wallet from '@/store/wallet/entities/wallet';
 // import AES from 'crypto-js/aes';
 
 const demoSeed = 'give grow opera kid slide wrist final tattoo trust system valve impulse';

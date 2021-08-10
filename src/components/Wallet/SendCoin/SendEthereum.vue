@@ -143,11 +143,11 @@ import {
   // alphaNum,
   between,
 } from 'vuelidate/lib/validators';
+import { mapState } from 'vuex';
 import {
   AmountFormatter,
   getBalance,
 } from '@/helpers';
-import { mapState } from 'vuex';
 import Coin from '@/store/wallet/entities/coin';
 import networks from '@/store/settings/state/supportedNetworks';
 
