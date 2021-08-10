@@ -201,12 +201,12 @@ import {
   alphaNum,
   between,
 } from 'vuelidate/lib/validators';
+import { mapState } from 'vuex';
+import { debounce } from 'quasar';
 import {
   AmountFormatter,
   getBalance,
 } from '@/helpers';
-import { mapState } from 'vuex';
-import { debounce } from 'quasar';
 import Address from '@/store/wallet/entities/address';
 import Utxo from '@/store/wallet/entities/utxo';
 import Coin from '@/store/wallet/entities/coin';

@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import Transactions from '@/components/Wallet/Transactions';
 import { mapState } from 'vuex';
+import Transactions from '@/components/Wallet/Transactions';
 import { refreshWallet } from '@/helpers';
 
 export default {
