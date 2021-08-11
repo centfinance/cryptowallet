@@ -26,7 +26,7 @@
             :src="coinLogo"
             class="coin-logo token-icon"
           >
-          {{ wallet.displayName }}
+          {{ wallet.symbol }}
         </h1>
       </div>
 
@@ -135,10 +135,10 @@ export default {
         .get()[0];
     },
     coinIdentifier() {
-      if (this.coin.sdk === 'ERC20') {
+      if (this.coin.sdk === 'ERC20' && this.coin.network !== 'CELO') {
         return this.coin.contractAddress;
       }
-      return this.coin.identifier;
+      return this.wallet.symbol === 'CELO' ? 'celo' : this.coin.identifier;
     },
     coinSymbol() {
       return this.coin.symbol;

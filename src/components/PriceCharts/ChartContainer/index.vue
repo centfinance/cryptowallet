@@ -123,7 +123,7 @@ export default {
             color: this.darkMode ? '#ffffff' : '#1d1d1d',
             ticks: {
               fontColor: this.darkMode ? '#ffffff' : '#1d1d1d',
-              callback: (value) => { return `${this.selectedCurrency.symbol}${value}`; },
+              callback: (value) => { return `$ ${value}`; },
             },
           }],
         },

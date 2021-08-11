@@ -30,7 +30,7 @@ export default {
     segwit: false,
     bip: 60,
     provider: 'https://dai.poa.network',
-    etherscan: 'https://blockscout.com/poa/xdai/api',
+    etherscan: 'https://blockscout.com/xdai/mainnet/api',
     etherscanKey: null,
     feeApi: 'https://api.blockcypher.com/v1/eth/main',
     chainId: 100,

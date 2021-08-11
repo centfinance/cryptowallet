@@ -180,15 +180,14 @@ export default {
 
     balanceInCoin() {
       const balance = this.unconfirmedBalance();
-
       const balanceInCoin = new AmountFormatter({
-        amount: balance,
+        // eslint-disable-next-line no-magic-numbers
+        amount: balance < 0.00000000000001 ? 0.0 : balance,
         rate: this.latestPrice,
         format: '0.00000000',
         prependPlusOrMinus: false,
         removeTrailingZeros: true,
       });
-
       return balanceInCoin.getFormatted();
     },
 

@@ -61,7 +61,7 @@
             :src="coinLogo"
             class="coin-logo token-icon"
           >
-          {{ wallet.displayName }}
+          {{ wallet.symbol }}
         </h1>
       </div>
       <div v-else>
@@ -99,19 +99,18 @@
             @click.prevent="openWalletsModal"
           />
         </div> -->
-
-        <!-- <div
+        <div
           v-if="displayPriceChart"
         >
           <q-btn
-            icon="timeline"
+            icon="stacked_bar_chart"
             color="secondary"
             size="lg"
             class="icon-btn icon-btn-right"
             flat
             @click.prevent="openChartModal"
           />
-        </div> -->
+        </div>
 
         <div
           v-if="displayAccounts"
@@ -181,8 +180,10 @@ export default {
     },
 
     displayPriceChart() {
+      // console.log(`DisplayPrice: ${this.wallet}`);
       if (this.wallet && this.selectedCurrency) {
-        const price = this.$store.getters['entities/latestPrice/find'](`${this.wallet.identifier}_${this.selectedCurrency.code}`);
+        const w = this.wallet.symbol === 'CELO' ? 'celo' : this.wallet.identifier;
+        const price = this.$store.getters['entities/latestPrice/find'](`${w}_${this.selectedCurrency.code}`);
         if (price) {
           return this.$route.name === 'walletSingle'
                 || this.$route.name === 'sendCoinSingle';

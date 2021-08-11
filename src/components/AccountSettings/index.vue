@@ -225,6 +225,9 @@ export default {
       this.$store.dispatch('modals/setExportKeysModalOpened', true);
     },
     logout() {
+      if (this.$magic.isLoggedIn()) {
+        this.$magic.logout();
+      }
       window.location.reload(true);
     },
   },

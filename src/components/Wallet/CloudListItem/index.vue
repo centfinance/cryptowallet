@@ -5,7 +5,7 @@
     <div class="q-mb-lg q-pa-md bg-white cloud-item">
       <CoinHeader :wallet="wallet" />
     </div>
-    <!-- <div
+    <div
       v-if="chartData"
       class="trend-wrapper"
     >
@@ -16,7 +16,7 @@
         auto-draw
         smooth
       />
-    </div> -->
+    </div>
     <!-- <div class="wallet-buttons">
       <q-btn-group>
         <q-btn
@@ -88,7 +88,7 @@ export default {
       return this.$store.state.settings.selectedCurrency;
     },
     showChart() {
-      const chartData = this.$store.getters['entities/prices/find'](`${this.wallet.symbol}_${this.selectedCurrency.code}_day`);
+      const chartData = this.$store.getters['entities/prices/find'](`${this.wallet.name.toLowerCase()}_${this.selectedCurrency.code}_day`);
       if (chartData) {
         return true;
       }

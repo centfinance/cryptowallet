@@ -61,6 +61,17 @@
           color="grey"
           @click="openSelectCoinModal(true)"
         />
+
+        <q-btn
+          v-if="displayPriceChart"
+          icon="stacked_bar_chart"
+          color="primary"
+          size="sm"
+          class="icon-btn icon-btn-right"
+          flat
+          @click.prevent="openChartModal"
+        />
+
         <q-btn
           flat
           color="grey"
@@ -135,6 +146,8 @@ export default {
       buy: false,
       chainId: null,
       walletConnectedId: null,
+      chartWallets: ['ETH', 'XDAI', 'CELO'],
+      chartWalletId: null,
     };
   },
   computed: {
@@ -153,6 +166,21 @@ export default {
     selectedCurrency() {
       return this.$store.state.settings.selectedCurrency;
     },
+    displayPriceChart() {
+      const cw = this.wallet.filter((c) => {
+        return this.chartWallets.includes(c.symbol);
+      });
+      if (cw.length > 0 && this.selectedCurrency) {
+        const w = cw[0].network.toLowerCase() === 'xdai' ? 'dai' : cw[0].network.toLowerCase();
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.chartWalletId = cw[0].id;
+        const price = this.$store.getters['entities/latestPrice/find'](`${w}_${this.selectedCurrency.code}`);
+        if (price) {
+          return true;
+        }
+      }
+      return false;
+    },
   },
   mounted() {
     this.$root.$on('walletConnected', (args) => {
@@ -160,6 +188,9 @@ export default {
     });
   },
   methods: {
+    openChartModal() {
+      this.$router.push({ path: `/wallet/single/prices/${this.chartWalletId}` });
+    },
     getBalance() {
       let balance = 0;
       this.wallet.forEach((wallet) => {
