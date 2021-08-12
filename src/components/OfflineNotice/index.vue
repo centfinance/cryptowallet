@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import { Network } from '@/helpers';
 import { mapState } from 'vuex';
+import { Network } from '@/helpers';
 
 export default {
   name: 'OfflineNotice',

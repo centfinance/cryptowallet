@@ -63,8 +63,8 @@
 </template>
 
 <script>
-import CloudListCard from '@/components/Wallet/CloudListCard';
 import { mapState } from 'vuex';
+import CloudListCard from '@/components/Wallet/CloudListCard';
 
 import Wallet from '@/store/wallet/entities/wallet';
 import Coin from '@/store/wallet/entities/coin';

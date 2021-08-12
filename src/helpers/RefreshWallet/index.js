@@ -1,10 +1,9 @@
+import CryptoWalletJs from 'cryptowallet-js';
 import Address from '@/store/wallet/entities/address';
 import Wallet from '@/store/wallet/entities/wallet';
 import Tx from '@/store/wallet/entities/tx';
 import Utxo from '@/store/wallet/entities/utxo';
-import CryptoWalletJs from 'cryptowallet-js';
 import networks from '@/store/settings/state/supportedNetworks';
-
 
 const crypto = new CryptoWalletJs();
 
