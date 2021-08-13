@@ -155,7 +155,7 @@
                 color="primary"
                 text-color="white"
                 label="Go"
-                @click="openWalletConnect"
+                @click="OpenSession"
               />
             </div>
           </div>
@@ -295,6 +295,7 @@ export default {
       authenticatedAccount: (state) => { return state.settings.authenticatedAccount; },
       delay: (state) => { return state.settings.delay; },
       scannedURI: (state) => { return state.qrcode.scannedURI; },
+      walletConnectPayload: (state) => { return state.settings.walletConnectPayload; },
 
     }),
     showPeerMeta() {
@@ -356,9 +357,10 @@ export default {
       }
     },
     approveSession() {
-      const cId = this.chainId;
-      const accounts = [this.address];
-      if (this.connector) {
+      const cId = this.walletConnectPayload.chainId;
+      const accounts = [this.walletConnectPayload.address];
+      console.log(`Approve: ${accounts}`);
+      if (this.connector && this.address !== null) {
         this.connector.approveSession({ accounts, chainId: cId });
       }
       this.connected = true;
@@ -376,12 +378,16 @@ export default {
         this.connector = null;
       }
       this.resetApp();
+      this.closeModal();
     },
     resetApp() {
       this.connected = false;
       this.connector = null;
       this.signTransaction = false;
+      this.loading = false;
+      this.uri = '';
       this.personalSign = false;
+      this.$store.dispatch('settings/setWalletConnectPayload', null);
       this.$store.dispatch('settings/setWalletConnectRequestStatus', false);
     },
     showModal() {
@@ -400,7 +406,7 @@ export default {
       }
       return session;
     },
-    async openWalletConnect() {
+    async OpenSession() {
       const { uri } = this;
       try {
         this.connector = new WalletConnect({ uri });
@@ -522,6 +528,10 @@ export default {
     closeModal() {
       // this.refreshPrices();
       this.loading = false;
+      // if not connected then reset app
+      if (this.getCachedSession() === null) {
+        this.$store.dispatch('settings/setWalletConnectPayload', null);
+      }
       this.walletConnectModalOpened = false;
     },
     async signEthereumRequests() {

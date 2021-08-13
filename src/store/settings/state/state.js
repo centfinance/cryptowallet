@@ -30,4 +30,5 @@ export default {
   mainNetIds: [1, 42220, 100],
   // eslint-disable-next-line no-magic-numbers
   testNetIds: [44787, 42],
+  walletConnectPayload: null,
 };

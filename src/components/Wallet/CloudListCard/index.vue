@@ -112,6 +112,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import CloudListItem from '@/components/Wallet/CloudListItem';
 import SelectCoinModal from '@/components/Modals/SelectCoin';
 
@@ -151,6 +152,9 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      walletConnectPayload: (state) => { return state.settings.walletConnectPayload; },
+    }),
     currentChain() {
       return this.chainId;
     },
@@ -241,8 +245,15 @@ export default {
       // eslint-disable-next-line no-magic-numbers
       this.chainId = this.getChainId(this.display);
       this.address = this.wallet[0].externalAddress;
+      let p = { open: true, chainId: this.chainId, address: this.address };
+      if (!this.walletConnectPayload) {
+        this.$store.dispatch('settings/setWalletConnectPayload', p);
+      } else {
+        p = this.walletConnectPayload;
+      }
+      console.log(`P:${JSON.stringify(p)}`);
       // eslint-disable-next-line prefer-destructuring
-      this.$store.dispatch('modals/setWalletConnectModalOpened', { open: true, chainId: this.chainId, address: this.address });
+      this.$store.dispatch('modals/setWalletConnectModalOpened', p);
     },
     getChainId(val) {
       switch (val) {

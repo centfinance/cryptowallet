@@ -227,7 +227,7 @@ export default {
           if (option.type === 'Apple Pay' && !this.applePayEnabled) {
             return false;
           }
-          if (this.wallet.network === 'XDAI'
+          if ((this.wallet.network === 'XDAI' || this.wallet.network === 'CELO')
               && (option.type === 'Credit/Debit Card'
               || option.type === 'Bank Transfer (Altalix)'
               || option.type === 'Manual Bank Transfer (Transak)'

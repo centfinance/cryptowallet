@@ -44,3 +44,7 @@ export function setPaymentLoading(context, payload) {
 export function setWalletConnectRequestStatus(context, payload) {
   context.commit('SET_WALLET_CONNECT_REQUEST', payload);
 }
+
+export function setWalletConnectPayload(context, payload) {
+  context.commit('SET_WALLET_CONNECT_PAYLOAD', payload);
+}

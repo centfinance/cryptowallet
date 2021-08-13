@@ -1,5 +1,5 @@
 <template>
-  <div v-if="addFundsModalOpened">
+  <div v-if="addFundsModalOpened">ether
     <div
       v-if="showCloseProvider"
       class="close-provider"
