@@ -230,6 +230,15 @@ class BackEndService {
   }
 
   /**
+   * Used to call the carousal endpoint
+   * @return {Object}
+   */
+  async getCarousal(attempts = 0) {
+    const result = await this.try(`${process.env.BACKEND_SERVICE_URL}/carousal-list/dashboard/`, attempts);
+    return result;
+  }
+
+  /**
    * Used to call the price-history endpoint
    * @param  {Array}  coin
    * @param  {Array}  currency

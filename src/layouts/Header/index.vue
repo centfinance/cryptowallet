@@ -43,7 +43,7 @@
       class="main-header row justify-between q-px-sm"
     >
       <div>
-        <q-btn
+        <!-- <q-btn
           :class="{ hideBackButton: !isBackButtonEnabled }"
           :disable="!isBackButtonEnabled"
           icon="arrow_back"
@@ -52,7 +52,7 @@
           class="icon-btn back-arrow-btn"
           flat
           @click.prevent="goBack"
-        />
+        /> -->
       </div>
 
       <div v-if="coinHeading">
@@ -66,9 +66,9 @@
       </div>
       <div v-else>
         <div v-if="heading === 'Settings' || heading=== 'Wallet Connect'">
-          <h1 class="header-h1 text-accent">
+          <!-- <h1 class="header-h1 text-accent">
             {{ heading }}
-          </h1>
+          </h1> -->
         </div>
         <div v-else>
           <img

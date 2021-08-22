@@ -16,6 +16,10 @@
         @refresh="refresher"
       >
         <div class="background" />
+        <Carousal
+          v-if="cList && !showCoinHeader && !shortTop"
+          :c-list="cList"
+        />
         <!-- <div
           v-if="wallets.length > 0 && !showCoinHeader"
           class="total-balance-wrapper"
@@ -55,7 +59,7 @@
 
           <div
             :class="{ white: layoutShapeWhite }"
-            class="layout-shape"
+            class="layout-shape q-mt-xs"
           >
             <keep-alive>
               <router-view />
@@ -82,6 +86,7 @@ import Wallet from '@/store/wallet/entities/wallet';
 import Coin from '@/store/wallet/entities/coin';
 import MainNav from '@/layouts/MainNav';
 import Header from '@/layouts/Header';
+import Carousal from '@/layouts/Carousal';
 import CoinHeader from '@/components/Wallet/CoinHeader';
 import {
   AmountFormatter,
@@ -96,6 +101,7 @@ export default {
     MainNav,
     Header,
     CoinHeader,
+    Carousal,
   },
 
   data() {
@@ -107,9 +113,9 @@ export default {
       transitionName: 'slide-left',
       isBalanceVisible: true,
       worker: null,
+      cList: null,
     };
   },
-
   computed: {
     ...mapState({
       id: (state) => { return state.route.params.id; },
@@ -266,6 +272,9 @@ export default {
    */
   beforeMount() {
     this.updateisPullEnabled();
+    this.fetchCarousal();
+    // eslint-disable-next-line no-magic-numbers
+    setInterval(this.fetchCarousal, 60000);
   },
 
   mounted() {
@@ -280,6 +289,12 @@ export default {
   methods: {
     prevent() {
       return false;
+    },
+    async fetchCarousal() {
+      console.log('Fetching Carousal');
+      const t = await this.backEndService.getCarousal();
+      console.log(t.data);
+      this.cList = t.data;
     },
 
     addFunds() {

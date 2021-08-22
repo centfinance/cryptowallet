@@ -315,10 +315,10 @@ export default {
 <style>
 .cloud-list .scroll-area {
   position: absolute;
-  height: calc(100% - 19rem);
+  height: calc(100% - -10rem);
   width: 100%;
   left: 0;
-  top: 10rem;
+  top: -2rem;
 }
 
 body.q-ios-padding .cloud-list .scroll-area {
