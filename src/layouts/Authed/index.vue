@@ -274,7 +274,7 @@ export default {
     this.updateisPullEnabled();
     this.fetchCarousal();
     // eslint-disable-next-line no-magic-numbers
-    setInterval(this.fetchCarousal, 60000);
+    setInterval(this.fetchCarousal, 150000);
   },
 
   mounted() {
@@ -291,9 +291,7 @@ export default {
       return false;
     },
     async fetchCarousal() {
-      console.log('Fetching Carousal');
       const t = await this.backEndService.getCarousal();
-      console.log(t.data);
       this.cList = t.data;
     },
 

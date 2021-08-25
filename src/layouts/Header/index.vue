@@ -65,10 +65,7 @@
         </h1>
       </div>
       <div v-else>
-        <div v-if="heading === 'Settings' || heading=== 'Wallet Connect'">
-          <!-- <h1 class="header-h1 text-accent">
-            {{ heading }}
-          </h1> -->
+        <!-- <div v-if="heading === 'Settings' || heading=== 'Wallet Connect'">
         </div>
         <div v-else>
           <img
@@ -81,7 +78,7 @@
             class="header-logo q-mt-xs"
             src="~/assets/cent-logo-black.svg"
           >
-        </div>
+        </div> -->
       </div>
       <div
         class="q-mt-xs"

@@ -11,41 +11,20 @@
         <div>{{ $t('wallets') }}</div>
       </router-link>
     </div>
-    <!-- <div class="">
-      <router-link
-        class="main-nav-link"
-        to="/walletconnect"
+    <div class="text-center">
+      <img
+        v-if="dark"
+        style="Opacity:.7"
+        class="header-logo q-mt-xs"
+        src="~/assets/cent-logo-white.svg"
       >
-        <q-btn>
-          <q-avatar size="28px">
-            <img src="~assets/wallet-connect.svg">
-          </q-avatar>
-          <q-badge
-            v-if="wcRequestPending"
-            color="orange"
-            floating
-          />
-        </q-btn> -->
-    <!-- <img
-          src="~assets/wallet-connect.svg"
-          width="35px"
-          height="35px"
-        > -->
-    <!-- <q-icon
-          name="account_balance_wallet"
-        > -->
-    <!-- <div>
-          Wallet Connect -->
-    <!-- <q-badge
-            color="orange"
-            floating
-          >
-            22
-          </q-badge> -->
-    <!-- </div> -->
-    <!-- </a> -->
-    <!-- </router-link> -->
-    <!-- </div> -->
+      <img
+        style="opacity:.7"
+        v-else
+        class="header-logo q-mt-xs"
+        src="~/assets/cent-logo-black.svg"
+      >
+    </div>
     <div class="">
       <router-link
         class="main-nav-link"
@@ -62,6 +41,9 @@
 export default {
   name: 'MainNav',
   computed: {
+    dark() {
+      return this.$q.dark.isActive;
+    },
     wcRequestPending() {
       return this.$store.state.settings.wcRequestPending;
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-sm">
+  <div>
     <!-- <div class="q-gutter-sm"> -->
     <q-carousel
       v-if="cList"
@@ -7,23 +7,25 @@
       transition-prev="scale"
       transition-next="scale"
       swipeable
-      :autoplay="6500"
+      :autoplay="9500"
       position="bottom-left"
       animated
       control-color="primary"
       navigation
+      padding
       infinite
-      height="240px"
-      style="background:rgb(254 218 65 / 25.5%) !important;"
-      class="text-white shadow-1 rounded-borders"
+      height="200px"
+      style="background:#1D1D1D !important;opacity:.8"
+      class="text-white q-pt-md shadow-1"
     >
       <q-carousel-slide
         v-for="c in cList"
         :key="c.icon"
         :name="c.icon"
-        class="column no-wrap flex-center"
+        style="padding"
+        class="column no-wrap q-pb-xs q-pt-lg flex-center"
       >
-        <div class="q-mt-md text-center vertical-bottom">
+        <div class="q-mt-md text-center">
           <!-- <hr v-if="c.link" style="opacity: .5" width="100%"> -->
           <q-icon
             :name="c.icon"
@@ -39,10 +41,12 @@
           <q-btn
             v-if="c.link"
             size="xs"
+            type="a"
             color="primary"
             style="opacity:.8"
             :label="c.linkText"
-            :to="c.link"
+            :href="c.link"
+            target="_blank"
           />
         </div>
       </q-carousel-slide>

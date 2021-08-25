@@ -322,7 +322,7 @@ export default {
 }
 
 body.q-ios-padding .cloud-list .scroll-area {
-  height: calc(100% - 15rem - 4rem - env(safe-area-inset-bottom));
+  height: calc(100% - 10rem - 4rem - env(safe-area-inset-bottom));
 }
 
 .large-cloud-btn {

@@ -291,3 +291,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.q-card__section--vert {
+padding: 10px !important;
+}
+</style>
