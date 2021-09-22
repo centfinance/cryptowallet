@@ -45,18 +45,44 @@
           /> -->
         </div>
       </div>
-      <template
-        v-for="w in wallets"
+      <q-tabs
+        v-model="tab"
+        color="blueish"
+        inverted
       >
-        <CloudListCard
-          :key="w.id"
-          :wallet="fetchWallet(w.network)"
-          :network="w.name"
-          :display="w.displayName"
-          :address="w.externalAddress"
-          @cardBalanace="cardBalanaceRecd"
-        />
-      </template>
+        <template
+          v-for="w in wallets"
+        >
+          <q-tab
+            :key="w.id"
+            :label="w.displayName"
+            default
+            :name="w.network"
+          />
+        </template>
+      </q-tabs>
+      <q-tab-panels
+        v-model="tab"
+        animated
+      >
+        <template
+          v-for="w in wallets"
+        >
+          <q-tab-panel
+            :key="w.id"
+            :name="w.network"
+          >
+            <CloudListCard
+              :key="w.id"
+              :wallet="fetchWallet(w.network)"
+              :network="w.name"
+              :display="w.displayName"
+              :address="w.externalAddress"
+              @cardBalanace="cardBalanaceRecd"
+            />
+          </q-tab-panel>
+        </template>
+      </q-tab-panels>
     </q-scroll-area>
     <WalletConnect />
   </div>
@@ -69,6 +95,11 @@ import CloudListCard from '@/components/Wallet/CloudListCard';
 import Wallet from '@/store/wallet/entities/wallet';
 import Coin from '@/store/wallet/entities/coin';
 import WalletConnect from '@/components/WalletConnect/WalletConnect';
+import * as web3Solana from '@solana/web3.js';
+import * as bip39 from 'bip39';
+import { derivePath } from 'ed25519-hd-key';
+// import * as bip32 from 'bip32';
+import * as nacl from 'tweetnacl';
 
 import {
   AmountFormatter,
@@ -86,6 +117,7 @@ export default {
   data() {
     return {
       scrollPosition: 0,
+      tab: 'ETHEREUM',
       interval: 15000,
       totalAssets: 0,
       checkForUpdates: null,
@@ -109,7 +141,50 @@ export default {
       modals: (state) => { return state.modals; },
       xDaiWallet: null,
     }),
-    wallets() {
+    // eslint-disable-next-line vue/no-async-in-computed-properties
+    async wallets() {
+      const connection = new web3Solana.Connection('http://testnet.solana.com');
+      // eslint-disable-next-line max-len
+      // const sk = '[141,50,32,156,170,204,254,253,76,170,171,162,239,252,147,230,185,135,5,130,41,252,52,162,23,68,0,179,125,112,135,132,194,170,209,149,120,82,109,129,237,100,120,137,164,215,27,196,222,154,83,84,41,73,238,46,153,211,222,230,232,191,181,238]';
+      const mnemonic = 'protect solar giant gate hero output slide unfold isolate kingdom alley vague giraffe wheat task disagree sentence hawk trade gentle pigeon marble truly option';
+      // console.log('KP from seed Generating');
+      // const seed = bip39.mnemonicToSeed(k);
+      // // eslint-disable-next-line no-magic-numbers
+      // const c1 = seed.slice(0, 32);
+      // // eslint-disable-next-line no-magic-numbers
+      // const c2 = seed.slice(32, 64);
+      // const c3 = nacl.scalarMult(c1, c2);
+
+      // // eslint-disable-next-line no-magic-numbers
+      // const kp = web3Solana.Keypair.fromSeed(c3);
+
+      // console.log(JSON.stringify(kp));
+
+
+      // Approach 2
+      // eslint-disable-next-line vue/no-async-in-computed-properties
+      console.log(mnemonic);
+      const seed = bip39.mnemonicToSeed(mnemonic);
+      // eslint-disable-next-line max-len
+      // const seed = this.getSeed(mnemonic); // Buffer.from(k.trim().split(/\s+/g).join(' '), 'hex');
+      // console.log(seed)
+
+      // const walletIndex = 0;
+      // const accountIndex = 0;
+
+      const derivedSeed = derivePath(Buffer.from(seed).toString('hex'), 'm/44\'/501\'/0\'/0').privateKey;
+      console.log(derivedSeed);
+      const kp = nacl.sign.keyPair.fromSeed(derivedSeed);
+      console.log(JSON.stringify(kp));
+      const account = new web3Solana.Account(kp.secretKey);
+      console.log(account.publicKey.toString());
+      console.log(account);
+
+
+      // eslint-disable-next-line vue/no-async-in-computed-properties
+      const ac = await connection.getAccountInfo(account.publicKey);
+      console.log('account fetched from testnet');
+      console.log(JSON.stringify(ac));
       const wallets = Wallet.query()
         .where('account_id', this.authenticatedAccount)
         .get();
@@ -129,6 +204,16 @@ export default {
       //   });
       // }
       // return wallets;
+      // eslint-disable-next-line no-unused-vars
+    },
+    getSeed(mnemonic) {
+      console.log(`Ethe: ${mnemonic}`);
+      // if (!bip39.validateMnemonic(mnemonic)) {
+      //   throw new Error('Invalid seed words');
+      // }
+      console.log(mnemonic);
+      const seed = bip39.mnemonicToSeed(mnemonic);
+      return Buffer.from(seed).toString('hex');
     },
     account() {
       return this.$store.getters['entities/account/find'](this.authenticatedAccount);

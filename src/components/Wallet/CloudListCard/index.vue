@@ -31,7 +31,8 @@
           textMiddleEllipsis="4"
           class="text-caption text-grey"
         >
-          {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }}
+          <!-- {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }} -->
+          {{ address }}
           <q-icon
             name="content_copy"
             class="cursor-pointer"
@@ -143,7 +144,7 @@ export default {
   },
   data() {
     return {
-      visible: false,
+      visible: true,
       buy: false,
       chainId: null,
       walletConnectedId: null,

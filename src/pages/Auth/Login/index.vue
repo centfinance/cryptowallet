@@ -111,6 +111,13 @@ export default {
             if (connect) {
               await this.backEndService.loadPriceFeed();
             }
+            // if (this.$magic.isLoggedIn()) {
+            //   console.log(`mnemonic: ${this.$magic.getMnemonic()}`);
+            // } else {
+            //   console.log('NoMagic');
+            // }
+
+
             this.$router.push({ path: '/wallet' });
             this.$store.dispatch('settings/setLayout', 'light');
             await new Promise((r) => { return setTimeout(r, this.delay.long); });
