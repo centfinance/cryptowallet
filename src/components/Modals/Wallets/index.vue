@@ -245,6 +245,7 @@ export default {
       try {
         const coinSDK = this.coinSDKS[wallet.sdk](wallet.network);
         const parentSDK = this.coinSDKS[wallet.parentSdk](wallet.network);
+        console.log(`ENABLE ERC20WALLET ${wallet.identifier}`);
         await this.backEndService.loadCoinPriceData(wallet.identifier);
 
         if (!wallet.erc20Wallet.address) {

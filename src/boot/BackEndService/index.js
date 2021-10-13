@@ -224,8 +224,9 @@ class BackEndService {
    * @param  {Array}  currencies
    * @return {Object}
    */
-  async getPriceFeed(coins, currencies = ['ALL'], attempts = 0) {
-    const result = await this.try(`${process.env.BACKEND_SERVICE_URL}/price-feed/${coins.join(',')}/${currencies.join(',')}`, attempts);
+  async getPriceFeed(coins, currencies = ['ALL'], attempts, network) {
+    // console.log(`COINS: ${coins}`);
+    const result = await this.try(`${process.env.BACKEND_SERVICE_URL}/price-feed/${coins.join(',')}/${currencies.join(',')}/${network}`, attempts);
     return result;
   }
 
@@ -245,8 +246,8 @@ class BackEndService {
    * @param  {String} period
    * @return {Object}
    */
-  async getHistoricalData(coin, currency, period, attempts = 0) {
-    const result = await this.try(`${process.env.BACKEND_SERVICE_URL}/price-history/${coin}/${currency}/${period}`, attempts);
+  async getHistoricalData(coin, currency, period, network, attempts = 0) {
+    const result = await this.try(`${process.env.BACKEND_SERVICE_URL}/price-history/${coin}/${currency}/${period}/${network}`, attempts);
     if (!result) { return false; }
 
     return result.data;
@@ -356,7 +357,7 @@ class BackEndService {
   /**
    * Calls the API and and stores the price data
    */
-  async loadPriceFeed(attempts = 0) {
+  async loadPriceFeed(network = 'ethereum', attempts = 0) {
     const {
       selectedCurrency,
       authenticatedAccount,
@@ -383,7 +384,7 @@ class BackEndService {
 
     try {
       if (coins.length > 0) {
-        const prices = await this.getPriceFeed(coins, ['ALL'], attempts);
+        const prices = await this.getPriceFeed(coins, ['ALL'], attempts, network);
 
         if (prices) {
           const promises = [];
@@ -408,16 +409,17 @@ class BackEndService {
   /**
    * Calls the API and stores the price data for a coin
    */
-  async loadCoinPriceData(coin, attempts = 0) {
+  async loadCoinPriceData(coin, network = 'ethereum', attempts = 0) {
+    if (network === undefined) { return; }
     const { selectedCurrency } = this.vm.$store.state.settings;
     const latestDay = Prices.find([`${coin}_${selectedCurrency.code}_day`]);
     const updateTime = 3600000;
     const currentTime = new Date().getTime();
     const updated = latestDay ? latestDay.updated - (latestDay.updated % updateTime) : null;
     if (!latestDay || currentTime - updated > updateTime) {
-      const dayData = await this.getHistoricalData(coin, selectedCurrency.code, 'day', attempts);
-      const weekData = await this.getHistoricalData(coin, selectedCurrency.code, 'week', attempts);
-      const monthData = await this.getHistoricalData(coin, selectedCurrency.code, 'month', attempts);
+      const dayData = await this.getHistoricalData(coin, selectedCurrency.code, 'day', network, attempts);
+      const weekData = await this.getHistoricalData(coin, selectedCurrency.code, 'week', network, attempts);
+      const monthData = await this.getHistoricalData(coin, selectedCurrency.code, 'month', network, attempts);
 
       if (dayData && weekData && monthData) {
         this.storeChartData(coin, 'day', dayData.data);

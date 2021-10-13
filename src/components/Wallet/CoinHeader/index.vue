@@ -170,11 +170,15 @@ export default {
     },
 
     latestPrice() {
-      const val = this.wallet.symbol === 'CELO' ? this.wallet.network.toString().toLowerCase() : this.wallet.identifier;
+      if (this.wallet.symbol === 'CPT') {
+        return null;
+      }
+      const val = (this.wallet.symbol === 'CELO') ? this.wallet.symbol.toString().toLowerCase() : this.wallet.identifier;
       const prices = this.$store.getters['entities/latestPrice/find'](`${val}_${this.selectedCurrency.code}`);
       if (prices) {
         return prices.data.PRICE;
       }
+      this.backEndService.loadCoinPriceData(val, this.wallet.network.toLowerCase());
       return null;
     },
 

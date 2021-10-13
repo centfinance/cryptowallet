@@ -135,7 +135,7 @@ export default {
         .get()[0];
     },
     coinIdentifier() {
-      if (this.coin.sdk === 'ERC20' && this.coin.network !== 'CELO') {
+      if (this.coin.sdk === 'ERC20') {
         return this.coin.contractAddress;
       }
       return this.wallet.symbol === 'CELO' ? 'celo' : this.coin.identifier;
@@ -187,6 +187,7 @@ export default {
   async mounted() {
     const updateTime = 120000;
     const currentTime = new Date().getTime();
+    if (!this.latestPrice) { return; }
     if ((currentTime - this.latestPrice.updated) > updateTime) {
       setTimeout(() => {
         this.loadData();
@@ -211,7 +212,8 @@ export default {
         this.loading = true;
 
         try {
-          await this.backEndService.loadCoinPriceData(this.coinIdentifier, 2);
+          // eslint-disable-next-line max-len
+          await this.backEndService.loadCoinPriceData(this.coinIdentifier, this.coin.network.toLowerCase());
         } catch (err) {
           this.errorHandler(err);
         }

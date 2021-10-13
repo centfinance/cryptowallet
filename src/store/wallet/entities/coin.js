@@ -57,9 +57,9 @@ export default class Coin extends Model {
     function fetchIcon(token, address) {
       let url = '';
       if (token.symbol === 'Celo') {
-        url = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/celo/info/logo.png';
+        url = 'https://raw.githubusercontent.com/centfinance/assets/master/blockchains/celo/info/logo.png';
       } else {
-        url = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
+        url = `https://raw.githubusercontent.com/centfinance/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
       }
       axios
         .get(url, {
@@ -84,7 +84,7 @@ export default class Coin extends Model {
       .get();
 
     if (tokens.length > 0) {
-      const whitelist = (await axios.get('https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/allowlist.json'))
+      const whitelist = (await axios.get('https://raw.githubusercontent.com/centfinance/assets/master/blockchains/ethereum/allowlist.json'))
         .data;
 
       const promises = tokens

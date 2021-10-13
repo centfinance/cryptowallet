@@ -9,7 +9,7 @@
     >
       <q-card-section class="q-pa-sm">
         <div class="text-overline text-weight-bold text-orange-9">
-          <q-avatar size="20px">
+          <!-- <q-avatar size="20px">
             <img
               v-if="network.includes('Ethereum')"
               src="~/assets/ethereum.svg"
@@ -22,23 +22,35 @@
               v-if="network.includes('Celo')"
               src="~/assets/celo.svg"
             >
-          </q-avatar> {{ display }} ({{ wallet.length }})
+          </q-avatar> -->
+          <span
+            textMiddleEllipsis="4"
+            class="text-caption text-grey"
+          >
+            Address: {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }}
+            <!-- {{ address }} -->
+            <q-icon
+              name="content_copy"
+              class="cursor-pointer"
+              @click="copyToClipboard(address)"
+            />
+          </span>
         </div>
         <!-- <div class="text-h6 q-mt-sm q-mb-xs">
             Address
           </div> -->
-        <div
+        <!-- <div
           textMiddleEllipsis="4"
           class="text-caption text-grey"
-        >
-          <!-- {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }} -->
-          {{ address }}
+        > -->
+        <!-- {{ address.substring(0,5) }} ... {{ address.substring(address.length - 5) }} -->
+        <!-- {{ address }}
           <q-icon
             name="content_copy"
             class="cursor-pointer"
             @click="copyToClipboard(address)"
           />
-        </div>
+        </div> -->
       </q-card-section>
       <q-card-actions class="justify-start q-pa-xs">
         <q-btn @click.prevent="connect">
@@ -79,7 +91,7 @@
           :label="getFormattedBalance()"
         />
 
-        <q-btn
+        <!-- <q-btn
           color="grey"
           round
           size="sm"
@@ -87,7 +99,7 @@
           dense
           :icon="visible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
           @click="toggleVisibility"
-        />
+        /> -->
       </q-card-actions>
 
       <q-slide-transition>
