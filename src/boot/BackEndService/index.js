@@ -225,7 +225,6 @@ class BackEndService {
    * @return {Object}
    */
   async getPriceFeed(coins, currencies = ['ALL'], attempts, network) {
-    // console.log(`COINS: ${coins}`);
     const result = await this.try(`${process.env.BACKEND_SERVICE_URL}/price-feed/${coins.join(',')}/${currencies.join(',')}/${network}`, attempts);
     return result;
   }
@@ -432,6 +431,7 @@ class BackEndService {
       [coin],
       [selectedCurrency.code],
       attempts,
+      network,
     );
 
     if (latestPrice) {

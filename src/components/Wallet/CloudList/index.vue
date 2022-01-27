@@ -68,7 +68,7 @@
                   >
                   <img
                     v-if="w.network.includes('XDAI')"
-                    src="~/assets/xdai.png"
+                    src="~/assets/gnosis.svg"
                   >
                   <img
                     v-if="w.network.includes('CELO')"
@@ -310,6 +310,9 @@ export default {
       });
     },
     getTabLabel(name, length) {
+      if (name === 'XDai') {
+        return `Gnosis (${length})`;
+      }
       return `${name} (${length})`;
     },
     cardBalanaceRecd(val) {
